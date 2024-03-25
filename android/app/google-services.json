@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "348680274283",
+    "firebase_url": "https://final-capstone-project-f8bdd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "final-capstone-project-f8bdd",
+    "storage_bucket": "final-capstone-project-f8bdd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348680274283:android:4bc063b46ce9c355ca8c2e",
+        "android_client_info": {
+          "package_name": "com.example.fcm_template"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_kES-S_Kg6loaZmTIQdlTjs9danQqAoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348680274283:android:773d04df40d04021ca8c2e",
+        "android_client_info": {
+          "package_name": "com.example.testfcm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_kES-S_Kg6loaZmTIQdlTjs9danQqAoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348680274283:android:06dced16dd373f02ca8c2e",
+        "android_client_info": {
+          "package_name": "com.facs.facs_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_kES-S_Kg6loaZmTIQdlTjs9danQqAoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
