@@ -7,10 +7,10 @@ class OnBoarding extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoApp(
       home: OnBoardingSlider(
-        headerBackgroundColor: Colors.white,
+        headerBackgroundColor: Color(0xFFFF5722),
         finishButtonText: 'Start now',
         finishButtonStyle: FinishButtonStyle(
-          backgroundColor: Colors.black,
+          backgroundColor: Color(0xFFFF5722),
         ),
         skipTextButton: Text('Skip'),
         onFinish: () {
@@ -30,8 +30,17 @@ class OnBoarding extends StatelessWidget {
               children: <Widget>[
                 SizedBox(
                   height: 480,
+                  child: Image.asset('lib/assets/images/pic2.png'),
                 ),
-                Text('Enhanced Fire Detection in Outdoor Areas'),
+                Text(
+                  'Enhanced Fire Detection in Outdoor Areas',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
           ),
@@ -41,8 +50,17 @@ class OnBoarding extends StatelessWidget {
               children: <Widget>[
                 SizedBox(
                   height: 480,
+                  child: Image.asset('lib/assets/images/pic3.png'),
                 ),
-                Text('Stay ahead of the flames'),
+                Text(
+                  'Stay ahead of the flames',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
           ),
@@ -52,8 +70,17 @@ class OnBoarding extends StatelessWidget {
               children: <Widget>[
                 SizedBox(
                   height: 480,
+                  child: Image.asset('lib/assets/images/pic4.png'),
                 ),
-                Text('Efficient fire detection at your fingertips'),
+                Text(
+                  'Efficient fire detection at your fingertips',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
           ),

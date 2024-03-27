@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/pages/NavigationBar/camera_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/dashboard_page.dart';
+import 'package:facs_mobile/pages/NavigationBar/location_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/profile_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/timeline_page.dart';
 
@@ -14,6 +15,7 @@ class _MainScreenState extends State<HomePage> {
   final List<Widget> _pages = [
     DashboardPage(),
     CameraPage(),
+    LocationPage(),
     TimelinePage(),
     ProfilePage(),
   ];
@@ -48,6 +50,10 @@ class _MainScreenState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.camera),
             label: 'Camera',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.location_city),
+            label: 'Location',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.timeline),

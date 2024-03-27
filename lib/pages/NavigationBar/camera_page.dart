@@ -63,7 +63,8 @@ class _CameraPageState extends State<CameraPage> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text('Confirm'),
-                    content: Text('Are you sure you want to delete this camera?'),
+                    content:
+                        Text('Are you sure you want to delete this camera?'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(false),
@@ -81,12 +82,49 @@ class _CameraPageState extends State<CameraPage> {
             onDismissed: (direction) {
               deleteCamera(cameraData[index]['cameraId']);
             },
-            child: ListTile(
-              title: Text('Camera ID: ${cameraData[index]['cameraId']}'),
-              subtitle: Text('Status: ${cameraData[index]['status']}'),
-              onTap: () {
-                // TODO : Show camera preview ?
-              },
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ListTile(
+                title: Text(
+                  'Camera ID: ${cameraData[index]['cameraId']}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 8),
+                    Text(
+                      'Status: ${cameraData[index]['status']}',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Camera Destination: ${cameraData[index]['cameraDestination']}',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Camera Name: ${cameraData[index]['cameraName']}',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // TODO : Show camera preview ?
+                },
+              ),
             ),
           );
         },

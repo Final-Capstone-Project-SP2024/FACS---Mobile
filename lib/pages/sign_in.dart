@@ -16,109 +16,82 @@ class _SignInState extends State<SignIn> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20),
           width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-          ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.of(context).pop(),
               ),
-              SizedBox(height: 60),
+              SizedBox(height: 20),
               Text(
-                "Let's Sign you in",
+                "Sign In",
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.black,
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               SizedBox(height: 10),
               Text(
                 'Welcome Back',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.normal),
-              ),
-              SizedBox(height: 70),
-              Container(
-                width: 320,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                          border:
-                              Border(bottom: BorderSide(color: Colors.grey))),
-                      child: TextField(
-                        controller: securityCodeController,
-                        style: TextStyle(color: Colors.black),
-                        textInputAction: TextInputAction.next,
-                        onSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          hintText: "Security Code",
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                          border: new UnderlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.blueAccent)
-                          )
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                          border:
-                              Border(bottom: BorderSide(color: Colors.grey))),
-                      child: TextField(
-                        controller: passwordController,
-                        obscureText: true,
-                        style: TextStyle(color: Colors.black),
-                        textInputAction: TextInputAction.done,
-                        onSubmitted: (_) {
-                          _signIn();
-                        },
-                        decoration: InputDecoration(
-                          hintText: "Password",
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                          border: new UnderlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.blueAccent)
-                          )
-                        ),
-                      ),
-                    ),
-                  ],
+                  color: Colors.black,
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
-              SizedBox(height: 60),
-              Container(
-                height: 50,
-                width: 320,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 0, 0, 0)
+              SizedBox(height: 40),
+              TextField(
+                controller: securityCodeController,
+                style: TextStyle(color: Colors.black),
+                textInputAction: TextInputAction.next,
+                onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                decoration: InputDecoration(
+                  hintText: "Security Code",
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                  prefixIcon: Icon(Icons.security),
                 ),
-                child: GestureDetector(
-                  onTap: _signIn,
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                style: TextStyle(color: Colors.black),
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) {
+                  _signIn();
+                },
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                  prefixIcon: Icon(Icons.lock),
+                ),
+              ),
+              SizedBox(height: 40),
+              GestureDetector(
+                onTap: _signIn,
+                child: Container(
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.red, // Fire-like color
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Center(
                     child: Text(
                       "Sign In",
                       style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 30),
             ],
           ),
         ),
@@ -129,7 +102,8 @@ class _SignInState extends State<SignIn> {
   void _signIn() async {
     String securityCode = securityCodeController.text;
     String password = passwordController.text;
-    Map<String, dynamic>? userData = await UserServices.signIn(securityCode, password);
+    Map<String, dynamic>? userData =
+        await UserServices.signIn(securityCode, password);
     if (userData != null) {
       Navigator.pushNamed(context, "/home");
     } else {
