@@ -63,8 +63,7 @@ class _CameraPageState extends State<CameraPage> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text('Confirm'),
-                    content:
-                        Text('Are you sure you want to delete this camera?'),
+                    content: Text('Are you sure you want to delete this camera?'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(false),
@@ -89,7 +88,7 @@ class _CameraPageState extends State<CameraPage> {
               ),
               child: ListTile(
                 title: Text(
-                  'Camera ID: ${cameraData[index]['cameraId']}',
+                  'Camera Name: ${cameraData[index]['cameraName']}', // Change camera ID to camera name
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -114,7 +113,7 @@ class _CameraPageState extends State<CameraPage> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Camera Name: ${cameraData[index]['cameraName']}',
+                      'Camera ID: ${cameraData[index]['cameraId']}', // Optionally, display camera ID if needed
                       style: TextStyle(
                         fontSize: 14,
                       ),

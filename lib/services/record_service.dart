@@ -9,6 +9,23 @@ import 'package:flutter/material.dart';
 class RecordService {
   static const String apiUrl =
       'https://firealarmcamerasolution.azurewebsites.net/api/v1';
+  Future<List<Map<String, dynamic>>> getRecords() async {
+    // API URL
+    final apiUrl = 'https://firealarmcamerasolution.azurewebsites.net/api/v1/Record';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final List<dynamic> results = jsonData['results'];
+        return results.cast<Map<String, dynamic>>();
+      } else {
+        throw Exception('Failed to load records');
+      }
+    } catch (e) {
+      throw Exception('Failed to load records: $e');
+    }
+  }
 
   static Future<dynamic> getRecordDetail(String recordId) async {
     try {
@@ -28,7 +45,6 @@ class RecordService {
     required BuildContext context,
   }) async {
     try {
-      // Store the context in a variable
       BuildContext _context = context;
 
       final response = await http.post(
@@ -41,18 +57,14 @@ class RecordService {
       );
 
       if (response.statusCode == 200) {
-        // Voting completed successfully
-        // Navigate to another route using the stored context
         Navigator.pushNamed(_context, '/anotherRoute');
       } else {
-        // Handle failure
         ScaffoldMessenger.of(_context).showSnackBar(
           SnackBar(content: Text('Voting failed')),
         );
       }
     } catch (e) {
       print('Error: $e');
-      // Use the stored context to show a snackbar for error
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('An error occurred')),
       );
