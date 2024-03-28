@@ -88,7 +88,7 @@ class _CameraPageState extends State<CameraPage> {
               ),
               child: ListTile(
                 title: Text(
-                  'Camera Name: ${cameraData[index]['cameraName']}', // Change camera ID to camera name
+                  'Camera Name: ${cameraData[index]['cameraName']}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -113,7 +113,7 @@ class _CameraPageState extends State<CameraPage> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Camera ID: ${cameraData[index]['cameraId']}', // Optionally, display camera ID if needed
+                      'Camera ID: ${cameraData[index]['cameraId']}',
                       style: TextStyle(
                         fontSize: 14,
                       ),
