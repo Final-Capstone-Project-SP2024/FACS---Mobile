@@ -28,7 +28,7 @@ class _LocationPageState extends State<LocationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Locoation Page'),
+        title: Text('Location Page'),
       ),
       body: ListView.builder(
         itemCount: locationData.length,
@@ -51,7 +51,7 @@ class _LocationPageState extends State<LocationPage> {
               ),
               child: ListTile(
                 title: Text(
-                  'Location ID: ${locationData[index]['locationId']}',
+                  'Location Name: ${locationData[index]['locationName']}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -62,7 +62,7 @@ class _LocationPageState extends State<LocationPage> {
                   children: [
                     SizedBox(height: 8),
                     Text(
-                      'Location Name: ${locationData[index]['locationName']}',
+                      'Location ID: ${locationData[index]['locationId']}',
                       style: TextStyle(
                         fontSize: 14,
                       ),
@@ -85,4 +85,5 @@ class _LocationPageState extends State<LocationPage> {
       ),
     );
   }
+
 }
