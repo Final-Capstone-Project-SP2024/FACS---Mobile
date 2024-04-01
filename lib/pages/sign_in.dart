@@ -104,6 +104,7 @@ class _SignInState extends State<SignIn> {
     String password = passwordController.text;
     Map<String, dynamic>? userData =
         await UserServices.signIn(securityCode, password);
+    print(userData);
     if (userData != null) {
       Navigator.pushNamed(context, "/home");
     } else {
@@ -113,6 +114,7 @@ class _SignInState extends State<SignIn> {
         ),
       );
     }
+    Navigator.pushNamed(context, "/home");
   }
 
   @override

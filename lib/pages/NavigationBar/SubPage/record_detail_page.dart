@@ -91,6 +91,11 @@ class _RecordDetailPageState extends State<RecordDetail> {
                           voteIn: _vote,
                           recordId: recordDetailResponse['recordId'],
                           context: context);
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(content: Text('Vote submitted successfully!')),
+                      // );
+                      // Navigator.pushNamedAndRemoveUntil(
+                      //     context, '/home', (route) => false);
                     },
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -121,98 +126,240 @@ class _RecordDetailPageState extends State<RecordDetail> {
       body: recordDetailResponse == null
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
+              padding: EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                    title: Text(
-                      "Camera ID",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.camera_alt,
+                          color: Colors
+                              .blue, // Set camera icon color to blue to represent camera-related topic
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Text(
+                          "Camera Destination: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Expanded(
+                          child: Text(
+                            "${recordDetailResponse['cameraDestination']}",
+                            style: TextStyle(fontSize: 16),
+                            overflow: TextOverflow
+                                .ellipsis, // Allow text to overflow with ellipsis if too long
+                          ),
+                        ),
+                      ],
                     ),
-                    subtitle: Text(
-                      "${recordDetailResponse["cameraId"]}",
-                      style: TextStyle(fontSize: 16),
+                  ),
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: Colors
+                              .amber, // Set star icon color to amber to represent rating
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Text(
+                          "Rating Result: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Text(
+                          "${recordDetailResponse['ratingResult']}",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.sentiment_satisfied,
+                          color: Colors
+                              .green, // Set satisfaction icon color to green to represent positive rating
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Text(
+                          "User Rating Percent: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Text(
+                          "${recordDetailResponse['userRatingPercent']}",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Text(
+                          "Predicted Percent: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Text(
+                          "${recordDetailResponse['predictedPercent']}",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Icon(
+                          Icons.warning,
+                          color: Colors
+                              .orange, // Set the warning icon color to orange to represent status
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Text(
+                          "Status: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(
+                            width: 8), // Add spacing between the icon and text
+                        Text(
+                          "${recordDetailResponse['status']}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: recordDetailResponse['status'] == 'Active'
+                                ? Colors
+                                    .green // Set the text color to green if status is Active
+                                : Colors
+                                    .red, // Set the text color to red for other statuses
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   ListTile(
                     title: Text(
-                      "Location",
+                      'User Vote:',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
+                        color: Colors
+                            .red, // Set the title color to red to match the fire-detection topic
                       ),
                     ),
-                    subtitle: Text(
-                      "${recordDetailResponse['cameraDestination']}",
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    subtitle: recordDetailResponse['userRatings'] != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(
+                              recordDetailResponse['userRatings'].length,
+                              (index) {
+                                var userRating =
+                                    recordDetailResponse['userRatings'][index];
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.how_to_reg,
+                                        color: Colors
+                                            .red, // Set the fire icon color to red
+                                      ),
+                                      SizedBox(
+                                          width:
+                                              8), // Add spacing between the icon and text
+                                      Text(
+                                        'XXX_001: ${userRating['rating']}',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : Text(
+                            'No user ratings available.',
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
                   ListTile(
                     title: Text(
-                      "Rating Result",
+                      'User Action:',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
+                        color: Colors
+                            .red, // Set the title color to red to match the fire-detection topic
                       ),
                     ),
-                    subtitle: Text(
-                      "${recordDetailResponse['ratingResult']}",
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    subtitle: recordDetailResponse['userVoting'] != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(
+                              recordDetailResponse['userVoting'].length,
+                              (index) {
+                                var userVote =
+                                    recordDetailResponse['userVoting'][index];
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.fireplace,
+                                        color: Colors
+                                            .red, // Set the fire icon color to red
+                                      ),
+                                      SizedBox(
+                                          width:
+                                              8), // Add spacing between the icon and text
+                                      Text(
+                                        ' Level ${userVote['voteLevel']} - ${userVote['voteType']}',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        : Text(
+                            'No user voting available.',
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
-                  ListTile(
-                    title: Text(
-                      "Record ID",
+                  SizedBox(height: 16),
+                  Center(
+                    child: Text(
+                      'Fire Detect Video',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
-                    ),
-                    subtitle: Text(
-                      "${recordDetailResponse['recordId']}",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "User Rating Percent",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "${recordDetailResponse['userRatingPercent']}",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "Predicted Percent",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "${recordDetailResponse['predictedPercent']}",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      "Status",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "${recordDetailResponse['status']}",
-                      style: TextStyle(fontSize: 16),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -220,7 +367,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                     child: _videoController.value.isInitialized
                         ? Container(
                             height: 200,
-                            width: double.infinity,
+                            width: 500,
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
@@ -258,7 +405,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                   Center(
                     child: Image.network(
                       "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/${recordDetailResponse['imageRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
-                      width: 200,
+                      width: 275,
                       height: 200,
                       fit: BoxFit.cover,
                     ),
