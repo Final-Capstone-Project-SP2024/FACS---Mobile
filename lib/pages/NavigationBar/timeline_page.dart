@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:facs_mobile/services/record_services.dart';
+import 'package:facs_mobile/services/record_service.dart';
+import 'package:facs_mobile/pages/NavigationBar/SubPage/action/action_page.dart';
 
 class TimelinePage extends StatefulWidget {
   @override
@@ -7,40 +8,82 @@ class TimelinePage extends StatefulWidget {
 }
 
 class _TimelinePageState extends State<TimelinePage> {
-  List<dynamic> records = [];
+  final RecordService _recordServices = RecordService();
+  List<Map<String, dynamic>> _records = [];
+
+  Future<void> _fetchRecords() async {
+    try {
+      final records = await _recordServices.getRecords();
+      setState(() {
+        _records = records;
+      });
+    } catch (e) {
+      print('Error fetching records: $e');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Failed to fetch records. Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    fetchRecords();
-  }
-
-  Future<void> fetchRecords() async {
-    dynamic data = await RecordServices.getLocation();
-
-    setState(() {
-      records = data != null ? data['data']['results'] : [];
-    });
+    _fetchRecords();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Timeline Page'),
+        title: Text('Timeline'),
       ),
-      body: ListView.builder(
-        itemCount: records.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('Camera ID: ${records[index]['cameraId']}'),
-            subtitle: Text('Record ID: ${records[index]['recordFollows'][0]['recordId']}'),
-            onTap: () {
-              // TODO: Handle tap action
-            },
-          );
-        },
-      ),
+      body: _buildTimeline(),
     );
   }
+
+  Widget _buildTimeline() {
+    if (_records.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      final reversedRecords = List.from(_records.reversed);
+
+      return ListView.builder(
+        itemCount: reversedRecords.length,
+        itemBuilder: (context, index) {
+          final record = reversedRecords[index];
+          final DateTime recordDateTime = DateTime.parse(record['recordTime']);
+          // Format date and time as a string
+          final String formattedDateTime =
+              '${recordDateTime.day}/${recordDateTime.month}/${recordDateTime.year} ${recordDateTime.hour}:${recordDateTime.minute}';
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ActionPage(recordId: record['id']),
+                ),
+              );
+            },
+            child: ListTile(
+              title: Text('Date & Time: $formattedDateTime'),
+              subtitle: Text('Status: ${record['status']}'),
+            ),
+          );
+        },
+      );
+    }
+  }
+
 }
