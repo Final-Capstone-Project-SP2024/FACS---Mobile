@@ -13,7 +13,11 @@ class _TimelinePageState extends State<TimelinePage> {
 
   Future<void> _fetchRecords() async {
     try {
-      final records = await _recordServices.getRecords();
+      List<Map<String, dynamic>> records = await _recordServices.getRecords();
+
+      // Sort the records in ascending order based on recordTime
+      records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
+
       setState(() {
         _records = records;
       });
@@ -34,6 +38,9 @@ class _TimelinePageState extends State<TimelinePage> {
       );
     }
   }
+
+
+
 
   @override
   void initState() {

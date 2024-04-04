@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/camera_services.dart';
-import 'package:facs_mobile/pages/NavigationBar/SubPage/add_camera_page.dart';
 
 class CameraPage extends StatefulWidget {
   @override
@@ -24,19 +23,6 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
-  Future<void> deleteCamera(String cameraId) async {
-    bool success = await CameraServices.deleteCamera(cameraId);
-    if (success) {
-      fetchCameraData();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to delete camera'),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,97 +32,51 @@ class _CameraPageState extends State<CameraPage> {
       body: ListView.builder(
         itemCount: cameraData.length,
         itemBuilder: (context, index) {
-          return Dismissible(
-            key: UniqueKey(),
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
+          return Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
             ),
-            confirmDismiss: (direction) async {
-              return await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Confirm'),
-                    content: Text('Are you sure you want to delete this camera?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('CANCEL'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: Text('DELETE'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            onDismissed: (direction) {
-              deleteCamera(cameraData[index]['cameraId']);
-            },
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+            child: ListTile(
+              title: Text(
+                'Camera Name: ${cameraData[index]['cameraName']}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
-              child: ListTile(
-                title: Text(
-                  'Camera Name: ${cameraData[index]['cameraName']}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8),
+                  Text(
+                    'Status: ${cameraData[index]['status']}',
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 8),
-                    Text(
-                      'Status: ${cameraData[index]['status']}',
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Camera Destination: ${cameraData[index]['cameraDestination']}',
+                    style: TextStyle(
+                      fontSize: 14,
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Camera Destination: ${cameraData[index]['cameraDestination']}',
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Camera ID: ${cameraData[index]['cameraId']}',
+                    style: TextStyle(
+                      fontSize: 14,
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Camera ID: ${cameraData[index]['cameraId']}',
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // TODO : Show camera preview ?
-                },
+                  ),
+                ],
               ),
+              onTap: () {
+                // TODO : Show camera preview ?
+              },
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddCameraPage()),
-          );
-        },
-        tooltip: 'Add Camera',
-        child: Icon(Icons.add),
       ),
     );
   }
