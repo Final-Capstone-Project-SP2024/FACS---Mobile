@@ -49,6 +49,7 @@ dependencies:
   sqflite: ^2.3.2
   video_player: ^2.8.3
   http:  any
+  image_picker: ^0.8.6
 
 dev_dependencies:
   flutter_test:

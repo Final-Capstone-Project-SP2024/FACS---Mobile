@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'user_services.dart';
 import 'package:facs_mobile/pages/home_page.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,8 @@ class RecordService {
       'https://firealarmcamerasolution.azurewebsites.net/api/v1';
   Future<List<Map<String, dynamic>>> getRecords() async {
     // API URL
-    final apiUrl = 'https://firealarmcamerasolution.azurewebsites.net/api/v1/Record';
+    final apiUrl =
+        'https://firealarmcamerasolution.azurewebsites.net/api/v1/Record';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -31,6 +34,7 @@ class RecordService {
     try {
       final response = await http.get(Uri.parse('$apiUrl/Record/$recordId'));
       if (response.statusCode == 200) {
+        print(response.body);
         return jsonDecode(response.body);
       }
     } catch (e) {
@@ -132,6 +136,35 @@ class RecordService {
     } catch (e) {
       print('Error: $e');
       return false;
+    }
+  }
+
+  static Future<void> addEvidence(List<int> imageData, String recordId) async {
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$apiUrl/Record/$recordId/addEvidence'),
+      );
+
+      // Add the image data as a file field to the request
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'evidenAdding',
+          imageData,
+          filename: 'evidence.jpg',
+        ),
+      );
+
+      // Send the request
+      var response = await http.Response.fromStream(await request.send());
+
+      if (response.statusCode == 200) {
+        print('Evidence added successfully');
+      } else {
+        print('Failed to add evidence. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in addEvidence: $e');
     }
   }
 }

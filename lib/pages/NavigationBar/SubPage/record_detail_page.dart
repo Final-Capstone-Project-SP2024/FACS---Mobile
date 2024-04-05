@@ -1,5 +1,7 @@
+import 'package:facs_mobile/pages/NavigationBar/SubPage/add_evidence.page.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/action/action_page.dart';
 
@@ -37,6 +39,16 @@ class _RecordDetailPageState extends State<RecordDetail> {
     await RecordService.finishActionPhase(recordId: recordId);
   }
 
+  Future _pickImageFromCamera() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (returnedImage == null) return;
+    setState(() => {
+          //   = File(returnedImage!.path);
+          //
+        });
+  }
+
   Future<dynamic> getRecordDetailId(String recordId) async {
     print(recordId);
     var data = await RecordService.getRecordDetail(recordId);
@@ -62,25 +74,40 @@ class _RecordDetailPageState extends State<RecordDetail> {
                 children: [
                   Text('How would you rate the severity of the fire?'),
                   SizedBox(height: 20),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        for (int i = 0; i <= 5; i++)
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _vote = i; // Update the selected vote
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: _vote == i ? Colors.red : null,
-                            ),
-                            child: Text('$i'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for (int i = 0; i <= 2; i++)
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _vote = i; // Update the selected vote
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _vote == i ? Colors.red : null,
                           ),
-                      ],
-                    ),
+                          child: Text('$i'),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 10), // Adjust spacing between rows
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      for (int i = 3; i <= 5; i++)
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _vote = i; // Update the selected vote
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _vote == i ? Colors.red : null,
+                          ),
+                          child: Text('$i'),
+                        ),
+                    ],
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
@@ -88,17 +115,19 @@ class _RecordDetailPageState extends State<RecordDetail> {
                       // Implement logic to confirm vote
                       Navigator.pop(context); // Close the dialog
                       RecordService.voteAlarm(
-                          voteIn: _vote,
-                          recordId: recordDetailResponse['recordId'],
-                          context: context);
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   SnackBar(content: Text('Vote submitted successfully!')),
-                      // );
-                      // Navigator.pushNamedAndRemoveUntil(
-                      //     context, '/home', (route) => false);
+                        voteIn: _vote,
+                        recordId: recordDetailResponse['recordId'],
+                        context: context,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Vote submitted successfully!')),
+                      );
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (route) => false);
                     },
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
                     child: Text('Confirm'),
                   ),
                 ],
@@ -410,6 +439,24 @@ class _RecordDetailPageState extends State<RecordDetail> {
                       fit: BoxFit.cover,
                     ),
                   ),
+                  SizedBox(height: 8),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    itemCount: recordDetailResponse['evidences'].length,
+                    itemBuilder: (context, index) {
+                      String imageUrl =
+                          recordDetailResponse['evidences'][index];
+                      return Center(
+                        child: Image.network(
+                          "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/ImageEvidene%2F${recordDetailResponse['evidences'][index]}?alt=media&token=73060cb9-20ae-4cf9-888d-c89bf80abc6c",
+                          width: 275,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  ),
                   SizedBox(height: 16),
                   Center(
                     child: recordDetailResponse['status'] == 'InAction'
@@ -514,6 +561,38 @@ class _RecordDetailPageState extends State<RecordDetail> {
                               ),
                             ),
                           ),
+                  ),
+
+                  //? Add Evidence
+
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Handle the action for the first button
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TakePictureScreen(
+                                  recordId: recordDetailResponse['recordId'])),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Add Evidence', // Change this to the label for the first button
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

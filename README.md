@@ -17,9 +17,11 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Checklist
  - [X] Login
- - [] Forgot password
+ - [X] Forgot password
  - [] Manage profile
- - [] Send feedbacks and bugs
+ - [X] Add Evidence
+ - [] Notification to phone
+ - [] View Finish Records
  - [X] Receive fire alerts
  - [X] Vote on incident severity
  - [X] View dashboard

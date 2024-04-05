@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/user_services.dart';
+import 'package:facs_mobile/pages/NavigationBar/SubPage/forget_password_page.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -70,7 +71,30 @@ class _SignInState extends State<SignIn> {
                   prefixIcon: Icon(Icons.lock),
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      // Navigate to forget password screen or perform password recovery process
+                      // Example: Navigator.pushNamed(context, "/forget_password");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SecurityCodePage()),
+                      );
+                    },
+                    child: Text(
+                      "Forget Password?",
+                      style: TextStyle(
+                        color: Colors.blue, // You can change color as needed
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
               GestureDetector(
                 onTap: _signIn,
                 child: Container(
@@ -114,7 +138,6 @@ class _SignInState extends State<SignIn> {
         ),
       );
     }
-    Navigator.pushNamed(context, "/home");
   }
 
   @override
