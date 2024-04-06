@@ -11,13 +11,13 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final RecordService _recordServices = RecordService();
   List<Map<String, dynamic>> _records = [];
-  List<dynamic> cameraData = []; // List to store camera data
+  List<dynamic> cameraData = [];
 
   @override
   void initState() {
     super.initState();
     _fetchRecords();
-    fetchCameraData(); // Fetch camera data
+    _fetchCameraData();
   }
 
   Future<void> _fetchRecords() async {
@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  Future<void> fetchCameraData() async {
+  Future<void> _fetchCameraData() async {
     dynamic data = await CameraServices.getCamera();
 
     setState(() {
@@ -117,12 +117,54 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildTimeline() {
     if (_records.isEmpty) {
-      return Center(
-        child: CircularProgressIndicator(),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Current active incidents',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              'No recent events',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
       );
     } else {
       final reversedRecords = List.from(_records.reversed);
       final List<Map<String, dynamic>> filteredRecords = reversedRecords.where((record) => record['status'] == 'InAlarm' || record['status'] == 'InVote').toList().cast<Map<String, dynamic>>();
+
+      if (filteredRecords.isEmpty) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Current active incidents',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                'No active incidents',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
+        );
+      }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,14 +180,13 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
           SizedBox(
-            height: 200, // Set a fixed height to show only one item per scroll
+            height: 100,
             child: ListView.builder(
-              physics: PageScrollPhysics(), // One item per scroll
+              physics: PageScrollPhysics(),
               itemCount: filteredRecords.length > 5 ? 5 : filteredRecords.length,
               itemBuilder: (context, index) {
                 final record = filteredRecords[index];
                 final DateTime recordDateTime = DateTime.parse(record['recordTime']);
-                // Format date and time as a string
                 final String formattedDateTime =
                     '${recordDateTime.day}/${recordDateTime.month}/${recordDateTime.year} ${recordDateTime.hour}:${recordDateTime.minute}';
                 return GestureDetector(
@@ -171,8 +212,31 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildCameraSection() {
-    // Filter cameraData to include only cameras with 'disconnected' or 'inactive' status
     List<dynamic> filteredCameraData = cameraData.where((camera) => camera['status'] == 'disconnected' || camera['status'] == 'inactive').toList();
+
+    if (filteredCameraData.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Disconnected Cameras',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              'No inactive camera',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,9 +252,9 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ),
         SizedBox(
-          height: 200, // Set a fixed height to show only one item per scroll
+          height: 165,
           child: ListView.builder(
-            physics: PageScrollPhysics(), // One item per scroll
+            physics: PageScrollPhysics(),
             itemCount: filteredCameraData.length > 5 ? 5 : filteredCameraData.length,
             itemBuilder: (context, index) {
               return Card(
@@ -243,7 +307,8 @@ class _DashboardPageState extends State<DashboardPage> {
       ],
     );
   }
-  // Method to determine the background color of the card based on detection status
+
+
   Color _getStatusColor(String status) {
     switch (status) {
       case 'safe':

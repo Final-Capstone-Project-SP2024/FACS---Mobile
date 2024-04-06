@@ -1,4 +1,3 @@
-import 'package:facs_mobile/pages/NavigationBar/SubPage/location_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/location_services.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/location_detail_page.dart';
@@ -27,63 +26,69 @@ class _LocationPageState extends State<LocationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Location Page'),
-      ),
-      body: ListView.builder(
-        itemCount: locationData.length,
-        itemBuilder: (context, index) {
-          return Dismissible(
-            key: UniqueKey(),
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-            ),
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ListTile(
-                title: Text(
-                  'Location Name: ${locationData[index]['locationName']}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: SizedBox(height: 50),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: locationData.length,
+              itemBuilder: (context, index) {
+                return Dismissible(
+                  key: UniqueKey(),
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 8),
-                    Text(
-                      'Location ID: ${locationData[index]['locationId']}',
-                      style: TextStyle(
-                        fontSize: 14,
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        'Location Name: ${locationData[index]['locationName']}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LocationDetail(
-                            locationId:
-                                '${locationData[index]['locationId']}')),
-                  );
-                },
-              ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 8),
+                          Text(
+                            'Location ID: ${locationData[index]['locationId']}',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          )
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LocationDetail(
+                                  locationId:
+                                      '${locationData[index]['locationId']}')),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
-
 }

@@ -8,7 +8,7 @@ class ProfilePage extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: SizedBox(height: 40),
+            child: SizedBox(height: 50),
           ),
           Expanded(
             child: Padding(

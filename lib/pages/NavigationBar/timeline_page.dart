@@ -39,9 +39,6 @@ class _TimelinePageState extends State<TimelinePage> {
     }
   }
 
-
-
-
   @override
   void initState() {
     super.initState();
@@ -51,17 +48,27 @@ class _TimelinePageState extends State<TimelinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Timeline'),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: SizedBox(height: 50),
+          ),
+          Expanded(
+            child: _buildTimeline(),
+          ),
+        ],
       ),
-      body: _buildTimeline(),
     );
   }
 
   Widget _buildTimeline() {
     if (_records.isEmpty) {
       return Center(
-        child: CircularProgressIndicator(),
+        child: Text(
+          'No records available',
+          style: TextStyle(fontSize: 16),
+        ),
       );
     } else {
       final reversedRecords = List.from(_records.reversed);
@@ -74,6 +81,27 @@ class _TimelinePageState extends State<TimelinePage> {
           // Format date and time as a string
           final String formattedDateTime =
               '${recordDateTime.day}/${recordDateTime.month}/${recordDateTime.year} ${recordDateTime.hour}:${recordDateTime.minute}';
+
+          // Determine color based on record status
+          Color cardColor;
+          switch (record['status']) {
+            case 'Finish':
+              cardColor = Colors.green;
+              break;
+            case 'Pending':
+              cardColor = Colors.yellow;
+              break;
+            case 'InAlarm':
+              cardColor = Colors.orange;
+              break;
+            case 'InAction':
+              cardColor = Colors.red;
+              break;
+            default:
+              cardColor = Colors.grey;
+              break;
+          }
+
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -83,9 +111,12 @@ class _TimelinePageState extends State<TimelinePage> {
                 ),
               );
             },
-            child: ListTile(
-              title: Text('Date & Time: $formattedDateTime'),
-              subtitle: Text('Status: ${record['status']}'),
+            child: Card(
+              color: cardColor,
+              child: ListTile(
+                title: Text('Date & Time: $formattedDateTime'),
+                subtitle: Text('Status: ${record['status']}'),
+              ),
             ),
           );
         },
