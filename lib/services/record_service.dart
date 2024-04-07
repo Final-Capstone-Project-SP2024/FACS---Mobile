@@ -144,6 +144,9 @@ class RecordService {
         Uri.parse('$apiUrl/Record/$recordId/addEvidence'),
       );
 
+      // Add authorization token to the headers
+      request.headers['Authorization'] = 'Bearer $UserServices.accessToken';
+
       // Add the image data as a file field to the request
       request.files.add(
         http.MultipartFile.fromBytes(
@@ -165,4 +168,5 @@ class RecordService {
       print('Error in addEvidence: $e');
     }
   }
+
 }

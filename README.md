@@ -19,8 +19,8 @@ samples, guidance on mobile development, and a full API reference.
  - [X] Login
  - [X] Forgot password
  - [X] Manage profile
- - [X] Add Evidence
- - [ ] Notification to phone
+ - [ ] Add Evidence (authorize error)
+ - [X] Notification to phone
  - [ ] View Finish Records
  - [X] Receive fire alerts
  - [X] Vote on incident severity
