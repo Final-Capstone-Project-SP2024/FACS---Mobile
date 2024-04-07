@@ -104,7 +104,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTimeline(),
-                    _buildCameraSection(), // Add camera section
+                    _buildCameraSection(),
                   ],
                 ),
               ),

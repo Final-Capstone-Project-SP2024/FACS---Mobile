@@ -8,7 +8,6 @@ class CameraServices {
   static int userIdCounter = 0;
   static Future<dynamic> getCamera() async {
     try {
-      String accessToken = UserServices.accessToken;
       final response = await http.get(Uri.parse('$apiUrl/Camera'),
           headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
 
@@ -22,53 +21,6 @@ class CameraServices {
     } catch (e) {
       print('Error: $e');
       return null;
-    }
-  }
-
-  static Future<bool> addCamera({
-  required String status,
-  required String destination,
-  required String locationId,
-}) async {
-  try {
-    final response = await http.post(
-      Uri.parse('$apiUrl/Camera'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${UserServices.accessToken}',
-      },
-      body: jsonEncode({
-        'status': status,
-        'destination': destination,
-        'locationId': locationId,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
-    print('Error: $e');
-    return false;
-  }
-}
-
-  static Future<bool> deleteCamera(String cameraId) async {
-    try {
-      final response = await http.delete(
-        Uri.parse('$apiUrl/Camera/$cameraId'),
-      );
-
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print('Error: $e');
-      return false;
     }
   }
 }

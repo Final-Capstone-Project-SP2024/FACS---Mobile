@@ -18,7 +18,7 @@ samples, guidance on mobile development, and a full API reference.
 ## Checklist
  - [X] Login
  - [X] Forgot password
- - [ ] Manage profile (no permission from API)
+ - [X] Manage profile
  - [X] Add Evidence
  - [ ] Notification to phone
  - [ ] View Finish Records
