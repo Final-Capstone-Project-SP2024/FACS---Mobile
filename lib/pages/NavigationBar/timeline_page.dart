@@ -14,8 +14,6 @@ class _TimelinePageState extends State<TimelinePage> {
   Future<void> _fetchRecords() async {
     try {
       List<Map<String, dynamic>> records = await _recordServices.getRecords();
-
-      // Sort the records in ascending order based on recordTime
       records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
 
       setState(() {
@@ -78,11 +76,8 @@ class _TimelinePageState extends State<TimelinePage> {
         itemBuilder: (context, index) {
           final record = reversedRecords[index];
           final DateTime recordDateTime = DateTime.parse(record['recordTime']);
-          // Format date and time as a string
           final String formattedDateTime =
               '${recordDateTime.day}/${recordDateTime.month}/${recordDateTime.year} ${recordDateTime.hour}:${recordDateTime.minute}';
-
-          // Determine color based on record status
           Color cardColor;
           switch (record['status']) {
             case 'Finish':

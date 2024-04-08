@@ -12,12 +12,9 @@ class RecordService {
   static const String apiUrl =
       'https://firealarmcamerasolution.azurewebsites.net/api/v1';
   Future<List<Map<String, dynamic>>> getRecords() async {
-    // API URL
-    final apiUrl =
-        'https://firealarmcamerasolution.azurewebsites.net/api/v1/Record';
-
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      final response = await http.get(Uri.parse('$apiUrl/Record'),
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         final List<dynamic> results = jsonData['results'];
@@ -32,7 +29,8 @@ class RecordService {
 
   static Future<dynamic> getRecordDetail(String recordId) async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/Record/$recordId'));
+      final response = await http.get(Uri.parse('$apiUrl/Record/$recordId'),
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
       if (response.statusCode == 200) {
         print(response.body);
         return jsonDecode(response.body);
@@ -146,6 +144,9 @@ class RecordService {
         Uri.parse('$apiUrl/Record/$recordId/addEvidence'),
       );
 
+      // Add authorization token to the headers
+      request.headers['Authorization'] = 'Bearer $UserServices.accessToken';
+
       // Add the image data as a file field to the request
       request.files.add(
         http.MultipartFile.fromBytes(
@@ -167,4 +168,5 @@ class RecordService {
       print('Error in addEvidence: $e');
     }
   }
+
 }

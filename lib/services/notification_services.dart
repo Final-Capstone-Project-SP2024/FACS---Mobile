@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:facs_mobile/services/user_services.dart';
 
 class NotificationService {
   static const String apiUrl =
@@ -20,7 +21,8 @@ class NotificationService {
   }
 
   static Future<bool> isAlarm() async {
-    final response = await http.get(Uri.parse('$apiUrl/firealarms'));
+    final response = await http.get(Uri.parse('$apiUrl/firealarms'),
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
     return true;
   }
 }

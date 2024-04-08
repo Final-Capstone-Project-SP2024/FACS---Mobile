@@ -29,7 +29,7 @@ class OnBoarding extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height: 480,
+                  height: 400,
                   child: Image.asset('lib/assets/images/pic2.png'),
                 ),
                 Text(
@@ -49,7 +49,7 @@ class OnBoarding extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height: 480,
+                  height: 400,
                   child: Image.asset('lib/assets/images/pic3.png'),
                 ),
                 Text(
@@ -69,7 +69,7 @@ class OnBoarding extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height: 480,
+                  height: 400,
                   child: Image.asset('lib/assets/images/pic4.png'),
                 ),
                 Text(
