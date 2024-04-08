@@ -1,3 +1,4 @@
+import 'package:facs_mobile/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,10 +9,10 @@ import 'package:facs_mobile/firebase_options.dart';
 import 'package:facs_mobile/themes/theme.dart';
 import 'package:facs_mobile/routes/routes.dart';
 
-
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
+
 Future<void> _saveNotificationToStorage(RemoteMessage message) async {
   try {
     final notificationData = {
@@ -23,11 +24,13 @@ Future<void> _saveNotificationToStorage(RemoteMessage message) async {
     print("Error saving notification to storage: $e");
   }
 }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -35,21 +38,20 @@ void main() async {
     print('Message data: ${message.data}');
 
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification.toString()}');
+      print(
+          'Message also contained a notification: ${message.notification.toString()}');
       _saveNotificationToStorage(message);
       flutterLocalNotificationsPlugin.show(
         0,
         message.notification!.title,
         message.notification!.body,
         NotificationDetails(
-          android: AndroidNotificationDetails(
-            'facs_channel',
-            'FACS Alarm',
-            channelDescription:"Receive notifications about fire related information.",
-            importance: Importance.max,
-            priority: Priority.high,
-            icon: 'ic_launcher'
-          ),
+          android: AndroidNotificationDetails('facs_channel', 'FACS Alarm',
+              channelDescription:
+                  "Receive notifications about fire related information.",
+              importance: Importance.max,
+              priority: Priority.high,
+              icon: 'ic_launcher'),
         ),
       );
     }
@@ -57,6 +59,7 @@ void main() async {
   String? token = await messaging.getToken();
   print('Token: $token');
   if (token != null) {
+    UserServices.fcmToken = token;
     await databaseReference.child('tokens').push().set({'token': token});
   }
   runApp(const MyApp());
