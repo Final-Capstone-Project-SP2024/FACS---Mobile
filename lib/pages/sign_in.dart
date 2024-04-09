@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/user_services.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/forget_password_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class SignIn extends StatefulWidget {
   @override
   _SignInState createState() => _SignInState();
 }
-
 class _SignInState extends State<SignIn> {
   TextEditingController securityCodeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -130,6 +131,7 @@ class _SignInState extends State<SignIn> {
         await UserServices.signIn(securityCode, password);
     print(userData);
     if (userData != null) {
+      await saveCredentials(securityCode, password);
       Navigator.pushNamed(context, "/home");
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -140,6 +142,39 @@ class _SignInState extends State<SignIn> {
     }
   }
 
+  Future<void> saveCredentials(String securityCode, String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('securityCode', securityCode);
+    await prefs.setString('password', password);
+  }
+  Future<void> checkSavedCredentials() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? savedSecurityCode = prefs.getString('securityCode');
+  String? savedPassword = prefs.getString('password');
+
+  if (savedSecurityCode != null && savedPassword != null) {
+    await _signInWithSavedCredentials(savedSecurityCode, savedPassword);
+  }
+}
+
+Future<void> _signInWithSavedCredentials(String securityCode, String password) async {
+  Map<String, dynamic>? userData = await UserServices.signIn(securityCode, password);
+
+  if (userData != null) {
+    Navigator.pushNamed(context, "/home");
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to sign in. Please try again.'),
+        ),
+      );
+  }
+}
+  @override
+  void initState(){
+    super.initState();
+    checkSavedCredentials();
+  }
   @override
   void dispose() {
     securityCodeController.dispose();

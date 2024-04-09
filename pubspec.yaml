@@ -50,6 +50,7 @@ dependencies:
   video_player: ^2.8.3
   http:  any
   image_picker: ^0.8.6
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

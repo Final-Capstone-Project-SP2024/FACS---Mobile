@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoarding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    checkCredentials(context);
     return CupertinoApp(
       home: OnBoardingSlider(
         headerBackgroundColor: Color(0xFFFF5722),
@@ -87,5 +89,15 @@ class OnBoarding extends StatelessWidget {
         ],
       ),
     );
+  }
+  Future<void> checkCredentials(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedSecurityCode = prefs.getString('securityCode');
+    String? savedPassword = prefs.getString('password');
+
+    if (savedSecurityCode != null && savedPassword != null) {
+      // If credentials are saved, navigate straight to the sign-in page
+      Navigator.pushNamed(context, "/signin");
+    }
   }
 }
