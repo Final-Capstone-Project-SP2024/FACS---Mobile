@@ -96,7 +96,6 @@ class OnBoarding extends StatelessWidget {
     String? savedPassword = prefs.getString('password');
 
     if (savedSecurityCode != null && savedPassword != null) {
-      // If credentials are saved, navigate straight to the sign-in page
       Navigator.pushNamed(context, "/signin");
     }
   }

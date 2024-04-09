@@ -12,6 +12,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final RecordService _recordServices = RecordService();
   List<Map<String, dynamic>> _records = [];
   List<dynamic> cameraData = [];
+  String detectionStatus = 'safe';
 
   @override
   void initState() {
@@ -21,45 +22,51 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _fetchRecords() async {
-    try {
-      List<Map<String, dynamic>> records = await _recordServices.getRecords();
+  try {
+    List<Map<String, dynamic>> records = await _recordServices.getRecords();
 
-      // Sort the records in ascending order based on recordTime
-      records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
+    // Sort the records in ascending order based on recordTime
+    records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
 
-      setState(() {
-        _records = records;
-      });
-    } catch (e) {
-      print('Error fetching records: $e');
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to fetch records. Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  Future<void> _fetchCameraData() async {
-    dynamic data = await CameraServices.getCamera();
+    // Check for incidents
+    bool hasIncident = records.any((record) => record['status'] == 'InAlarm' || record['status'] == 'InVote');
 
     setState(() {
-      cameraData = data != null ? data['data'] : [];
+      _records = records;
+      detectionStatus = hasIncident ? 'at_risk' : 'safe';
     });
+  } catch (e) {
+    print('Error fetching records: $e');
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text('Failed to fetch records. Please try again later.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
+}
+
+Future<void> _fetchCameraData() async {
+  dynamic data = await CameraServices.getCamera();
+  bool hasDisconnectedCamera = data != null && data['data'].any((camera) => camera['status'] == 'disconnected' || camera['status'] == 'inactive');
+
+  setState(() {
+    cameraData = data != null ? data['data'] : [];
+    if (hasDisconnectedCamera && detectionStatus != 'at_risk') {
+      detectionStatus = 'potential';
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
-    // Dummy detection status, will replace it later
-    String detectionStatus = 'safe';
 
     return Scaffold(
       body: Column(

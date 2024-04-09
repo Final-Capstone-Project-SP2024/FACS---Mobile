@@ -8,6 +8,9 @@ import 'package:facs_mobile/utils/notification_database.dart';
 import 'package:facs_mobile/firebase_options.dart';
 import 'package:facs_mobile/themes/theme.dart';
 import 'package:facs_mobile/routes/routes.dart';
+import 'package:facs_mobile/pages/sign_in.dart';
+import 'package:facs_mobile/pages/onBoarding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
@@ -70,12 +73,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'FACS Mobile',
       themeMode: ThemeMode.system,
       theme: customLightTheme,
+      home: FutureBuilder<bool>(
+        future: checkOnboardingCompleted(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator(); // Or any loading indicator
+          } else {
+            if (snapshot.data == true) {
+              return SignIn(); // Skip onboarding if completed
+            } else {
+              return OnBoarding(); // Show onboarding if not completed
+            }
+          }
+        },
+      ),
       //darkTheme: customDarkTheme,
-      initialRoute: "/onboarding",
+      //initialRoute: "/onboarding",
       onGenerateRoute: generateRoute,
       debugShowCheckedModeBanner: false,
     );
+  }
+  Future<bool> checkOnboardingCompleted() async {
+     false;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? onboardingCompleted = prefs.getBool('onboardingCompleted');
+    return onboardingCompleted ?? false;
   }
 }

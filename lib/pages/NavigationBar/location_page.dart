@@ -65,7 +65,7 @@ class _LocationPageState extends State<LocationPage> {
                         children: [
                           SizedBox(height: 8),
                           Text(
-                            'Location ID: ${locationData[index]['locationId']}',
+                            'Numbers of camera: ${locationData[index]['numberOfCamera']}',
                             style: TextStyle(
                               fontSize: 14,
                             ),

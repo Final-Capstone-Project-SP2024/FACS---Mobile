@@ -23,6 +23,7 @@ class _SignInState extends State<SignIn> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+            if (!(ModalRoute.of(context)?.canPop ?? false))
               IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () => Navigator.of(context).pop(),
@@ -78,8 +79,6 @@ class _SignInState extends State<SignIn> {
                 children: <Widget>[
                   TextButton(
                     onPressed: () {
-                      // Navigate to forget password screen or perform password recovery process
-                      // Example: Navigator.pushNamed(context, "/forget_password");
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -89,7 +88,7 @@ class _SignInState extends State<SignIn> {
                     child: Text(
                       "Forget Password?",
                       style: TextStyle(
-                        color: Colors.blue, // You can change color as needed
+                        color: Colors.blue,
                       ),
                     ),
                   ),
@@ -102,7 +101,7 @@ class _SignInState extends State<SignIn> {
                   height: 50,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.red, // Fire-like color
+                    color: Colors.red,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
@@ -146,6 +145,7 @@ class _SignInState extends State<SignIn> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('securityCode', securityCode);
     await prefs.setString('password', password);
+    await prefs.setBool('onboardingCompleted', true);
   }
   Future<void> checkSavedCredentials() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

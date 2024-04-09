@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/update_profile_page.dart';
 import 'package:facs_mobile/services/user_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -99,8 +100,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ListTile(
                     title: Text('Sign Out'),
                     onTap: () {
-                      // Add sign out logic
-                      Navigator.pushNamed(context, "/onboarding");
+                      clearCredentials(context);
+                      Navigator.pushNamed(context, "/signin");
                     },
                   ),
                 ],
@@ -110,5 +111,10 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
+  }
+  Future<void> clearCredentials(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('securityCode');
+    await prefs.remove('password');
   }
 }
