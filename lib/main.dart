@@ -61,7 +61,6 @@ void main() async {
   if (token != null) {
     UserServices.fcmToken = token;
     await databaseReference.child('tokens').push().set({'token': token});
-    //await databaseReference.child('Users').push().set({'$userId': token});
   }
   runApp(const MyApp());
 }

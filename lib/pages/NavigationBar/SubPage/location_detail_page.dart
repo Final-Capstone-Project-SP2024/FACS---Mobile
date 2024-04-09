@@ -22,7 +22,6 @@ class _LocationDetailPageState extends State<LocationDetail> {
     setState(() {
       if (data != null) {
         locationDetailResponse = data['data'];
-        print(locationDetailResponse);
       }
     });
   }

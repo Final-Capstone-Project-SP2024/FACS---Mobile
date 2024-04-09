@@ -6,14 +6,8 @@ class UserServices {
       'https://firealarmcamerasolution.azurewebsites.net/api/v1/User';
   static String accessToken = '';
   static String refreshToken = '';
-<<<<<<< HEAD
   static String fcmToken = '';
-=======
   static String userId = '';
-  // static String userFullname = '';
-  // static String phone = '';
-  // static String email = '';
->>>>>>> 14215d6b37cd1ee1c23d676fdd51ecd77cbd26b6
 
   static Future<Map<String, dynamic>?> signIn(
       String securityCode, String password) async {
@@ -33,12 +27,8 @@ class UserServices {
         final responseData = jsonDecode(response.body);
         accessToken = responseData['data']['accessToken'];
         refreshToken = responseData['data']['refreshToken'];
-<<<<<<< HEAD
-        //? Sending FCM Token to sytem;
         SendFCMToken();
-=======
         userId = responseData['data']['id'];
->>>>>>> 14215d6b37cd1ee1c23d676fdd51ecd77cbd26b6
         return responseData['data'];
       } else {
         print('Error: ${response.statusCode}');
@@ -49,8 +39,6 @@ class UserServices {
       return null;
     }
   }
-<<<<<<< HEAD
-
   static Future SendFCMToken() async {
     try {
       final response = await http.post(
@@ -61,8 +49,10 @@ class UserServices {
             'Authorization': 'Bearer $accessToken'
           });
     } catch (e) {
-      print('Error in savetoke: $e');
-=======
+      print('Error in savetoken: $e');
+    }
+  }
+
   static Future<bool> updateUserProfile({
     required String email,
     required String phone,
@@ -93,6 +83,7 @@ class UserServices {
       return false;
     }
   }
+
   Future<Map<String, dynamic>> getUserDetails(String userId) async {
     final String url = '$apiUrl/$userId';
 
@@ -107,7 +98,6 @@ class UserServices {
       }
     } catch (e) {
       throw Exception('Failed to connect to the server: $e');
->>>>>>> 14215d6b37cd1ee1c23d676fdd51ecd77cbd26b6
     }
   }
 }
