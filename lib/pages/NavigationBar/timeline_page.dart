@@ -1,3 +1,4 @@
+import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/action/action_page.dart';
@@ -80,7 +81,7 @@ class _TimelinePageState extends State<TimelinePage> {
               '${recordDateTime.day}/${recordDateTime.month}/${recordDateTime.year} ${recordDateTime.hour}:${recordDateTime.minute}';
           Color cardColor;
           switch (record['status']) {
-            case 'Finish':
+            case 'InFinish':
               cardColor = Colors.green;
               break;
             case 'Pending':
@@ -88,6 +89,9 @@ class _TimelinePageState extends State<TimelinePage> {
               break;
             case 'InAlarm':
               cardColor = Colors.orange;
+              break;
+            case 'InVote':
+              cardColor = Colors.red;
               break;
             case 'InAction':
               cardColor = Colors.red;
@@ -100,11 +104,14 @@ class _TimelinePageState extends State<TimelinePage> {
           return GestureDetector(
             onTap: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ActionPage(recordId: record['id']),
-                ),
-              );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecordDetail(
+                              recordId: record['id'],
+                              state: record['status'],
+                            ),
+                          ),
+                        );
             },
             child: Card(
               color: cardColor,
