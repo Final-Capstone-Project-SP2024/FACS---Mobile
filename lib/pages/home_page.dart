@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:facs_mobile/pages/NavigationBar/camera_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/dashboard_page.dart';
+import 'package:facs_mobile/pages/NavigationBar/camera_page.dart';
+import 'package:facs_mobile/pages/NavigationBar/add_alarm_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/location_page.dart';
-import 'package:facs_mobile/pages/NavigationBar/profile_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/timeline_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,9 +15,9 @@ class _MainScreenState extends State<HomePage> {
   final List<Widget> _pages = [
     DashboardPage(),
     CameraPage(),
+    AddAlarmPage(),
     LocationPage(),
     TimelinePage(),
-    ProfilePage(),
   ];
 
   @override
@@ -28,12 +28,22 @@ class _MainScreenState extends State<HomePage> {
           children: [
             _pages[_selectedIndex],
             Positioned(
-              top: 0,
-              left: 0,
+              top: 5,
+              left: 5,
+              child: IconButton(
+                icon: Icon(Icons.account_circle),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/profile");
+                },
+              ),
+            ),
+            Positioned(
+              top: 5,
+              right: 5,
               child: IconButton(
                 icon: Icon(Icons.notifications),
                 onPressed: () {
-                  Navigator.pushNamed(context, "/notification");
+                  Navigator.pushNamed(context, "/notification" );
                 },
               ),
             ),
@@ -52,16 +62,16 @@ class _MainScreenState extends State<HomePage> {
             label: 'Camera',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.notification_add),
+            label: 'Add Alarm',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.location_city),
             label: 'Location',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.timeline),
             label: 'Timeline',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,

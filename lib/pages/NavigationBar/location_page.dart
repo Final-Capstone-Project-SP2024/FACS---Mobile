@@ -69,6 +69,13 @@ class _LocationPageState extends State<LocationPage> {
                             style: TextStyle(
                               fontSize: 14,
                             ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Numbers of security: ${locationData[index]['numberOfSecurity']}',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
                           )
                         ],
                       ),

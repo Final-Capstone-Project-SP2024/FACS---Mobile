@@ -433,7 +433,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                   SizedBox(height: 8),
                   Center(
                     child: Image.network(
-                      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/${recordDetailResponse['imageRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
+                      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['imageRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
                       width: 275,
                       height: 200,
                       fit: BoxFit.cover,

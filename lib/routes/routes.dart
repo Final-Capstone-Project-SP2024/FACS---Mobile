@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 
 import 'package:facs_mobile/pages/onBoarding.dart';
 import 'package:facs_mobile/pages/sign_in.dart';
 import 'package:facs_mobile/pages/home_page.dart';
+import 'package:facs_mobile/pages/profile_page.dart';
 import 'package:facs_mobile/pages/notification_page.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -13,6 +15,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => SignIn());
     case "/home":
       return MaterialPageRoute(builder: (context) => HomePage());
+    case "/profile":
+      return MaterialPageRoute(builder: (context) => ProfilePage());
     case "/notification":
       return MaterialPageRoute(builder: (context) => NotificationPage());
     default:

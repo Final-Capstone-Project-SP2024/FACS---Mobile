@@ -19,7 +19,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> loadUserDetails() async {
     try {
-      final userDetails = await UserServices().getUserDetails(UserServices.userId);
+      final userDetails =
+          await UserServices().getUserDetails(UserServices.userId);
       if (userDetails.containsKey('data')) {
         final userData = userDetails['data'];
         final name = userData['name'];
@@ -34,14 +35,18 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile'),
+        automaticallyImplyLeading: true, // Back button will be automatically added
+      ),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: SizedBox(height: 20),
           ),
           Center(
@@ -81,7 +86,8 @@ class _ProfilePageState extends State<ProfilePage> {
               child: ListView(
                 children: [
                   ListTile(
-                    title: Text('Edit Profile'),
+                    leading: Icon(Icons.edit),
+                    title: Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.bold)),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -92,16 +98,24 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                   ),
                   ListTile(
-                    title: Text('FAQ'),
+                    leading: Icon(Icons.help),
+                    title: Text('FAQ', style: TextStyle(fontWeight: FontWeight.bold)),
                     onTap: () {
                       // Add FAQ logic here
                     },
                   ),
+                  // ListTile(
+                  //   leading: Icon(Icons.bug_report),
+                  //   title: Text('Bugs report', style: TextStyle(fontWeight: FontWeight.bold)),
+                  //   onTap: () {
+                  //     // Add bugs report logic here
+                  //   },
+                  // ),
                   ListTile(
-                    title: Text('Sign Out'),
+                    leading: Icon(Icons.exit_to_app),
+                    title: Text('Sign Out', style: TextStyle(fontWeight: FontWeight.bold)),
                     onTap: () {
-                      clearCredentials(context);
-                      Navigator.pushNamed(context, "/signin");
+                      showConfirmationDialog(context);
                     },
                   ),
                 ],
@@ -112,9 +126,37 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
   Future<void> clearCredentials(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('securityCode');
     await prefs.remove('password');
+  }
+  void showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Sign Out"),
+          content: Text("Are you sure you want to sign out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                clearCredentials(context);
+                Navigator.pushNamed(context, "/signin");
+              },
+              child: Text("Sign Out"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

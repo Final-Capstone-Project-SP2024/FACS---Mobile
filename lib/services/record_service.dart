@@ -168,5 +168,4 @@ class RecordService {
       print('Error in addEvidence: $e');
     }
   }
-
 }

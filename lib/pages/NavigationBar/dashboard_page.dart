@@ -219,7 +219,7 @@ Future<void> _fetchCameraData() async {
   }
 
   Widget _buildCameraSection() {
-    List<dynamic> filteredCameraData = cameraData.where((camera) => camera['status'] == 'disconnected' || camera['status'] == 'inactive').toList();
+    List<dynamic> filteredCameraData = cameraData.where((camera) => camera['status'] == 'Disconnected' || camera['status'] == 'Inactive').toList();
 
     if (filteredCameraData.isEmpty) {
       return Column(
@@ -228,7 +228,7 @@ Future<void> _fetchCameraData() async {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Disconnected Cameras',
+              'Disconnected cameras',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -251,7 +251,7 @@ Future<void> _fetchCameraData() async {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            'Disconnected Cameras',
+            'Disconnected cameras',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -290,13 +290,6 @@ Future<void> _fetchCameraData() async {
                       SizedBox(height: 4),
                       Text(
                         'Camera Destination: ${filteredCameraData[index]['cameraDestination']}',
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Camera ID: ${filteredCameraData[index]['cameraId']}',
                         style: TextStyle(
                           fontSize: 14,
                         ),

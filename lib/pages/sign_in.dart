@@ -11,6 +11,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   TextEditingController securityCodeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,7 @@ class _SignInState extends State<SignIn> {
               SizedBox(height: 20),
               TextField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !showPassword,
                 style: TextStyle(color: Colors.black),
                 textInputAction: TextInputAction.done,
                 onSubmitted: (_) {
@@ -71,6 +72,17 @@ class _SignInState extends State<SignIn> {
                   hintText: "Password",
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
                   prefixIcon: Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      showPassword ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        showPassword = !showPassword;
+                      });
+                    },
+                  ),
                 ),
               ),
               SizedBox(height: 20),
