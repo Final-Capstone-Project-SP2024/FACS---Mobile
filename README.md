@@ -19,7 +19,7 @@ samples, guidance on mobile development, and a full API reference.
  - [X] Login
  - [X] Forgot password
  - [X] Manage profile
- - [ ] Add Evidence (authorize error)
+ - [X] Add Evidence
  - [X] Notification to phone
  - [ ] View Finish Records
  - [X] Receive fire alerts

@@ -31,11 +31,7 @@ class CameraServices {
         'POST',
         Uri.parse('$apiUrl/Camera/$cameraId/alert'),
       );
-
-      // Add authorization token to the headers
       request.headers['Authorization'] = 'Bearer $UserServices.accessToken';
-
-      // Add the image data as a file field to the request
       request.files.add(
         http.MultipartFile.fromBytes(
           'image',
@@ -43,8 +39,6 @@ class CameraServices {
           filename: 'image.jpg',
         ),
       );
-
-      // Add the video data as a file field to the request
       request.files.add(
         http.MultipartFile.fromBytes(
           'video',
@@ -52,11 +46,7 @@ class CameraServices {
           filename: 'video.mp4',
         ),
       );
-
-      // Add fire detection as a field
       request.fields['FireDetection'] = fireDetection.toString();
-
-      // Send the request
       var response = await http.Response.fromStream(await request.send());
 
       if (response.statusCode == 200) {
