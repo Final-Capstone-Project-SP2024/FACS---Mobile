@@ -25,8 +25,11 @@ class CameraServices {
     }
   }
 
-  static Future<void> sendAlert(List<int> imageData, List<int> videoData, String cameraId, int fireDetection) async {
+  Future<void> sendAlert(List<int> imageData, List<int> videoData, String cameraId, int fireDetection) async {
     try {
+      var now = DateTime.now();
+      var formattedDateTime = '${now.day}-${now.month}-${now.year}-${now.hour}-${now.minute}-${now.second}';
+
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('$apiUrl/Camera/$cameraId/alert'),
@@ -40,7 +43,7 @@ class CameraServices {
         http.MultipartFile.fromBytes(
           'image',
           imageData,
-          filename: 'incident-${DateTime.now()}.jpg',
+          filename: 'incident_$formattedDateTime.jpg',
         ),
       );
 
@@ -49,7 +52,7 @@ class CameraServices {
         http.MultipartFile.fromBytes(
           'video',
           videoData,
-          filename: 'incident-${DateTime.now()}.mp4',
+          filename: 'incident_$formattedDateTime.mp4',
         ),
       );
 
@@ -68,4 +71,5 @@ class CameraServices {
       print('Error in sendAlert: $e');
     }
   }
+
 }
