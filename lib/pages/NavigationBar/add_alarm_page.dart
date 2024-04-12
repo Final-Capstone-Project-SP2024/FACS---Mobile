@@ -50,17 +50,27 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
 
   Future<void> _fetchCameras(String locationId) async {
     try {
-      Map<String, String> camera1 = {"59823098-0d29-4546-8517-88b18b8a7f0a": "camera_001"};
-      _cameras.add(camera1);
-      setState(() {
-        if (_cameras.isNotEmpty) {
-          _selectedCamera = _cameras.first['cameraId'];
+      final response = await LocationServices.getLocationDetail(locationId);
+      if (response != null && response.containsKey('data')) {
+        List<dynamic> cameraData = response['data']['cameraInLocations'];
+        List<Map<String, String>> cameras = [];
+        for (var camera in cameraData) {
+          String cameraId = camera['cameraId'];
+          String cameraName = '${camera['cameraName']} - ${camera['cameraDestination']}';
+          cameras.add({'cameraId': cameraId, 'cameraName': cameraName});
         }
-      });
+        setState(() {
+          _cameras = cameras;
+          if (_cameras.isNotEmpty) {
+            _selectedCamera = _cameras.first['cameraId'];
+          }
+        });
+      }
     } catch (e) {
       print('Error fetching cameras: $e');
     }
   }
+
 
   void _navigateToCameraPage() async {
     final capturedMedia = await Navigator.push(
@@ -160,8 +170,8 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
                 },
                 items: _cameras.map<DropdownMenuItem<String>>((Map<String, String> camera) {
                   return DropdownMenuItem<String>(
-                    value: camera.keys.first,
-                    child: Text(camera.values.first),
+                    value: camera['cameraId']!,
+                    child: Text(camera['cameraName']!),
                   );
                 }).toList(),
               ),
