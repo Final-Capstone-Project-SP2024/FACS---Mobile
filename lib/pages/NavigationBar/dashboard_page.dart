@@ -51,7 +51,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> _fetchCameraData() async {
     dynamic data = await CameraServices.getCamera();
-    bool hasDisconnectedCamera = data != null && data['data'].any((camera) => camera['status'] == 'disconnected' || camera['status'] == 'inactive');
+    bool hasDisconnectedCamera = data != null && data['data'].any((camera) => camera['status'] == 'Disconnected' || camera['status'] == 'Inactive');
 
     setState(() {
       cameraData = data != null ? data['data'] : [];
