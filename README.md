@@ -29,19 +29,18 @@ samples, guidance on mobile development, and a full API reference.
 ## Checklist (UI/UX)
  - [ ] Unite color (having a specific pallette use for coloring the system)
  - [X] Show password button
- - [ ] Make the navigation bar more appeal
+ - [X] Make the navigation bar more appeal
  - [X] Adjust text (upper case)
  - [X] Move notification icon to the right and add profile icon to the left (with user fullname there)
- - [ ] Consider put user fullname beside the profile icon
  - [X] Update profile page buttons : bold and centered; Add icons
  - [X] Sign out confirmation
- - [ ] Timeline use the filter from api (from-to date)
- - [ ] Maybe considering the whole dashboard background color to be the same as the status
+ - [X] Timeline use the filter from api (from-to date) and pagination (overload of records)
  - [ ] Receive fire trigger -> trigger (like clock alarm) : pulsing
 
 ## Some suggestion
 color can be reference from vneid
-
+consider put user fullname beside the profile icon
+maybe considering the whole dashboard background color to be the same as the status
 logo must be matching color pallette
 
 button = middle, or stretch the whole width
