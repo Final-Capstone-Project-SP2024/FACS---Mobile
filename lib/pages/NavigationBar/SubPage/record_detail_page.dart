@@ -29,7 +29,8 @@ class _RecordDetailPageState extends State<RecordDetail> {
 
   void _initializeVideoController() {
     _videoController = VideoPlayerController.network(
-      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord/${recordDetailResponse['videoRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
+    "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['videoRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
+    //"https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2Fincident_12-4-2024-18-47-29.mp4?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c"
     )..initialize().then((_) {
         setState(() {});
       });
@@ -298,7 +299,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         color: Colors
-                            .red, // Set the title color to red to match the fire-detection topic
+                            .red,
                       ),
                     ),
                     subtitle: recordDetailResponse['userRatings'] != null
@@ -316,11 +317,11 @@ class _RecordDetailPageState extends State<RecordDetail> {
                                       Icon(
                                         Icons.how_to_reg,
                                         color: Colors
-                                            .red, // Set the fire icon color to red
+                                            .red,
                                       ),
                                       SizedBox(
                                           width:
-                                              8), // Add spacing between the icon and text
+                                              8),
                                       Text(
                                         'XXX_001: ${userRating['rating']}',
                                         style: TextStyle(fontSize: 16),
@@ -343,7 +344,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         color: Colors
-                            .red, // Set the title color to red to match the fire-detection topic
+                            .red,
                       ),
                     ),
                     subtitle: recordDetailResponse['userVoting'] != null
@@ -361,11 +362,11 @@ class _RecordDetailPageState extends State<RecordDetail> {
                                       Icon(
                                         Icons.fireplace,
                                         color: Colors
-                                            .red, // Set the fire icon color to red
+                                            .red,
                                       ),
                                       SizedBox(
                                           width:
-                                              8), // Add spacing between the icon and text
+                                              8),
                                       Text(
                                         ' Level ${userVote['voteLevel']} - ${userVote['voteType']}',
                                         style: TextStyle(fontSize: 16),
@@ -433,7 +434,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                   SizedBox(height: 8),
                   Center(
                     child: Image.network(
-                      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['imageRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
+                      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/ImageRecord%2F${recordDetailResponse['imageRecord']['imageUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
                       width: 275,
                       height: 200,
                       fit: BoxFit.cover,
@@ -465,7 +466,6 @@ class _RecordDetailPageState extends State<RecordDetail> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  // Handle the action for the first button
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -483,7 +483,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                                   ),
                                 ),
                                 child: Text(
-                                  'Add More Action', // Change this to the label for the first button
+                                  'Add More Action',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -492,7 +492,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                                 ),
                               ),
                               SizedBox(
-                                  width: 16), // Add spacing between buttons
+                                  width: 16),
                               ElevatedButton(
                                 onPressed: () {
                                   finishActionAlarm(
@@ -513,7 +513,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                                   ),
                                 ),
                                 child: Text(
-                                  'Finish Alarm', // Change this to the label for the second button
+                                  'Finish Alarm',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -536,8 +536,6 @@ class _RecordDetailPageState extends State<RecordDetail> {
                               } else if (recordDetailResponse['status'] ==
                                   'InAlarm') {
                                 _showVoteDialog();
-                                // Handle the case when status is 'InAlarm'
-                                // (Optional: You can implement logic here)
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -568,7 +566,6 @@ class _RecordDetailPageState extends State<RecordDetail> {
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        // Handle the action for the first button
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -585,7 +582,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                         ),
                       ),
                       child: Text(
-                        'Add Evidence', // Change this to the label for the first button
+                        'Add Evidence',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

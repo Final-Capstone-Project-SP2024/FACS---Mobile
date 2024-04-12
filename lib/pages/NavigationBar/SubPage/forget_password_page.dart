@@ -43,8 +43,6 @@ class _SecurityCodePageState extends State<SecurityCodePage> {
             ElevatedButton(
               onPressed: () {
                 String securityCode = securityCodeController.text;
-                // You can perform any necessary actions with the entered security code here
-                // For example, validate the code, send it for verification, etc.
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ResetPasswordPage()),
@@ -53,7 +51,7 @@ class _SecurityCodePageState extends State<SecurityCodePage> {
               },
               child: Text('Submit'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Fire-like color
+                backgroundColor: Colors.red,
               ),
             ),
           ],

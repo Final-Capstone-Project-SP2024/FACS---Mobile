@@ -15,7 +15,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Reset Password'),
-        backgroundColor: Colors.red, // Fire-like color
+        backgroundColor: Colors.red,
       ),
       body: Padding(
         padding: EdgeInsets.all(20.0),
@@ -65,9 +65,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 String key = keyController.text;
                 String newPassword = newPasswordController.text;
                 String confirmNewPassword = confirmNewPasswordController.text;
-
-                // You can perform any necessary actions with the entered data here
-                // For example, validate the key and passwords, then proceed accordingly
 
                 print('Key: $key');
                 print('New Password: $newPassword');

@@ -19,14 +19,15 @@ var customLightTheme = ThemeData(
 
 var customDarkTheme = ThemeData(
   //brightness: Brightness.dark,
+  scaffoldBackgroundColor: Color.fromARGB(255, 239, 250, 246),
   primarySwatch: Colors.deepPurple,
   fontFamily: GoogleFonts.lato().fontFamily,
   appBarTheme: const AppBarTheme(
-    color: Colors.black,
+    color: Colors.white,
     elevation: 0.0,
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: IconThemeData(color: Colors.black),
     titleTextStyle: TextStyle(
-      color: Colors.white,
+      color: Colors.black,
       fontSize: 20.0,
       fontWeight: FontWeight.bold,
     ),

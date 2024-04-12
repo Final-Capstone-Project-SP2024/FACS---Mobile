@@ -21,8 +21,18 @@ class NotificationService {
   }
 
   static Future<bool> isAlarm() async {
-    final response = await http.get(Uri.parse('$apiUrl/firealarms'),
-          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
-    return true;
+      final response = await http.get(Uri.parse('$apiUrl/firealarms'),
+            headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+      return true;
+    }
+    static Future<List<dynamic>> fetchDisconnectedAlarms() async {
+    final response = await http.get(Uri.parse('https://firealarmcamerasolution.azurewebsites.net/disconnectedalarms'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> disconnectedAlarms = jsonDecode(response.body);
+      return disconnectedAlarms;
+    } else {
+      throw Exception('Failed to load disconnected alarms');
+    }
   }
 }

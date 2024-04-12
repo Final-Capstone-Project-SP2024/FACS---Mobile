@@ -1,4 +1,5 @@
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
+import 'package:facs_mobile/services/notification_services.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/services/camera_services.dart';
@@ -49,17 +50,60 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 }
 
-Future<void> _fetchCameraData() async {
-  dynamic data = await CameraServices.getCamera();
-  bool hasDisconnectedCamera = data != null && data['data'].any((camera) => camera['status'] == 'disconnected' || camera['status'] == 'inactive');
+  Future<void> _fetchCameraData() async {
+    try {
+      dynamic cameraDataResponse = await CameraServices.getCamera();
+      List<dynamic> cameraDataFromCameraService = cameraDataResponse != null ? cameraDataResponse['data'] : [];
+      List<dynamic> disconnectedAlarms = await NotificationService.fetchDisconnectedAlarms();
+      
+      // Map camera data from camera service to include required fields
+      List<Map<String, dynamic>> mappedCameraData = cameraDataFromCameraService.map((camera) {
+        return {
+          'cameraName': camera['cameraName'],
+          'status': camera['status'],
+          'cameraDestination': camera['cameraDestination'],
+        };
+      }).toList();
 
-  setState(() {
-    cameraData = data != null ? data['data'] : [];
-    if (hasDisconnectedCamera && detectionStatus != 'at_risk') {
-      detectionStatus = 'potential';
+      // Map disconnected alarms to include required fields
+      List<Map<String, dynamic>> mappedDisconnectedAlarms = disconnectedAlarms.map((alarm) {
+        return {
+          'cameraName': alarm['cameraName'],
+          'status': alarm['status'],
+          'cameraDestination': alarm['cameraDestination'],
+        };
+      }).toList();
+
+      // Combine mapped camera data and disconnected alarms
+      List<dynamic> combinedData = [...mappedCameraData, ...mappedDisconnectedAlarms];
+      
+      bool hasDisconnectedCamera = combinedData.any((item) => item['status'] == 'Disconnected' || item['status'] == 'Inactive' ||  item['status'] == 'InAlarm');
+
+      setState(() {
+        cameraData = combinedData;
+        if (hasDisconnectedCamera && detectionStatus != 'at_risk') {
+          detectionStatus = 'potential';
+        }
+      });
+    } catch (e) {
+      print('Error fetching camera data: $e');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Failed to fetch camera data. Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
-  });
-}
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
