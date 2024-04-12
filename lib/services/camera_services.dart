@@ -40,7 +40,7 @@ class CameraServices {
         http.MultipartFile.fromBytes(
           'image',
           imageData,
-          filename: 'image.jpg',
+          filename: 'incident-${DateTime.now()}.jpg',
         ),
       );
 
@@ -49,7 +49,7 @@ class CameraServices {
         http.MultipartFile.fromBytes(
           'video',
           videoData,
-          filename: 'video.mp4',
+          filename: 'incident-${DateTime.now()}.mp4',
         ),
       );
 
