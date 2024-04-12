@@ -34,7 +34,7 @@ class CameraServices {
         'POST',
         Uri.parse('$apiUrl/Camera/$cameraId/alert'),
       );
-      request.headers['Authorization'] = 'Bearer $UserServices.accessToken';
+      request.headers['Authorization'] = 'Bearer ${UserServices.accessToken}';
       request.files.add(
         http.MultipartFile.fromBytes(
           'image',
