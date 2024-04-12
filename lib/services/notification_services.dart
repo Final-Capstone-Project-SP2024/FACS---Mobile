@@ -25,14 +25,22 @@ class NotificationService {
             headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
       return true;
     }
-    static Future<List<dynamic>> fetchDisconnectedAlarms() async {
-    final response = await http.get(Uri.parse('https://firealarmcamerasolution.azurewebsites.net/disconnectedalarms'));
 
-    if (response.statusCode == 200) {
-      List<dynamic> disconnectedAlarms = jsonDecode(response.body);
-      return disconnectedAlarms;
-    } else {
-      throw Exception('Failed to load disconnected alarms');
+  static Future<dynamic> getDisconnectedAlarms() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://firealarmcamerasolution.azurewebsites.net/disconnectedalarms'),
+        headers: {'Authorization': 'Bearer ${UserServices.accessToken}'},
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
     }
   }
 }
