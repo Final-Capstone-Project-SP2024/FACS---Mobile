@@ -11,10 +11,24 @@ import 'package:flutter/material.dart';
 class RecordService {
   static const String apiUrl =
       'https://firealarmcamerasolution.azurewebsites.net/api/v1';
-  Future<List<Map<String, dynamic>>> getRecords() async {
+  Future<List<Map<String, dynamic>>> getRecords({int? page, int? pageSize, String? fromDate, String? toDate}) async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/Record'),
-          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+      String url = '$apiUrl/Record';
+      if (page != null && pageSize != null) {
+        url += '?Page=$page&PageSize=$pageSize';
+      }
+      if (fromDate != null) {
+        url += '&FromDate=$fromDate';
+      }
+      if(toDate != null){
+        url += '&ToDate=$toDate';
+      }
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': 'Bearer ${UserServices.accessToken}'},
+      );
+
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         final List<dynamic> results = jsonData['results'];
@@ -143,11 +157,7 @@ class RecordService {
         'POST',
         Uri.parse('$apiUrl/Record/$recordId/addEvidence'),
       );
-
-      // Add authorization token to the headers
       request.headers['Authorization'] = 'Bearer $UserServices.accessToken';
-
-      // Add the image data as a file field to the request
       request.files.add(
         http.MultipartFile.fromBytes(
           'evidenAdding',
@@ -155,8 +165,6 @@ class RecordService {
           filename: 'evidence.jpg',
         ),
       );
-
-      // Send the request
       var response = await http.Response.fromStream(await request.send());
 
       if (response.statusCode == 200) {

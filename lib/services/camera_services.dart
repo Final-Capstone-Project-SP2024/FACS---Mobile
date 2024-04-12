@@ -36,14 +36,14 @@ class CameraServices {
         http.MultipartFile.fromBytes(
           'image',
           imageData,
-          filename: 'image.jpg',
+          filename: 'incident-${DateTime.now()}.jpg',
         ),
       );
       request.files.add(
         http.MultipartFile.fromBytes(
           'video',
           videoData,
-          filename: 'video.mp4',
+          filename: 'incident-${DateTime.now()}.mp4',
         ),
       );
       request.fields['FireDetection'] = fireDetection.toString();

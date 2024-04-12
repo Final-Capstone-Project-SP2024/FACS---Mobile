@@ -75,8 +75,9 @@ class _MainScreenState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.grey.shade100,
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.black,
         onTap: (int index) {
           setState(() {
             _selectedIndex = index;

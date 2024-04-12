@@ -1,9 +1,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@android:color/white" />
-    <item>
+    <item android:gravity="center">
         <bitmap
             android:gravity="center"
             android:src="@drawable/facs_logo"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:width="100dp"
+            android:height="100dp"/>
     </item>
 </layer-list>

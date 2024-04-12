@@ -1,7 +1,7 @@
+import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
-import 'package:facs_mobile/pages/NavigationBar/SubPage/action/action_page.dart';
-import 'package:facs_mobile/services/camera_services.dart'; // Import camera services
+import 'package:facs_mobile/services/camera_services.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -24,11 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> _fetchRecords() async {
   try {
     List<Map<String, dynamic>> records = await _recordServices.getRecords();
-
-    // Sort the records in ascending order based on recordTime
     records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
-
-    // Check for incidents
     bool hasIncident = records.any((record) => record['status'] == 'InAlarm' || record['status'] == 'InVote');
 
     setState(() {
@@ -78,27 +74,42 @@ Future<void> _fetchCameraData() async {
           Expanded(
             child: FractionallySizedBox(
               widthFactor: 1.0,
-              heightFactor: 1.0 / 3,
+              heightFactor: 1.0/2,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Card(
                   color: _getStatusColor(detectionStatus),
                   child: InkWell(
-                    onTap: () {
-                      // TODO : Handle card tap
-                    },
                     child: Padding(
                       padding: EdgeInsets.all(15.0),
-                      child: Text(
-                        'Fire Detection Status: $detectionStatus',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                        ),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 10,right: 25.0),
+                            child: Icon(
+                              _getIconData(detectionStatus),
+                              color: Colors.white,
+                              size: 50.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                'Current Status:\n${detectionStatus.toUpperCase()}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
+
               ),
             ),
           ),
@@ -138,9 +149,12 @@ Future<void> _fetchCameraData() async {
             ),
           ),
           Center(
-            child: Text(
-              'No recent events',
-              style: TextStyle(fontSize: 16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                'No recent events',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ),
         ],
@@ -164,9 +178,12 @@ Future<void> _fetchCameraData() async {
               ),
             ),
             Center(
-              child: Text(
-                'No active incidents',
-                style: TextStyle(fontSize: 16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'No active incidents',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -199,11 +216,14 @@ Future<void> _fetchCameraData() async {
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ActionPage(recordId: record['id']),
-                      ),
-                    );
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RecordDetail(
+                                    recordId: record['id'],
+                                    state: record['status'],
+                                  ),
+                                ),
+                              );
                   },
                   child: ListTile(
                     title: Text('Date & Time: $formattedDateTime'),
@@ -217,6 +237,7 @@ Future<void> _fetchCameraData() async {
       );
     }
   }
+
 
   Widget _buildCameraSection() {
     List<dynamic> filteredCameraData = cameraData.where((camera) => camera['status'] == 'Disconnected' || camera['status'] == 'Inactive').toList();
@@ -236,9 +257,12 @@ Future<void> _fetchCameraData() async {
             ),
           ),
           Center(
-            child: Text(
-              'No inactive camera',
-              style: TextStyle(fontSize: 16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Text(
+                'No inactive camera',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ),
         ],
@@ -296,9 +320,6 @@ Future<void> _fetchCameraData() async {
                       ),
                     ],
                   ),
-                  onTap: () {
-                    // TODO : Show camera preview ?
-                  },
                 ),
               );
             },
@@ -307,6 +328,7 @@ Future<void> _fetchCameraData() async {
       ],
     );
   }
+
 
 
   Color _getStatusColor(String status) {
@@ -319,6 +341,18 @@ Future<void> _fetchCameraData() async {
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+  IconData _getIconData(String status) {
+    switch (status) {
+      case 'safe':
+        return Icons.verified_user;
+      case 'potential':
+        return Icons.gpp_maybe;
+      case 'at_risk':
+        return Icons.gpp_bad;
+      default:
+        return Icons.error;
     }
   }
 }
