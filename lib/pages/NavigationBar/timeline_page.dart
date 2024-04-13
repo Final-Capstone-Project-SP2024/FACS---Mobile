@@ -121,7 +121,7 @@ class _TimelinePageState extends State<TimelinePage> {
       context: context,
       initialDate: _fromDate ?? DateTime.now(),
       firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
+      lastDate: _toDate ?? DateTime.now(),
     );
     if (picked != null && picked != _fromDate) {
       setState(() {
@@ -135,8 +135,8 @@ class _TimelinePageState extends State<TimelinePage> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _toDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
+      firstDate: _fromDate ?? DateTime(1900),
+      lastDate: DateTime.now(),
     );
     if (picked != null && picked != _toDate) {
       setState(() {
@@ -145,7 +145,6 @@ class _TimelinePageState extends State<TimelinePage> {
       _fetchRecords();
     }
   }
-
 
   Widget _buildTimeline() {
     if (_records.isEmpty) {
