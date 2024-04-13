@@ -53,6 +53,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
 
   Future<dynamic> getRecordDetailId(String recordId) async {
     print(recordId);
+    print('');
     var data = await RecordService.getRecordDetail(recordId);
     setState(() {
       if (data != null) {
@@ -548,7 +549,7 @@ class _RecordDetailPageState extends State<RecordDetail> {
                               ),
                             ),
                             child: Text(
-                              recordDetailResponse['status'] == 'InVote' && UserServices.userRole == 'Manager'
+                              recordDetailResponse['status'] == 'InVote'
                                   ? 'Action Alarm'
                                   : recordDetailResponse['status'] == 'InAlarm'
                                       ? 'Rate Fire'
