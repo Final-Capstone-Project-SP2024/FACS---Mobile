@@ -1,3 +1,4 @@
+import 'package:facs_mobile/pages/NavigationBar/SubPage/respond_guide_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/update_profile_page.dart';
 import 'package:facs_mobile/services/user_services.dart';
@@ -99,9 +100,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   ListTile(
                     leading: Icon(Icons.help),
-                    title: Text('FAQ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text('Emergency Response Guide', style: TextStyle(fontWeight: FontWeight.bold)),
                     onTap: () {
-                      // Add FAQ logic here
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RespondGuidePage(),
+                        ),
+                      );
                     },
                   ),
                   // ListTile(

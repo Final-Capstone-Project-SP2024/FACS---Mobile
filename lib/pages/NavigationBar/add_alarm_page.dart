@@ -199,7 +199,7 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
                     _fireRating = newValue!;
                   });
                 },
-                items: List.generate(5, (index) {
+                items: List.generate(100, (index) {
                   return DropdownMenuItem<int>(
                     value: index + 1,
                     child: Text('${index + 1}'),

@@ -24,7 +24,7 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Color getStatusColor(String status) {
-    if (status == 'Disconnected' || status == 'Inactive') {
+    if (status == 'Disconnected' || status == 'Inactive' || status == 'Disconnect') {
       return Colors.red;
     } else {
       return Colors.green;
