@@ -55,7 +55,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware{
   } catch (e) {
     print('Error fetching records: $e');
     showDialog(
-      context: context,
+      context:    context,
       builder: (context) => AlertDialog(
         title: Text('Error'),
         content: Text('Failed to fetch records. Please try again later.'),

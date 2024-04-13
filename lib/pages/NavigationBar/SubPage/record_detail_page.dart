@@ -504,6 +504,8 @@ class _RecordDetailPageState extends State<RecordDetail> {
                                         content: Text(
                                             'Finish submitted successfully!')),
                                   );
+                                  Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+
                                   // Handle the action for the second button
                                 },
                                 style: ElevatedButton.styleFrom(
