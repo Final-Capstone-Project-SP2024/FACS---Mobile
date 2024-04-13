@@ -61,4 +61,20 @@ class CameraServices {
       print('Error in sendAlert: $e');
     }
   }
+  static Future<bool> fixCamera(String cameraId) async{
+    try{
+      final response = await http.post(
+        Uri.parse('$apiUrl/Camera/$cameraId/fix'),
+        headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to fix camera: ${response.statusCode}');
+      }
+    }
+    catch(e){
+      print('Error: $e');
+      throw Exception('Failed to fix camera: $e');
+    }
+  }
 }

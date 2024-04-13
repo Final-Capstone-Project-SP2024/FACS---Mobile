@@ -1,26 +1,46 @@
+import 'package:facs_mobile/pages/NavigationBar/SubPage/fix_camera_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/services/camera_services.dart';
+import 'package:facs_mobile/routeObserver.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _DashboardPageState extends State<DashboardPage> with RouteAware{
   final RecordService _recordServices = RecordService();
   List<Map<String, dynamic>> _records = [];
   List<dynamic> cameraData = [];
   String detectionStatus = 'safe';
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute<dynamic>);
+  //   _fetchRecords();
+  //   _fetchCameraData();
+  // }
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute<dynamic>);
+    _fetchRecords();
+    _fetchCameraData();
+  }
+  @override
+  void didPopNext() {
     _fetchRecords();
     _fetchCameraData();
   }
 
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
   Future<void> _fetchRecords() async {
   try {
     List<Map<String, dynamic>> records = await _recordServices.getRecords();
@@ -51,7 +71,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> _fetchCameraData() async {
     dynamic data = await CameraServices.getCamera();
-    bool hasDisconnectedCamera = data != null && data['data'].any((camera) => camera['status'] == 'Disconnected' || camera['status'] == 'Inactive');
+    bool hasDisconnectedCamera = data != null && data['data'].any((camera) => camera['status'] == 'Disconnected' || camera['status'] == 'Inactive'|| camera['status'] == 'Disconnect');
 
     setState(() {
       cameraData = data != null ? data['data'] : [];
@@ -288,37 +308,53 @@ class _DashboardPageState extends State<DashboardPage> {
             physics: PageScrollPhysics(),
             itemCount: filteredCameraData.length > 5 ? 5 : filteredCameraData.length,
             itemBuilder: (context, index) {
-              return Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: ListTile(
-                  title: Text(
-                    'Camera Name: ${filteredCameraData[index]['cameraName']}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+              final camera = filteredCameraData[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FixCameraPage(
+                        cameraId: camera['cameraId'],
+                        cameraName: camera['cameraName'],
+                        status: camera['status'],
+                        cameraDestination: camera['cameraDestination'],
+                      ),
                     ),
+                  );
+                },
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 8),
-                      Text(
-                        'Status: ${filteredCameraData[index]['status']}',
-                        style: TextStyle(
-                          fontSize: 14,
-                        ),
+                  child: ListTile(
+                    title: Text(
+                      'Camera Name: ${camera['cameraName']}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Camera Destination: ${filteredCameraData[index]['cameraDestination']}',
-                        style: TextStyle(
-                          fontSize: 14,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8),
+                        Text(
+                          'Status: ${camera['status']}',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 4),
+                        Text(
+                          'Camera Destination: ${camera['cameraDestination']}',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -328,6 +364,7 @@ class _DashboardPageState extends State<DashboardPage> {
       ],
     );
   }
+
 
 
 

@@ -11,6 +11,7 @@ import 'package:facs_mobile/routes/routes.dart';
 import 'package:facs_mobile/pages/sign_in.dart';
 import 'package:facs_mobile/pages/onBoarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:facs_mobile/routeObserver.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
@@ -27,7 +28,6 @@ Future<void> _saveNotificationToStorage(RemoteMessage message) async {
     print("Error saving notification to storage: $e");
   }
 }
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -76,6 +76,7 @@ class MyApp extends StatelessWidget {
       title: 'FACS Mobile',
       themeMode: ThemeMode.system,
       theme: customLightTheme,
+      navigatorObservers: [routeObserver],
       home: FutureBuilder<bool>(
         future: checkOnboardingCompleted(),
         builder: (context, snapshot) {
@@ -90,7 +91,7 @@ class MyApp extends StatelessWidget {
           }
         },
       ),
-      //darkTheme: customDarkTheme,
+      darkTheme: customDarkTheme,
       //initialRoute: "/onboarding",
       onGenerateRoute: generateRoute,
       debugShowCheckedModeBanner: false,
