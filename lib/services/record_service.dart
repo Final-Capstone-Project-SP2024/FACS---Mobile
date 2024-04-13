@@ -157,7 +157,7 @@ class RecordService {
         'POST',
         Uri.parse('$apiUrl/Record/$recordId/addEvidence'),
       );
-      request.headers['Authorization'] = 'Bearer $UserServices.accessToken';
+      request.headers['Authorization'] = 'Bearer ${UserServices.accessToken}';
       request.files.add(
         http.MultipartFile.fromBytes(
           'evidenAdding',

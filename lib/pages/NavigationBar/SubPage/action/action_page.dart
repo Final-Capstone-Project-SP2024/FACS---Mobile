@@ -49,17 +49,18 @@ class _ActionPageState extends State<ActionPage> {
             SizedBox(height: 20),
             Expanded(
               child: ListView(
-                children: List.generate(6, (index) {
-                  if (index == 0) {
-                    return _buildRatingTile(
-                        'Fake Alarm',
-                        'A false alarm with no real fire detected. No action required.',
-                        index);
-                  } else {
+                children: List.generate(7, (index) {
+                  if (index >= 0 && index < 6) {
                     return _buildRatingTile(
                         'Fire Alarm $index',
                         'A fire alarm indicating the severity level $index. Immediate action may be required.',
                         index);
+                  }
+                  else{
+                    return _buildRatingTile(
+                        'Fake Alarm',
+                        'A false alarm with no real fire detected. No action required.',
+                        7);
                   }
                 }),
               ),

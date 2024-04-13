@@ -82,14 +82,10 @@ class _AddAlarmPageState extends State<AddAlarmPage> {
         image = capturedMedia[0];
         video = capturedMedia[1];
       });
-      if (image != null && video != null) {
-        _sendAlert(image, video, _selectedCamera!, _fireRating);
-      }
     } else {
       print('User canceled camera');
     }
   }
-
 
   Future<void> _sendAlert(File? imageFile, File? videoFile, String cameraId, int fireDetection) async {
     try {

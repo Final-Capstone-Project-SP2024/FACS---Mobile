@@ -1,4 +1,5 @@
 import 'package:facs_mobile/pages/NavigationBar/SubPage/add_evidence.page.dart';
+import 'package:facs_mobile/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:image_picker/image_picker.dart';
@@ -547,11 +548,11 @@ class _RecordDetailPageState extends State<RecordDetail> {
                               ),
                             ),
                             child: Text(
-                              recordDetailResponse['status'] == 'InVote'
+                              recordDetailResponse['status'] == 'InVote' && UserServices.userRole == 'Manager'
                                   ? 'Action Alarm'
                                   : recordDetailResponse['status'] == 'InAlarm'
                                       ? 'Rate Fire'
-                                      : 'Default Text',
+                                      : '',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

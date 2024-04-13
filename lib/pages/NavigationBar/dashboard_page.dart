@@ -45,7 +45,8 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware{
   try {
     List<Map<String, dynamic>> records = await _recordServices.getRecords();
     records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
-    bool hasIncident = records.any((record) => record['status'] == 'InAlarm' || record['status'] == 'InVote');
+    bool hasIncident = records.any((record) => record['status'] == 'InAlarm' || record['status'] == 'InVote'
+                                              || record['status'] == 'Inalarm' || record['status'] == 'Invote');
 
     setState(() {
       _records = records;
@@ -181,7 +182,10 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware{
       );
     } else {
       final reversedRecords = List.from(_records.reversed);
-      final List<Map<String, dynamic>> filteredRecords = reversedRecords.where((record) => record['status'] == 'InAlarm' || record['status'] == 'InVote').toList().cast<Map<String, dynamic>>();
+      final List<Map<String, dynamic>> filteredRecords = reversedRecords.where((record) => record['status'] == 'InAlarm' 
+                                                                              || record['status'] == 'InVote'
+                                                                              || record['status'] == 'Invote'
+                                                                              || record['status'] == 'Inalarm').toList().cast<Map<String, dynamic>>();
 
       if (filteredRecords.isEmpty) {
         return Column(

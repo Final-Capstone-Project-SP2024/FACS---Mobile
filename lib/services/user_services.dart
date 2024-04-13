@@ -8,6 +8,7 @@ class UserServices {
   static String refreshToken = '';
   static String fcmToken = '';
   static String userId = '';
+  static String userRole = '';
 
   static Future<Map<String, dynamic>?> signIn(
       String securityCode, String password) async {
@@ -29,6 +30,7 @@ class UserServices {
         refreshToken = responseData['data']['refreshToken'];
         SendFCMToken();
         userId = responseData['data']['id'];
+        userRole = responseData['data']['role']['roleName'];
         return responseData['data'];
       } else {
         print('Error: ${response.statusCode}');
