@@ -1,5 +1,6 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
+import 'package:facs_mobile/pages/record_detail_page.test.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
 import 'package:facs_mobile/themes/theme_helper.dart';
@@ -187,21 +188,21 @@ class NotificationPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 42.v),
-                  _buildRowtypesomethin(
-                    context,
-                    time: "11:00",
-                    typesomething: "Warning Small Fire",
-                    typesomething1: "Camera Destination",
-                    imageOne: ImageConstant.imgRectangleCopy,
-                  ),
+                  _buildRowtypesomethin(context,
+                      time: "11:00",
+                      typesomething: "Warning Small Fire",
+                      typesomething1: "Camera Destination",
+                      imageOne: ImageConstant.imgRectangleCopy, onPressed: () {
+                    print("Go to record detail");
+                  }),
                   SizedBox(height: 33.v),
-                  _buildRowtypesomethin(
-                    context,
-                    time: "10:00",
-                    typesomething: "Warning Fire",
-                    typesomething1: "Camera Destination",
-                    imageOne: ImageConstant.imgRectangleCopy2,
-                  )
+                  _buildRowtypesomethin(context,
+                      time: "10:00",
+                      typesomething: "Warning Fire",
+                      typesomething1: "Camera Destination",
+                      imageOne: ImageConstant.imgRectangleCopy2, onPressed: () {
+                    print("Go To RecordDetail Page");
+                  })
                 ],
               ),
             ),
@@ -212,55 +213,70 @@ class NotificationPage extends StatelessWidget {
   }
 
   /// Common widget
+  /// Common widget
   Widget _buildRowtypesomethin(
     BuildContext context, {
     required String time,
     required String typesomething,
     required String typesomething1,
     required String imageOne,
+    required VoidCallback onPressed, // Add this line
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(bottom: 11.v),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                time,
-                style: CustomTextStyles.titleMediumOnPrimary.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                ),
-              ),
-              SizedBox(height: 4.v),
-              Text(
-                typesomething,
-                style: theme.textTheme.titleMedium!.copyWith(
-                  color: appTheme.blueGray300,
-                ),
-              ),
-              SizedBox(height: 1.v),
-              Text(
-                typesomething1,
-                style: theme.textTheme.titleMedium!.copyWith(
-                  color: appTheme.blueGray300,
-                ),
-              )
-            ],
+    return GestureDetector(
+      // Wrap with GestureDetector
+      onTap: () {
+        // Navigate to the desired page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                RecordDetailUserRoleEightScreen(), // Replace YourDestinationPage with the page you want to navigate to
           ),
-        ),
-        CustomImageView(
-          imagePath: imageOne,
-          height: 70.v,
-          width: 100.h,
-          radius: BorderRadius.circular(
-            4.h,
+        );
+      }, // Set the onPressed callback
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 11.v),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  time,
+                  style: CustomTextStyles.titleMediumOnPrimary.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                ),
+                SizedBox(height: 4.v),
+                Text(
+                  typesomething,
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: appTheme.blueGray300,
+                  ),
+                ),
+                SizedBox(height: 1.v),
+                Text(
+                  typesomething1,
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: appTheme.blueGray300,
+                  ),
+                )
+              ],
+            ),
           ),
-          margin: EdgeInsets.only(top: 4.v),
-        )
-      ],
+          CustomImageView(
+            imagePath: imageOne,
+            height: 70.v,
+            width: 100.h,
+            radius: BorderRadius.circular(
+              4.h,
+            ),
+            margin: EdgeInsets.only(top: 4.v),
+          )
+        ],
+      ),
     );
   }
 }

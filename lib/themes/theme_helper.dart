@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:flutter/material.dart';
-import '../core/app_export.dart';
 
 String _appTheme = "primary";
 PrimaryColors get appTheme => ThemeHelper().themeColor();
@@ -53,6 +52,12 @@ class ThemeHelper {
 /// Class containing the supported text theme styles.
 class TextThemes {
   static TextTheme textTheme(ColorScheme colorScheme) => TextTheme(
+        headlineLarge: TextStyle(
+          color: Colors.deepOrange,
+          fontSize: 30.fSize,
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w500,
+        ),
         titleLarge: TextStyle(
           color: colorScheme.onPrimary,
           fontSize: 20.fSize,
@@ -77,6 +82,8 @@ class TextThemes {
 /// Class containing the supported color schemes.
 class ColorSchemes {
   static final primaryColorScheme = ColorScheme.light(
+    primary: Color(0XFFFD687D),
+    primaryContainer: Color.fromARGB(255, 227, 106, 0),
     errorContainer: Color(0X3F000000),
     onPrimary: Color(0XFF1F1719),
   );
@@ -90,4 +97,13 @@ class PrimaryColors {
   Color get gray300 => Color(0XFFE3E3EB);
 // White
   Color get whiteA700 => Color(0XFFFFFFFF);
+  // Black
+  Color get black900 => Color(0XFF000000);
+// BlueGray
+  Color get blueGray400 => Color(0XFF888888);
+// Gray
+  Color get gray100 => Color(0XFFF4F5F8);
+
+  Color get green300 => Color(0XFF73FD68);
+// White
 }

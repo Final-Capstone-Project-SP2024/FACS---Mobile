@@ -8,6 +8,13 @@ class AppDecoration {
   static BoxDecoration get fillWhiteA => BoxDecoration(
         color: appTheme.whiteA700,
       );
+  static BoxDecoration get fillBlueGray => BoxDecoration(
+        color: appTheme.blueGray300,
+      );
+  static BoxDecoration get fillGray => BoxDecoration(
+        color: appTheme.gray100,
+      );
+
 // Outline decorations
   static BoxDecoration get outlineErrorContainer => BoxDecoration();
 }

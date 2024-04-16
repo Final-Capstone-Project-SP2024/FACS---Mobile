@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  base_button:
+    dependency: "direct main"
+    description:
+      name: base_button
+      sha256: f5f917a2864b3ffc4a9ea59525c32e785db88b4ee6d08f133b545d23a7341552
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   boolean_selector:
     dependency: transitive
     description:

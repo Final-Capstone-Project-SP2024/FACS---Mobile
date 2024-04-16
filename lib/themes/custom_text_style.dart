@@ -12,4 +12,11 @@ class CustomTextStyles {
   static get titleMediumOnPrimary => theme.textTheme.titleMedium!.copyWith(
         color: theme.colorScheme.onPrimary,
       );
+  static get titleLargeBluegray300 => theme.textTheme.titleLarge!.copyWith(
+        color: appTheme.blueGray300,
+      );
+
+  static get titleMediumWhiteA700 => theme.textTheme.titleMedium!.copyWith(
+        color: appTheme.whiteA700,
+      );
 }
