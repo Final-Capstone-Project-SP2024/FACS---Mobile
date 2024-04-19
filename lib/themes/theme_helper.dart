@@ -86,6 +86,7 @@ class ColorSchemes {
     primaryContainer: Color.fromARGB(255, 227, 106, 0),
     errorContainer: Color(0X3F000000),
     onPrimary: Color(0XFF1F1719),
+    // secondaryContainer: Color(0X3F000000)
   );
 }
 
@@ -105,5 +106,6 @@ class PrimaryColors {
   Color get gray100 => Color(0XFFF4F5F8);
 
   Color get green300 => Color(0XFF73FD68);
+  Color get blueGray30001 => Color(0XFF8D93AB);
 // White
 }

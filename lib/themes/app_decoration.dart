@@ -15,6 +15,10 @@ class AppDecoration {
         color: appTheme.gray100,
       );
 
+  static BoxDecoration get fillGrayDecor => BoxDecoration(
+        color: appTheme.gray300.withOpacity(0.4),
+      );
+
 // Outline decorations
   static BoxDecoration get outlineErrorContainer => BoxDecoration();
 }

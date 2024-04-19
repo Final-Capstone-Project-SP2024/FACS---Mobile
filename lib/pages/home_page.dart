@@ -1,3 +1,6 @@
+import 'package:facs_mobile/pages/NavigationBar/SubPage/alarm_page.test.dart';
+import 'package:facs_mobile/pages/camera_page.test.dart';
+import 'package:facs_mobile/pages/location_list.test.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/pages/NavigationBar/dashboard_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/camera_page.dart';
@@ -14,9 +17,9 @@ class _MainScreenState extends State<HomePage> {
   int _selectedIndex = 0;
   final List<Widget> _pages = [
     DashboardPage(),
-    CameraPage(),
-    AddAlarmPage(),
-    LocationPage(),
+    CamerasPage(),
+    AlarmByHandPage(),
+    LocationListShow(),
     TimelinePage(),
   ];
 
@@ -43,7 +46,7 @@ class _MainScreenState extends State<HomePage> {
               child: IconButton(
                 icon: Icon(Icons.notifications),
                 onPressed: () {
-                  Navigator.pushNamed(context, "/notification" );
+                  Navigator.pushNamed(context, "/notification");
                 },
               ),
             ),

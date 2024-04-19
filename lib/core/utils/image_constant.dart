@@ -36,4 +36,16 @@ class ImageConstant {
   static String imgLock = '$imagePath/img_lock.svg';
 
   static String imgCheck = '$imagePath/img_checkmark_gray_300.svg';
+
+  static String backGroungImage = '$imagePath/backgroun.png';
+
+  static String alarm = '$imagePath/alarm.png';
+
+  static String circle = '$imagePath/orangeCircle.svg';
+
+  static String onprimarycontainer = '$imagePath/img_container.svg';
+  static String imageLocation = '$imagePath/location_image.png';
+
+  static String imageLocationRectangle = '$imagePath/location_rectangle.png';
+  static String imageLocationRectangle2 = '$imagePath/location_rectangle_2.png';
 }
