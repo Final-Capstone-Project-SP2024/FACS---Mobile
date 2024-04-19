@@ -3,6 +3,7 @@ import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
 
 class TimelinePage extends StatefulWidget {
+  const TimelinePage({Key? key}) : super(key: key);
   @override
   _TimelinePageState createState() => _TimelinePageState();
 }
