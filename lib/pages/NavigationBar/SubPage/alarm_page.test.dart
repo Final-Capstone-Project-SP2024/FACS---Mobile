@@ -26,15 +26,18 @@ class AlarmByHandPage extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       backgroundColor: appTheme.whiteA700,
-      appBar: _buildAppBar(context),
+      //appBar: _buildAppBar(context),
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
           CustomImageView(
             alignment: Alignment.center,
             imagePath: ImageConstant.backGroungImage,
-            height: 650.v,
-            width: 500.v,
+            // height: 650.v,
+            // width: 500.v,
+            height: double.infinity,
+            width: double.infinity,
+            fit: BoxFit.cover,
           ),
           Align(
             alignment: Alignment.topCenter,
@@ -46,7 +49,7 @@ class AlarmByHandPage extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 30.h),
                     padding:
-                        EdgeInsets.symmetric(horizontal: 67.h, vertical: 48.v),
+                        EdgeInsets.symmetric(horizontal: 64.h, vertical: 48.v),
                     decoration: AppDecoration.outlineErrorContainer.copyWith(
                       image: DecorationImage(
                           image: fs.Svg(ImageConstant.circle),
@@ -69,16 +72,16 @@ class AlarmByHandPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 51.v,
+                    height: 30.v,
                   ),
                   _buildComlumnDescription(context),
                   SizedBox(
-                    height: 52.v,
+                    height: 25.v,
                   ),
                   CustomEvulatedBottom(
                     buttonStyle: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Color(int.parse("FF3451", radix: 16))
+                          Color(int.parse("FF3131", radix: 16))
                               .withOpacity(1.0)),
                       padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
@@ -114,8 +117,8 @@ class AlarmByHandPage extends StatelessWidget {
         width: 297.h,
         margin: EdgeInsets.only(right: 5.h),
         child: Text(
-          "When a fie appears, try your hardest \nto remain composed and hit \"Emergency\" \nbutton right  away to warn anyone nearby.",
-          maxLines: 3,
+          "When a fire appears, try your best to\nremain composed and hit the \n\"Emergency\" \nbutton right away to warn anyone nearby.",
+          maxLines: 5,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: CustomTextStyles.titleAlarm,
