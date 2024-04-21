@@ -48,4 +48,10 @@ class ImageConstant {
 
   static String imageLocationRectangle = '$imagePath/location_rectangle.png';
   static String imageLocationRectangle2 = '$imagePath/location_rectangle_2.png';
+  static String barInRecordDetail = '$imagePath/img_megaphone.svg';
+  static String imageGarage = '$imagePath/img_garage.png';
+  static String imageAlert = '$imagePath/img_alert.png';
+  static String imageCamera = '$imagePath/img_camera.png';
+  static String imageDisconnected = '$imagePath/img_disconnected.png';
+  static String imageRecord = '$imagePath/img_record.png';
 }

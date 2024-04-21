@@ -1,3 +1,4 @@
+import 'package:facs_mobile/pages/notification_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:facs_mobile/pages/onBoarding.dart';
@@ -17,7 +18,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case "/profile":
       return MaterialPageRoute(builder: (context) => ProfilePage());
     case "/notification":
-      return MaterialPageRoute(builder: (context) => const NotificationPage());
+      return MaterialPageRoute(builder: (context) => NotificationPage());
     default:
       return _errorRoute();
   }

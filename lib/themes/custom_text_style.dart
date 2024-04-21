@@ -35,4 +35,8 @@ class CustomTextStyles {
 
   static get titleAlarm => theme.textTheme.titleMedium!
       .copyWith(color: theme.colorScheme.onPrimary.withOpacity(1));
+
+  static get titleMediumBlueGray30001 => theme.textTheme.titleMedium!.copyWith(
+        color: appTheme.blueGray30001,
+      );
 }

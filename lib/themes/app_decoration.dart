@@ -9,7 +9,7 @@ class AppDecoration {
         color: appTheme.whiteA700,
       );
   static BoxDecoration get fillBlueGray => BoxDecoration(
-        color: appTheme.blueGray300,
+        color: appTheme.blueGray30001,
       );
   static BoxDecoration get fillGray => BoxDecoration(
         color: appTheme.gray100,

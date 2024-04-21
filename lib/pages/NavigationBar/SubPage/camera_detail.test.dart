@@ -27,15 +27,15 @@ class CameraDetail extends StatelessWidget {
           children: [
             CustomImageView(
               imagePath: ImageConstant.imageLocation,
-              height: 308.v,
+              height: 250.v,
               width: 374.h,
               margin: EdgeInsets.only(left: 1.h),
             ),
-            SizedBox(height: 16.v),
+            SizedBox(height: 2.v),
             Padding(
               padding: EdgeInsets.only(left: 9.h),
               child: Text(
-                "Location B",
+                "Camera_001",
                 style: theme.textTheme.headlineLarge,
               ),
             ),
@@ -46,7 +46,7 @@ class CameraDetail extends StatelessWidget {
                 style: CustomTextStyles.titleSmallPop,
               ),
             ),
-            SizedBox(height: 10.v),
+            SizedBox(height: 15.v),
             _title(context),
             SizedBox(height: 16.v),
             _cameraList(context),
@@ -106,7 +106,24 @@ class CameraDetail extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 2.v),
+                const Divider(),
+                SizedBox(height: 20.v),
+                Padding(
+                  padding: EdgeInsets.only(right: 30.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Users",
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      Text(
+                        "2",
+                        style: theme.textTheme.titleSmall,
+                      )
+                    ],
+                  ),
+                ),
                 const Divider()
               ],
             ),
@@ -138,7 +155,7 @@ class CameraDetail extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 12.h),
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    return const CameraListIn();
+                    return _buildCameraWidget(context, cameraName: "hi");
                   },
                   separatorBuilder: (context, index) {
                     return SizedBox(
@@ -149,6 +166,43 @@ class CameraDetail extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _buildCameraWidget(BuildContext context,
+      {required String cameraName}) {
+    return SizedBox(
+      width: 106.h,
+      child: Align(
+        alignment: Alignment.center,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 8.h,
+            vertical: 6.v,
+          ),
+          decoration: AppDecoration.fillBlueGray
+              .copyWith(borderRadius: BorderRadiusStyle.roundedBorder4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              CustomImageView(
+                imagePath: ImageConstant.backGroungImage,
+                height: 16.v,
+                width: 17.h,
+                margin: EdgeInsets.only(top: 42.v),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 4.h, top: 30.v),
+                child: Text(
+                  cameraName,
+                  style: theme.textTheme.labelLarge,
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

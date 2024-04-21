@@ -1,4 +1,5 @@
 import 'package:facs_mobile/pages/notification_page.dart';
+import 'package:facs_mobile/pages/notification_page_test.dart';
 import 'package:facs_mobile/pages/profile_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/alarm_page.test.dart';
 import 'package:facs_mobile/pages/camera_page.test.dart';
@@ -79,20 +80,20 @@ class HomePage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.person),
               onPressed: () {
-                PersistentNavBarNavigator.pushNewScreen(context, 
-                                                      screen: ProfilePage(),
-                                                      withNavBar: true,
-                                                      pageTransitionAnimation: PageTransitionAnimation.cupertino);
+                PersistentNavBarNavigator.pushNewScreen(context,
+                    screen: ProfilePage(),
+                    withNavBar: true,
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino);
               },
             ),
             IconButton(
               icon: Icon(Icons.notifications),
               onPressed: () {
-                  //Navigator.pushNamed(context, "/notification" );
-                  PersistentNavBarNavigator.pushNewScreen(context, 
-                                                      screen: NotificationPage(),
-                                                      withNavBar: true,
-                                                      pageTransitionAnimation: PageTransitionAnimation.cupertino);
+                //Navigator.pushNamed(context, "/notification" );
+                PersistentNavBarNavigator.pushNewScreen(context,
+                    screen: NotificationPage(),
+                    withNavBar: true,
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino);
               },
             ),
           ],

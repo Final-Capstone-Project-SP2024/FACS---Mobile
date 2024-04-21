@@ -1,14 +1,17 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/action_page.test.dart';
+import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_bottom_style.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
 import 'package:facs_mobile/themes/theme_helper.dart';
 import 'package:facs_mobile/widgets/custom_evulated_bottom.test.dart';
+import 'package:facs_mobile/widgets/custom_icon_button.dart';
 import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:video_player/video_player.dart';
 import '../../core/app_export.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
 import '../../widgets/app_bar/appbar_title.dart';
@@ -18,19 +21,37 @@ import '../../widgets/custom_bottom_bar.dart';
 import '../../widgets/custom_text_form_field.dart'; // ignore_for_file: must_be_immutable
 
 // ignore_for_file: must_be_immutable
-class RecordDetailUserRoleEightScreen extends StatelessWidget {
-  RecordDetailUserRoleEightScreen({Key? key})
-      : super(
-          key: key,
-        );
+class RecordDetailUserRoleEightScreen extends StatefulWidget {
+  final String recordId;
+  final String state;
 
+  const RecordDetailUserRoleEightScreen(
+      {super.key, required this.recordId, required this.state});
+
+  @override
+  _RecordDetailPageState createState() => _RecordDetailPageState();
+}
+
+class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
+  dynamic recordDetailResponse;
+  bool _showVideo = false;
+  late VideoPlayerController _videoController;
+  bool _isPlaying = false;
+  int _vote = 0;
   TextEditingController locationController = TextEditingController();
 
   TextEditingController colortexboxoneController = TextEditingController();
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    getRecordDetailId(widget.recordId);
+    _initializeVideoController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,26 +68,23 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
             ),
             child: Form(
               key: _formKey,
-              child: SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  children: [
-                    _buildRowovaltwoone(context),
-                    _buildRowcameraone(context),
-                    SizedBox(height: 5.v),
-                    _buildUiboxmini(context),
-                    SizedBox(height: 10.v),
-                    _buildColumntypesomet(context),
-                    SizedBox(height: 21.v),
-                    _buildColumntypesomet1(context),
-                    SizedBox(height: 5.v),
-                    _votePart(context),
-                    SizedBox(height: 5.v),
-                    _actionPhase(context),
-                    SizedBox(height: 5.v),
-                    _confirmButton(context),
-                  ],
-                ),
+              child: Column(
+                children: [
+                  _showVideo ? _showVideoWidget(context) : _showImage(context),
+                  //  _buildRowovaltwoone(context),
+                  SizedBox(height: 1.v),
+                  _buildRowcameraone(context),
+                  SizedBox(height: 5.v),
+                  _buildUiboxmini(context),
+                  SizedBox(height: 10.v),
+                  _buildColumntypesomet(context),
+                  SizedBox(height: 21.v),
+                  _buildColumntypesomet1(context),
+                  SizedBox(height: 5.v),
+                  _actionPhase(context),
+                  SizedBox(height: 5.v),
+                  _confirmButton(context),
+                ],
               ),
             ),
           ),
@@ -74,6 +92,29 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
         //   bottomNavigationBar: _buildBottombar(context),
       ),
     );
+  }
+
+  void _initializeVideoController() {
+    _videoController = VideoPlayerController.network(
+        //"https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['videoRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
+        //"https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2Fincident_12-4-2024-18-47-29.mp4?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c"
+        "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2Fcamera_0_2024-04-13_15-20-52.mp4?alt=media&token=18e13091-0a41-4b0e-9b9c-283fb2f3a803")
+      ..initialize().then((_) {
+        setState(() {});
+      });
+  }
+
+  Future<dynamic> getRecordDetailId(String recordId) async {
+    print(recordId);
+    print('');
+    var data = await RecordService.getRecordDetail(recordId);
+    setState(() {
+      if (data != null) {
+        recordDetailResponse = data['data'];
+        print(recordDetailResponse);
+        //_initializeVideoController();
+      }
+    });
   }
 
   /// Section Widget
@@ -105,10 +146,8 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget
-  Widget _buildRowovaltwoone(BuildContext context) {
+  Widget _showVideoWidget(BuildContext context) {
     return Container(
-      width: double.maxFinite,
       padding: EdgeInsets.symmetric(
         horizontal: 18.h,
         vertical: 14.v,
@@ -117,30 +156,59 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            height: 10.adaptSize,
-            width: 10.adaptSize,
-            margin: EdgeInsets.only(
-              top: 217.v,
-              bottom: 3.v,
-            ),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              borderRadius: BorderRadius.circular(
-                5.h,
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (_videoController.value.isPlaying) {
+                    _videoController.pause();
+                  } else {
+                    _videoController.play();
+                  }
+                });
+              },
+              child: Container(
+                color: Colors.black,
+                child: _videoController.value.isInitialized
+                    ? AspectRatio(
+                        aspectRatio: _videoController.value.aspectRatio,
+                        child: VideoPlayer(_videoController),
+                      )
+                    : Container(),
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: 10.h,
-              top: 212.v,
+        ],
+      ),
+    );
+  }
+
+  Widget _showImage(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 18.h,
+        vertical: 14.v,
+      ),
+      decoration: AppDecoration.fillBlueGray,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                // Add your code to navigate to another page here
+              },
+              child: Container(
+                color: Colors.black,
+                child: Image.network(
+                  'https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/ImageRecord%2Ffire_0_2024-04-13_14-52-34.jpg?alt=media&token=7b30179f-3ec9-4e33-956d-7ad737aeb82f',
+                  fit: BoxFit.cover,
+                  width: double.maxFinite,
+                  height: 200, // Maximum input size
+                ),
+              ),
             ),
-            child: Text(
-              "16:20:35",
-              style: CustomTextStyles.titleMediumWhiteA700,
-            ),
-          )
+          ),
         ],
       ),
     );
@@ -150,41 +218,87 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
   Widget _buildRowcameraone(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 28.h,
-        vertical: 15.v,
+        horizontal: 15.h,
+        vertical: 10.v,
       ),
       decoration: AppDecoration.fillGray,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           CustomImageView(
-            imagePath: ImageConstant.imgCameraOnprimary,
-            height: 27.v,
-            width: 32.h,
-            margin: EdgeInsets.only(
-              top: 1.v,
-              bottom: 2.v,
+            color: Colors.amber,
+            imagePath: ImageConstant.barInRecordDetail,
+            height: 24.adaptSize,
+            width: 24.adaptSize,
+            margin: EdgeInsets.only(top: 23.v),
+          ),
+          Spacer(
+            flex: 29,
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 23.v),
+            child: Text(
+              "Media Record",
+              style: theme.textTheme.titleLarge,
             ),
           ),
-          CustomImageView(
-            imagePath: ImageConstant.imgUpload,
-            height: 25.v,
-            width: 30.h,
-            margin: EdgeInsets.only(
-              top: 1.v,
-              bottom: 2.v,
+          Spacer(
+            flex: 70,
+          ),
+          // CustomImageView(
+          //   imagePath: ImageConstant.imgUpload,
+          //   height: 25.v,
+          //   width: 30.h,
+          //   margin: EdgeInsets.only(
+          //     top: 1.v,
+          //     bottom: 2.v,
+          //   ),
+          // ),
+          // CustomImageView(
+          //   imagePath: ImageConstant.imgImage3,
+          //   height: 28.v,
+          //   width: 35.h,
+          //   margin: EdgeInsets.only(
+          //     right: 1.h,
+          //     bottom: 2.v,
+          //   ),
+          // )
+          Padding(
+            padding: EdgeInsets.only(top: 23.v),
+            child: CustomIconButton(
+              decoration: AppDecoration.fillGray,
+              height: 24.adaptSize,
+              width: 24.adaptSize,
+              child: CustomImageView(
+                imagePath: ImageConstant.imgCameraOnprimary,
+              ),
+              onTap: () {
+                setState(() {
+                  _showVideo = true;
+                });
+              },
             ),
           ),
-          CustomImageView(
-            imagePath: ImageConstant.imgImage3,
-            height: 28.v,
-            width: 35.h,
-            margin: EdgeInsets.only(
-              right: 1.h,
-              bottom: 2.v,
+          Padding(
+            padding: EdgeInsets.only(
+              left: 20.h,
+              top: 23.v,
             ),
-          )
+            child: CustomIconButton(
+              decoration: AppDecoration.fillGray,
+              height: 24.adaptSize,
+              width: 24.adaptSize,
+              child: CustomImageView(
+                imagePath: ImageConstant.imgUpload,
+              ),
+              onTap: () {
+                setState(() {
+                  _showVideo = false;
+                });
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -252,7 +366,7 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
               bottom: 2.v,
             ),
             child: Text(
-              "InAlarm",
+              recordDetailResponse['status'],
               style: theme.textTheme.titleMedium,
             ),
           ),
@@ -321,7 +435,7 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
             child: _buildColorwhite(
               context,
               typesomething: "Camera Name",
-              typesomething1: "camera_000",
+              typesomething1: recordDetailResponse['cameraName'],
             ),
           ),
           SizedBox(height: 1.v),
@@ -333,7 +447,7 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
             child: _buildColorwhite(
               context,
               typesomething: "Camera Destination",
-              typesomething1: "Left",
+              typesomething1: recordDetailResponse['cameraDestination'],
             ),
           )
         ],
@@ -362,7 +476,8 @@ class RecordDetailUserRoleEightScreen extends StatelessWidget {
             child: _buildColorwhite(
               context,
               typesomething: "AI Predicted",
-              typesomething1: "78.20",
+              typesomething1:
+                  recordDetailResponse['predictedPercent'].toString(),
             ),
           ),
           SizedBox(height: 3.v),

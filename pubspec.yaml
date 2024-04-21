@@ -39,7 +39,7 @@ dependencies:
   firebase_core_web: ^2.11.4
   flutter_onboarding_slider: ^1.0.11
   google_fonts: ^6.1.0
-  simple_animations: 4.2.0
+  simple_animations: ^5.0.2
   flutter_svg: ^2.0.10+1
   firebase_messaging: ^14.7.20
   firebase_database: ^10.4.10
@@ -47,9 +47,8 @@ dependencies:
   firebase_analytics: ^10.8.10
   flutter_local_notifications: ^17.0.0
   sqflite: ^2.3.2
-  video_player: ^2.8.3
   http:  any
-  image_picker: ^0.8.6
+  image_picker: ^1.1.0
   shared_preferences: ^2.2.2
   firebase_storage: ^11.7.1
   camera: ^0.10.5+9
@@ -59,6 +58,7 @@ dependencies:
   cached_network_image: ^3.3.1
   base_button: ^0.0.1
   flutter_svg_provider: ^1.0.7
+  video_player: ^2.8.6
 
 dev_dependencies:
   flutter_test:
