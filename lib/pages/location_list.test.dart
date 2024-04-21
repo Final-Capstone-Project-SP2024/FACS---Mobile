@@ -17,25 +17,27 @@ class LocationListShow extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         // appBar: _appBar(context),
-        body: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            children: [
-              SizedBox(height: 50.v),
-              CustomImageView(
-                imagePath: ImageConstant.imageLocationRectangle2,
-                height: 260.v,
-                width: 375.h,
-              ),
-              _locationElement(context, locationName: "Location A"),
-              SizedBox(height: 22.v),
-              CustomImageView(
-                imagePath: ImageConstant.imageLocationRectangle,
-                height: 260.v,
-                width: 375.h,
-              ),
-              _locationElement(context, locationName: "Location B"),
-            ],
+        body: SingleChildScrollView(
+          child: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              children: [
+                SizedBox(height: 50.v),
+                CustomImageView(
+                  imagePath: ImageConstant.imageLocationRectangle2,
+                  height: 260.v,
+                  width: 375.h,
+                ),
+                _locationElement(context, locationName: "Location A"),
+                SizedBox(height: 22.v),
+                CustomImageView(
+                  imagePath: ImageConstant.imageLocationRectangle,
+                  height: 260.v,
+                  width: 375.h,
+                ),
+                _locationElement(context, locationName: "Location B"),
+              ],
+            ),
           ),
         ),
       ),
