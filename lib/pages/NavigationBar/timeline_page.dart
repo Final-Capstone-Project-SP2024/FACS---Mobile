@@ -46,7 +46,8 @@ class _TimelinePageState extends State<TimelinePage> {
         fromDate: _fromDate != null ? _fromDate!.toIso8601String() : null,
         toDate: _toDate != null ? _toDate!.toIso8601String() : null,
       );
-      records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
+      records.sort((a, b) => DateTime.parse(a['recordTime'])
+          .compareTo(DateTime.parse(b['recordTime'])));
 
       setState(() {
         _records.addAll(records);
@@ -75,7 +76,8 @@ class _TimelinePageState extends State<TimelinePage> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       _fetchRecords();
     }
   }
@@ -106,11 +108,15 @@ class _TimelinePageState extends State<TimelinePage> {
         children: [
           ElevatedButton(
             onPressed: () => _selectFromDate(context),
-            child: Text(_fromDate != null ? 'From: ${_fromDate!.toString().substring(0, 10)}' : 'Select From Date'),
+            child: Text(_fromDate != null
+                ? 'From: ${_fromDate!.toString().substring(0, 10)}'
+                : 'Select From Date'),
           ),
           ElevatedButton(
             onPressed: () => _selectToDate(context),
-            child: Text(_toDate != null ? 'To: ${_toDate!.toString().substring(0, 10)}' : 'Select To Date'),
+            child: Text(_toDate != null
+                ? 'To: ${_toDate!.toString().substring(0, 10)}'
+                : 'Select To Date'),
           ),
         ],
       ),
