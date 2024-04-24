@@ -59,6 +59,7 @@ dependencies:
   base_button: ^0.0.1
   flutter_svg_provider: ^1.0.7
   video_player: ^2.8.6
+  syncfusion_flutter_charts: ^25.1.41+1
 
 dev_dependencies:
   flutter_test:

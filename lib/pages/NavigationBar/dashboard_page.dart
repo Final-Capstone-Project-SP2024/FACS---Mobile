@@ -78,7 +78,8 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    'Fire Detection Status:\n${detectionStatus.toUpperCase()}',
+                    '${getStatusText(detectionStatus)}',
+                    // 'Fire Detection Status:\n${detectionStatus.toUpperCase()}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16.0,
@@ -221,29 +222,45 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(8.0),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Date & Time: $formattedDate',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+      child: Row(
+        children: [
+          // Icon part
+          Container(
+            width: 50.0, // Adjust width as needed
+            height: 50.0, // Adjust height as needed
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.red, // Change color as needed
             ),
-            SizedBox(height: 5.0),
-            Text(
-              'Status: ${record['status']}',
-              style: TextStyle(color: Colors.white),
+            child: Icon(
+              Icons.report,
+              color: Colors.white, // Change icon color as needed
             ),
-          ],
-        ),
+          ),
+          SizedBox(width: 10.0), // Add spacing between icon and text
+          // Text part
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Date & Time: $formattedDate',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 5.0),
+                Text(
+                  'Status: ${record['status']}',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -308,33 +325,46 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(8.0),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.orange,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Camera Name: ${camera['cameraName']}',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Icon representing disconnected camera
+          Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey[300],
             ),
-            SizedBox(height: 5.0),
-            Text(
-              'Status: ${camera['status']}',
-              style: TextStyle(color: Colors.white),
+            child: Icon(
+              Icons.videocam_off,
+              color: Colors.red,
+              size: 30.0,
             ),
-            Text(
-              'Camera Destination: ${camera['cameraDestination']}',
-              style: TextStyle(color: Colors.white),
+          ),
+          SizedBox(width: 10.0),
+          // Text displaying camera name, location, and status
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Camera Name: ${camera['cameraName']}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 5.0),
+                Text(
+                  'Monitoring: ${camera['cameraDestination']}',
+                ),
+                SizedBox(height: 5.0),
+                Text(
+                  'Status: ${camera['status']}',
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -362,6 +392,19 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
         return Icons.gpp_bad;
       default:
         return Icons.error;
+    }
+  }
+
+  String getStatusText(String status) {
+    switch (status) {
+      case 'safe':
+        return 'No issue found';
+      case 'potential':
+        return 'Protential issue';
+      case 'at_risk':
+        return 'Immediate action required!';
+      default:
+        return 'Unknown status';
     }
   }
 }
