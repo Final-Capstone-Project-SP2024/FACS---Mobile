@@ -57,7 +57,7 @@ class _CameraPageState extends State<CamerasPage> {
                   33.v,
               child: Column(
                 children: [
-                  SizedBox(height: 10.v),
+                  SizedBox(height: 30.v),
                   _buildUserProfile(context),
                   const Spacer(),
                 ],
@@ -87,11 +87,19 @@ class _CameraPageState extends State<CamerasPage> {
               // Navigate to another page when tapped
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CameraDetail()),
+                MaterialPageRoute(
+                    builder: (context) => CameraDetail(
+                          cameraDestination: cameraData[index]
+                              ['cameraDestination'],
+                          cameraId: cameraData[index]['cameraId'],
+                          cameraName: cameraData[index]['cameraName'],
+                          cameraStatus: cameraData[index]['status'],
+                        )),
               );
             },
             child: _buildCameraWidget(context,
-                cameraName: cameraData[index]['cameraName']),
+                cameraName: cameraData[index]['cameraName'],
+                cameraImage: cameraData[index]['cameraImage']),
           );
         },
       ),
@@ -99,7 +107,7 @@ class _CameraPageState extends State<CamerasPage> {
   }
 
   Widget _buildCameraWidget(BuildContext context,
-      {required String cameraName}) {
+      {required String cameraName, required String cameraImage}) {
     return Column(
       children: [
         Container(
@@ -108,7 +116,7 @@ class _CameraPageState extends State<CamerasPage> {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: NetworkImage(
-                  "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2Ftodd-kent-onnJOfF-okU-unsplash.jpg?alt=media&token=b8d3c989-93d7-4af2-b437-1e85f8187577"),
+                  "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/CameraImage%2F${cameraImage}?alt=media&token=b8d3c989-93d7-4af2-b437-1e85f8187577"),
               fit: BoxFit.cover,
             ),
           ),

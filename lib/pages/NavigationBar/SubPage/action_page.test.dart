@@ -1,6 +1,7 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/listdynamic_item_widget.test.dart';
+import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_bottom_style.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
@@ -16,7 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AlarmPage extends StatefulWidget {
-  AlarmPage({Key? key}) : super(key: key);
+  final String recordId;
+  const AlarmPage({super.key, required this.recordId});
 
   @override
   _AlarmPageState createState() => _AlarmPageState();
@@ -156,6 +158,8 @@ class _AlarmPageState extends State<AlarmPage> {
                 // Add your code to use _selectedLevel here
                 _selectedLevel++;
                 print("Selected alarm level: $_selectedLevel");
+                RecordService.actionAlarm(
+                    recordId: widget.recordId, alarmLevel: _selectedLevel);
               },
               text: "Confirm ",
               buttonStyle: CustomBottomStyle.fillGreen,

@@ -9,7 +9,14 @@ import 'package:facs_mobile/services/location_services.dart';
 
 class LocationDetail extends StatefulWidget {
   String locationId = "";
-  LocationDetail({required this.locationId});
+  String locationImage = "";
+  String userInLocation = "";
+  String cameraInLocation = "";
+  LocationDetail(
+      {required this.locationId,
+      required this.locationImage,
+      required this.userInLocation,
+      required this.cameraInLocation});
 
   @override
   _LocationDetailPageState createState() => _LocationDetailPageState();
@@ -46,7 +53,8 @@ class _LocationDetailPageState extends State<LocationDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomImageView(
-              imagePath: ImageConstant.imageLocation,
+              imagePath:
+                  "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2F${widget.locationImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
               height: 250.v,
               width: 374.h,
               margin: EdgeInsets.only(left: 1.h),
@@ -69,12 +77,113 @@ class _LocationDetailPageState extends State<LocationDetail> {
             SizedBox(height: 15.v),
             _dataInLocation(context),
             SizedBox(height: 16.v),
-            _cameraList(context),
-            SizedBox(height: 5.v)
+            _userInLocation(context),
+            //_cameraList(context),
+            SizedBox(height: 16.v),
+            _cameraInLocation(context),
+            SizedBox(height: 5.v),
           ],
         ),
       ),
     ));
+  }
+
+  Widget _userInLocation(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(left: 1.h),
+      padding: EdgeInsets.symmetric(horizontal: 4.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 20.v,
+            width: 332.h,
+            child: Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Security In Location",
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: locationDetailResponse['users'].length,
+            itemBuilder: (context, index) {
+              var user = locationDetailResponse['users'][index];
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.v, horizontal: 20.h),
+                child: Row(
+                  children: [
+                    Icon(Icons.security),
+                    SizedBox(width: 10.h),
+                    Text(
+                      user['userName'],
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _cameraInLocation(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(left: 1.h),
+      padding: EdgeInsets.symmetric(horizontal: 4.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 20.v,
+            width: 332.h,
+            child: Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Camera In Location",
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: locationDetailResponse['cameraInLocations'].length,
+            itemBuilder: (context, index) {
+              var user = locationDetailResponse['cameraInLocations'][index];
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.v, horizontal: 20.h),
+                child: Row(
+                  children: [
+                    Icon(Icons.camera),
+                    SizedBox(width: 10.h),
+                    Text(
+                      '${user['cameraName']} - ${user['cameraDestination']}',
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _dataInLocation(BuildContext context) {
@@ -120,7 +229,7 @@ class _LocationDetailPageState extends State<LocationDetail> {
                         style: theme.textTheme.titleMedium,
                       ),
                       Text(
-                        locationDetailResponse['numberOfCamera'].toString(),
+                        widget.cameraInLocation,
                         style: theme.textTheme.titleSmall,
                       )
                     ],
@@ -138,7 +247,7 @@ class _LocationDetailPageState extends State<LocationDetail> {
                         style: theme.textTheme.titleMedium,
                       ),
                       Text(
-                        locationDetailResponse['numberOfSecurity'].toString(),
+                        widget.userInLocation,
                         style: theme.textTheme.titleSmall,
                       )
                     ],

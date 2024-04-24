@@ -25,10 +25,30 @@ class CameraServices {
     }
   }
 
-  static Future<void> sendAlert(List<int> imageData, List<int> videoData, String cameraId, int fireDetection) async {
+  static Future<dynamic> getCameraById(String cameraId) async {
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/Camera/$cameraId'),
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+
+      if (response.statusCode == 200) {
+        userIdCounter++;
+
+        return jsonDecode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  static Future<void> sendAlert(List<int> imageData, List<int> videoData,
+      String cameraId, int fireDetection) async {
     try {
       var now = DateTime.now();
-      var formattedDateTime = '${now.day}-${now.month}-${now.year}-${now.hour}-${now.minute}-${now.second}';
+      var formattedDateTime =
+          '${now.day}-${now.month}-${now.year}-${now.hour}-${now.minute}-${now.second}';
 
       var request = http.MultipartRequest(
         'POST',
@@ -61,18 +81,18 @@ class CameraServices {
       print('Error in sendAlert: $e');
     }
   }
-  static Future<bool> fixCamera(String cameraId) async{
-    try{
+
+  static Future<bool> fixCamera(String cameraId) async {
+    try {
       final response = await http.post(
-        Uri.parse('$apiUrl/Camera/$cameraId/fix'),
-        headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+          Uri.parse('$apiUrl/Camera/$cameraId/fix'),
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
       if (response.statusCode == 200) {
         return true;
       } else {
         throw Exception('Failed to fix camera: ${response.statusCode}');
       }
-    }
-    catch(e){
+    } catch (e) {
       print('Error: $e');
       throw Exception('Failed to fix camera: $e');
     }

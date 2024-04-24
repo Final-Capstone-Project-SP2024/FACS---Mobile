@@ -54,4 +54,5 @@ class ImageConstant {
   static String imageCamera = '$imagePath/img_camera.png';
   static String imageDisconnected = '$imagePath/img_disconnected.png';
   static String imageRecord = '$imagePath/img_record.png';
+  static String imageAlarmByUser = '$imagePath/image_alarm_by_user.png';
 }

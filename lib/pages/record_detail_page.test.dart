@@ -11,6 +11,7 @@ import 'package:facs_mobile/widgets/custom_icon_button.dart';
 import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:video_player/video_player.dart';
 import '../../core/app_export.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
@@ -39,7 +40,8 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
   bool _isPlaying = false;
   int _vote = 0;
   TextEditingController locationController = TextEditingController();
-
+  PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
   TextEditingController colortexboxoneController = TextEditingController();
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -81,15 +83,20 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                   SizedBox(height: 21.v),
                   _buildColumntypesomet1(context),
                   SizedBox(height: 5.v),
-                  _actionPhase(context),
+                  _buildActionFunction(context),
+                  //  _actionPhase(context),
+                  // SizedBox(height: 5.v),
+                  // _confirmButton(context,
+                  //     recordIdAdding: recordDetailResponse['recordId']),
                   SizedBox(height: 5.v),
-                  _confirmButton(context),
+                  _confirmActionButton(context,
+                      recordIdAdding: recordDetailResponse['recordId']),
                 ],
               ),
             ),
           ),
         ),
-        //   bottomNavigationBar: _buildBottombar(context),
+        //     bottomNavigationBar: _buildBottombar(context),
       ),
     );
   }
@@ -106,11 +113,11 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
 
   Future<dynamic> getRecordDetailId(String recordId) async {
     print(recordId);
-    print('');
     var data = await RecordService.getRecordDetail(recordId);
     setState(() {
       if (data != null) {
         recordDetailResponse = data['data'];
+
         print(recordDetailResponse);
         //_initializeVideoController();
       }
@@ -223,81 +230,51 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
       ),
       decoration: AppDecoration.fillGray,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           CustomImageView(
             color: Colors.amber,
             imagePath: ImageConstant.barInRecordDetail,
             height: 24.adaptSize,
             width: 24.adaptSize,
-            margin: EdgeInsets.only(top: 23.v),
+            margin: EdgeInsets.only(bottom: 3.v),
           ),
-          Spacer(
-            flex: 29,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 23.v),
-            child: Text(
-              "Media Record",
-              style: theme.textTheme.titleLarge,
-            ),
-          ),
-          Spacer(
-            flex: 70,
-          ),
-          // CustomImageView(
-          //   imagePath: ImageConstant.imgUpload,
-          //   height: 25.v,
-          //   width: 30.h,
-          //   margin: EdgeInsets.only(
-          //     top: 1.v,
-          //     bottom: 2.v,
-          //   ),
-          // ),
-          // CustomImageView(
-          //   imagePath: ImageConstant.imgImage3,
-          //   height: 28.v,
-          //   width: 35.h,
-          //   margin: EdgeInsets.only(
-          //     right: 1.h,
-          //     bottom: 2.v,
-          //   ),
-          // )
-          Padding(
-            padding: EdgeInsets.only(top: 23.v),
-            child: CustomIconButton(
-              decoration: AppDecoration.fillGray,
-              height: 24.adaptSize,
-              width: 24.adaptSize,
-              child: CustomImageView(
-                imagePath: ImageConstant.imgCameraOnprimary,
+          SizedBox(width: 20.h),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 4.v),
+              child: Text(
+                "Media Record",
+                style: theme.textTheme.titleLarge,
               ),
-              onTap: () {
-                setState(() {
-                  _showVideo = true;
-                });
-              },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: 20.h,
-              top: 23.v,
+          const Spacer(),
+          CustomIconButton(
+            decoration: AppDecoration.fillGray,
+            height: 24.adaptSize,
+            width: 24.adaptSize,
+            child: CustomImageView(
+              imagePath: ImageConstant.imgCameraOnprimary,
             ),
-            child: CustomIconButton(
-              decoration: AppDecoration.fillGray,
-              height: 24.adaptSize,
-              width: 24.adaptSize,
-              child: CustomImageView(
-                imagePath: ImageConstant.imgUpload,
-              ),
-              onTap: () {
-                setState(() {
-                  _showVideo = false;
-                });
-              },
+            onTap: () {
+              setState(() {
+                _showVideo = true;
+              });
+            },
+          ),
+          SizedBox(width: 20.h),
+          CustomIconButton(
+            decoration: AppDecoration.fillGray,
+            height: 24.adaptSize,
+            width: 24.adaptSize,
+            child: CustomImageView(
+              imagePath: ImageConstant.imgUpload,
             ),
+            onTap: () {
+              setState(() {
+                _showVideo = false;
+              });
+            },
           ),
         ],
       ),
@@ -373,7 +350,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           Padding(
             padding: EdgeInsets.only(top: 5.v),
             child: Text(
-              "10/08/2018",
+              recordDetailResponse['recordTime'],
               style: theme.textTheme.titleMedium,
             ),
           )
@@ -481,6 +458,60 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             ),
           ),
           SizedBox(height: 3.v),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 15.h,
+              right: 31.h,
+            ),
+            child: _buildColorwhite(
+              context,
+              typesomething: "Recommend Alarm Level",
+              typesomething1:
+                  recordDetailResponse['recommendAlarmLevel'].toString(),
+            ),
+          ),
+          SizedBox(height: 3.v),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionFunction(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4.h),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Action",
+              style: CustomTextStyles.titleLargeBluegray300,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 15.h,
+              right: 31.h,
+            ),
+            child: _buildColorwhite(
+              context,
+              typesomething: "XXX_001",
+              typesomething1: 1.toString(),
+            ),
+          ),
+          SizedBox(height: 3.v),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 15.h,
+              right: 31.h,
+            ),
+            child: _buildColorwhite(
+              context,
+              typesomething: "XXX_001",
+              typesomething1: 1.toString(),
+            ),
+          ),
+          SizedBox(height: 3.v),
         ],
       ),
     );
@@ -531,13 +562,15 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
   }
 
   /// Section Widget
-  Widget _buildBottombar(BuildContext context) {
+  Widget _buildBottombar(BuildContext context,
+      {required String recordIdAdding}) {
     return CustomBottomBar(
       onChanged: (BottomBarEnum type) {},
     );
   }
 
-  Widget _confirmButton(BuildContext context) {
+  Widget _confirmButton(BuildContext context,
+      {required String recordIdAdding}) {
     return Padding(
       padding: EdgeInsets.only(left: 25.h, right: 15.h),
       child: Row(
@@ -549,12 +582,13 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AlarmPage(), // Replace YourDestinationPage with the page you want to navigate to
+                    builder: (context) => AlarmPage(
+                      recordId: recordIdAdding,
+                    ), // Replace YourDestinationPage with the page you want to navigate to
                   ),
                 );
               },
-              text: "Confirm ",
+              text: "Action",
               buttonStyle: CustomBottomStyle.fillGreen,
               margin: EdgeInsets.only(right: 22.h),
               buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
@@ -562,8 +596,46 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           ),
           Expanded(
             child: CustomEvulatedBottom(
-              text: "Cancel",
+              text: "Fake Alarm",
               buttonStyle: CustomBottomStyle.fillRed,
+              margin: EdgeInsets.only(right: 22.h),
+              buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _confirmActionButton(BuildContext context,
+      {required String recordIdAdding}) {
+    return Padding(
+      padding: EdgeInsets.only(left: 25.h, right: 15.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: CustomEvulatedBottom(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AlarmPage(
+                      recordId: recordIdAdding,
+                    ), // Replace YourDestinationPage with the page you want to navigate to
+                  ),
+                );
+              },
+              text: "Finish",
+              buttonStyle: CustomBottomStyle.fillGreen,
+              margin: EdgeInsets.only(right: 22.h),
+              buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
+            ),
+          ),
+          Expanded(
+            child: CustomEvulatedBottom(
+              text: "More Action",
+              buttonStyle: CustomBottomStyle.fillYellow,
               margin: EdgeInsets.only(right: 22.h),
               buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
             ),

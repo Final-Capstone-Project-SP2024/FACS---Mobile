@@ -30,7 +30,6 @@ class _LocationAll extends State<LocationListShow> {
       locationData = data != null ? data['data'] : [];
     });
     print(locationData);
-    print(locationData.length);
   }
 
   @override
@@ -58,13 +57,21 @@ class _LocationAll extends State<LocationListShow> {
                         // Adding condition to show CustomImageView
                         CustomImageView(
                           imagePath:
-                              "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2Falex-suprun-AHnhdjyTNGM-unsplash.jpg?alt=media&token=eb9237b2-5a76-48ba-ad3d-c4783ef415e9",
+                              "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2F${locationData[index]['locationImage']}?alt=media&token=eb9237b2-5a76-48ba-ad3d-c4783ef415e9",
                           height: 260.v,
                           width: 375.h,
                         ),
-                        _locationElement(context,
-                            locationName: locationData[index]["locationName"],
-                            locationId: locationData[index]["locationId"]),
+                        _locationElement(
+                          context,
+                          locationName: locationData[index]["locationName"],
+                          locationId: locationData[index]["locationId"],
+                          imageLocation: locationData[index]['locationImage'],
+                          userQuantity: locationData[index]['numberOfSecurity']
+                              .toString(),
+                          cameraQuantity:
+                              locationData[index]['numberOfCamera'].toString(),
+                        ),
+
                         SizedBox(height: 22.v),
                       ],
                     );
@@ -79,15 +86,22 @@ class _LocationAll extends State<LocationListShow> {
   }
 
   Widget _locationElement(BuildContext context,
-      {required String locationName, required String locationId}) {
+      {required String locationName,
+      required String locationId,
+      required String imageLocation,
+      required String userQuantity,
+      required String cameraQuantity}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => LocationDetail(
-                locationId:
-                    locationId), // Replace NextPage with your destination page
+              locationId: locationId,
+              cameraInLocation: cameraQuantity,
+              locationImage: imageLocation,
+              userInLocation: userQuantity,
+            ), // Replace NextPage with your destination page
           ),
         );
       },

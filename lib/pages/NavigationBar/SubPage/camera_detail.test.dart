@@ -1,6 +1,7 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/camera_list.test.dart';
+import 'package:facs_mobile/services/camera_services.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
 import 'package:facs_mobile/themes/theme_helper.dart';
@@ -8,11 +9,44 @@ import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CameraDetail extends StatelessWidget {
-  CameraDetail({Key? key}) : super(key: key);
+class CameraDetail extends StatefulWidget {
+  final String cameraId;
+  final String cameraStatus;
+  final String cameraDestination;
+  final String cameraName;
+  CameraDetail(
+      {Key? key,
+      required this.cameraId,
+      required this.cameraStatus,
+      required this.cameraDestination,
+      required this.cameraName})
+      : super(key: key);
 
   TextEditingController colortext = TextEditingController();
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+
+  @override
+  _CameraDetailPageState createState() => _CameraDetailPageState();
+}
+
+class _CameraDetailPageState extends State<CameraDetail> {
+  dynamic cameraDetail;
+
+  @override
+  void initState() {
+    super.initState();
+    GetCameraDetail(widget.cameraId);
+  }
+
+  Future<dynamic> GetCameraDetail(String cameraId) async {
+    var data = await CameraServices.getCameraById(cameraId);
+    setState(() {
+      if (data != null) {
+        cameraDetail = data['data'];
+        print(cameraDetail);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +60,8 @@ class CameraDetail extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomImageView(
-              imagePath: ImageConstant.imageLocation,
+              imagePath:
+                  "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/CameraImage%2F${cameraDetail['cameraImage']}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
               height: 250.v,
               width: 374.h,
               margin: EdgeInsets.only(left: 1.h),
@@ -35,21 +70,21 @@ class CameraDetail extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: 9.h),
               child: Text(
-                "Camera_001",
+                widget.cameraName,
                 style: theme.textTheme.headlineLarge,
               ),
             ),
             Padding(
               padding: EdgeInsets.only(left: 9.h),
               child: Text(
-                "Active",
+                widget.cameraStatus,
                 style: CustomTextStyles.titleSmallPop,
               ),
             ),
             SizedBox(height: 15.v),
             _title(context),
             SizedBox(height: 16.v),
-            _cameraList(context),
+            // _cameraList(context),
             SizedBox(height: 5.v)
           ],
         ),
@@ -73,7 +108,7 @@ class CameraDetail extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "User and Camera",
+                    "Information",
                     style: theme.textTheme.titleSmall,
                   ),
                 ),
@@ -96,11 +131,11 @@ class CameraDetail extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Cameras",
+                        "Camera Destination",
                         style: theme.textTheme.titleMedium,
                       ),
                       Text(
-                        "2",
+                        widget.cameraDestination,
                         style: theme.textTheme.titleSmall,
                       )
                     ],
@@ -114,11 +149,11 @@ class CameraDetail extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Users",
+                        "Alarm Count",
                         style: theme.textTheme.titleMedium,
                       ),
                       Text(
-                        "2",
+                        cameraDetail['recordCount'].toString(),
                         style: theme.textTheme.titleSmall,
                       )
                     ],

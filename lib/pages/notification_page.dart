@@ -39,6 +39,16 @@ class _NotificationPageState extends State<NotificationPage> {
     print(notificationData);
   }
 
+  String getImagePath(int status) {
+    if (status == 1) {
+      return ImageConstant.imageAlert;
+    } else if (status == 2) {
+      return ImageConstant.imageDisconnected;
+    } else {
+      return ImageConstant.imageAlarmByUser;
+    }
+  }
+
   // Define a function to determine the color based on status
   Color getStatusColor(String status) {
     if (status == 'InAlarm') {
@@ -115,7 +125,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
   Widget _buildRowline(BuildContext context) {
     double verticalDividerHeight = notificationData.length *
-        75.0; // Calculate the height of the vertical divider
+        85.0; // Calculate the height of the vertical divider
 
     return Container(
       decoration: AppDecoration.outlineErrorContainer,
@@ -136,7 +146,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   notificationData.length,
                   (index) {
                     return Positioned(
-                      top: (index / (notificationData.length - 1)) *
+                      top: (index / notificationData.length) *
                           verticalDividerHeight,
                       child: Column(
                         children: [
@@ -152,7 +162,8 @@ class _NotificationPageState extends State<NotificationPage> {
                                 BlendMode.srcATop,
                               ),
                               child: CustomImageView(
-                                imagePath: ImageConstant.imageDisconnected,
+                                imagePath: getImagePath(
+                                    notificationData[index]['recordType']),
                               ),
                             ),
                           ),
@@ -186,7 +197,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   return _buildRowtypesomethin(
                     context,
                     recordId: data['recordId'],
-                    time: "11:00",
+                    time: data['occurrenceTime'],
                     status: data['status'],
                     location:
                         "${data['cameraDestination']}-${data['locationName']}",
