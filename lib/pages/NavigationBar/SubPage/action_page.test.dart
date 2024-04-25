@@ -32,7 +32,16 @@ class _AlarmPageState extends State<AlarmPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.whiteA700,
-        appBar: _buildAppbar(context),
+        appBar: AppBar(
+          title: Text(''),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        // appBar: _buildAppbar(context),
         body: Container(
           width: double.maxFinite,
           padding: EdgeInsets.symmetric(

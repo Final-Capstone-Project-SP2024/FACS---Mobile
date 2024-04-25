@@ -91,52 +91,72 @@ class _LocationAll extends State<LocationListShow> {
       required String imageLocation,
       required String userQuantity,
       required String cameraQuantity}) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LocationDetail(
-              locationId: locationId,
-              cameraInLocation: cameraQuantity,
-              locationImage: imageLocation,
-              userInLocation: userQuantity,
-            ), // Replace NextPage with your destination page
-          ),
-        );
-      },
-      child: Container(
-        width: double.maxFinite,
-        padding: EdgeInsets.symmetric(
-          horizontal: 21.h,
-          vertical: 14.v,
-        ),
-        decoration: AppDecoration.fillGray,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: 3.h,
-                top: 5.v,
-                bottom: 7.v,
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LocationDetail(
+                  locationId: locationId,
+                  cameraInLocation: cameraQuantity,
+                  locationImage: imageLocation,
+                  userInLocation: userQuantity,
+                ),
               ),
-              child: Text(
-                locationName,
-                style: theme.textTheme.titleMedium!
-                    .copyWith(color: theme.colorScheme.onPrimary),
-              ),
+            );
+          },
+          child: Container(
+            width: double.maxFinite,
+            padding: EdgeInsets.symmetric(
+              horizontal: 21.h,
+              vertical: 14.v,
             ),
-            CustomImageView(
-              imagePath: ImageConstant.imageGarage,
-              height: 28.adaptSize,
-              width: 28.adaptSize,
-              margin: EdgeInsets.only(top: 4.v),
-            )
-          ],
+            decoration: AppDecoration.fillGray,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 3.h,
+                    top: 5.v,
+                    bottom: 7.v,
+                  ),
+                  child: Text(
+                    locationName,
+                    style: theme.textTheme.titleMedium!
+                        .copyWith(color: theme.colorScheme.onPrimary),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LocationDetail(
+                          locationId: locationId,
+                          cameraInLocation: cameraQuantity,
+                          locationImage: imageLocation,
+                          userInLocation: userQuantity,
+                        ),
+                      ),
+                    );
+                  },
+                  child: CustomImageView(
+                    imagePath: ImageConstant.imageGarage,
+                    height: 28.adaptSize,
+                    width: 28.adaptSize,
+                    margin: EdgeInsets.only(top: 4.v),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+        Divider(),
+      ],
     );
   }
 

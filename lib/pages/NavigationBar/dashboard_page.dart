@@ -138,8 +138,8 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40.0),
-                  topRight: Radius.circular(40.0),
+                  topLeft: Radius.circular(25.0),
+                  topRight: Radius.circular(25.0),
                 ),
                 child: Container(
                   color: Colors.white,

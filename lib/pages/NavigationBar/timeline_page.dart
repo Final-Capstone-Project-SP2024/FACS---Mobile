@@ -1,3 +1,4 @@
+import 'package:facs_mobile/pages/record_detail_page.test.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
@@ -87,10 +88,6 @@ class _TimelinePageState extends State<TimelinePage> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: SizedBox(height: 50),
-          ),
           //_buildDateFilters(),
           Expanded(
             child: _buildTimeline(),
@@ -200,14 +197,22 @@ class _TimelinePageState extends State<TimelinePage> {
 
           return GestureDetector(
             onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => RecordDetail(
+              //       recordId: record['id'],
+              //       state: record['status'],
+              //     ),
+              //   ),
+              // );
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RecordDetail(
-                    recordId: record['id'],
-                    state: record['status'],
-                  ),
-                ),
+                    builder: (context) => RecordDetailUserRoleEightScreen(
+                          recordId: record['id'],
+                          state: record['status'],
+                        )),
               );
             },
             child: Card(

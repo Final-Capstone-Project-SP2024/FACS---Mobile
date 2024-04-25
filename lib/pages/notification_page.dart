@@ -13,6 +13,7 @@ import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/notification_services.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
+import 'package:intl/intl.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -31,6 +32,19 @@ class _NotificationPageState extends State<NotificationPage> {
 
   Future<void> fetchNotificationData() async {
     dynamic dataFetch = await NotificationService.getNotification();
+    List<dynamic> fetchedNotifications = dataFetch['data'];
+    fetchedNotifications.sort((a, b) {
+      try {
+        DateTime dateA =
+            DateFormat('HH:mm:ss dd-MM-yyyy').parse(a['occurrenceTime']);
+        DateTime dateB =
+            DateFormat('HH:mm:ss dd-MM-yyyy').parse(b['occurrenceTime']);
+        return dateB.compareTo(dateA);
+      } catch (e) {
+        print('Error parsing date: ${a['occurrenceTime']}');
+        return 0;
+      }
+    });
     print(dataFetch);
     setState(() {
       notificationData = dataFetch != null ? dataFetch['data'] : [];
@@ -68,7 +82,16 @@ class _NotificationPageState extends State<NotificationPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.whiteA700,
-        appBar: _buildAppbar(context),
+        appBar: AppBar(
+          title: Text('Warning'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        // appBar: _buildAppbar(context),
         body: SingleChildScrollView(
           child: Container(
             width: double.maxFinite,

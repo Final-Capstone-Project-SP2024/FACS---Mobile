@@ -26,52 +26,52 @@
 //     _fetchLocations();
 //   }
 
-//   Future<void> _fetchLocations() async {
-//     try {
-//       final response = await LocationServices.getLocation();
-//       if (response != null) {
-//         if (response.containsKey('data')) {
-//           List<dynamic> data = response['data'];
-//           List<Map<String, String>> locations = [];
-//           for (var locationData in data) {
-//             String locationId = locationData['locationId'];
-//             String locationName = locationData['locationName'];
-//             locations
-//                 .add({'locationId': locationId, 'locationName': locationName});
-//           }
-//           setState(() {
-//             _locations = locations;
-//           });
-//         }
-//       }
-//     } catch (e) {
-//       print('Error fetching locations: $e');
-//     }
-//   }
+  // Future<void> _fetchLocations() async {
+  //   try {
+  //     final response = await LocationServices.getLocation();
+  //     if (response != null) {
+  //       if (response.containsKey('data')) {
+  //         List<dynamic> data = response['data'];
+  //         List<Map<String, String>> locations = [];
+  //         for (var locationData in data) {
+  //           String locationId = locationData['locationId'];
+  //           String locationName = locationData['locationName'];
+  //           locations
+  //               .add({'locationId': locationId, 'locationName': locationName});
+  //         }
+  //         setState(() {
+  //           _locations = locations;
+  //         });
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching locations: $e');
+  //   }
+  // }
 
-//   Future<void> _fetchCameras(String locationId) async {
-//     try {
-//       final response = await LocationServices.getLocationDetail(locationId);
-//       if (response != null && response.containsKey('data')) {
-//         List<dynamic> cameraData = response['data']['cameraInLocations'];
-//         List<Map<String, String>> cameras = [];
-//         for (var camera in cameraData) {
-//           String cameraId = camera['cameraId'];
-//           String cameraName =
-//               '${camera['cameraName']} - ${camera['cameraDestination']}';
-//           cameras.add({'cameraId': cameraId, 'cameraName': cameraName});
-//         }
-//         setState(() {
-//           _cameras = cameras;
-//           if (_cameras.isNotEmpty) {
-//             _selectedCamera = _cameras.first['cameraId'];
-//           }
-//         });
-//       }
-//     } catch (e) {
-//       print('Error fetching cameras: $e');
-//     }
-//   }
+  // Future<void> _fetchCameras(String locationId) async {
+  //   try {
+  //     final response = await LocationServices.getLocationDetail(locationId);
+  //     if (response != null && response.containsKey('data')) {
+  //       List<dynamic> cameraData = response['data']['cameraInLocations'];
+  //       List<Map<String, String>> cameras = [];
+  //       for (var camera in cameraData) {
+  //         String cameraId = camera['cameraId'];
+  //         String cameraName =
+  //             '${camera['cameraName']} - ${camera['cameraDestination']}';
+  //         cameras.add({'cameraId': cameraId, 'cameraName': cameraName});
+  //       }
+  //       setState(() {
+  //         _cameras = cameras;
+  //         if (_cameras.isNotEmpty) {
+  //           _selectedCamera = _cameras.first['cameraId'];
+  //         }
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching cameras: $e');
+  //   }
+  // }
 
 //   // void _navigateToCameraPage() async {
 //   //   final capturedMedia = await Navigator.push(

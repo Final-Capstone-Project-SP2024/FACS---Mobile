@@ -97,4 +97,20 @@ class CameraServices {
       throw Exception('Failed to fix camera: $e');
     }
   }
+
+  static Future<bool> alert(String cameraId) async {
+    try {
+      final response = await http.post(
+          Uri.parse('$apiUrl/Camera/$cameraId/alert'),
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to fix camera: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to fix camera: $e');
+    }
+  }
 }

@@ -44,48 +44,52 @@ class _LocationDetailPageState extends State<LocationDetail> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: appTheme.whiteA700,
-      resizeToAvoidBottomInset: false,
-      body: SizedBox(
-        width: double.maxFinite,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomImageView(
-              imagePath:
-                  "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2F${widget.locationImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
-              height: 250.v,
-              width: 374.h,
-              margin: EdgeInsets.only(left: 1.h),
+      child: Scaffold(
+        backgroundColor: appTheme.whiteA700,
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          // Wrap the content with SingleChildScrollView
+          child: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomImageView(
+                  imagePath:
+                      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2F${widget.locationImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
+                  height: 250.v,
+                  width: 374.h,
+                  margin: EdgeInsets.only(left: 1.h),
+                ),
+                SizedBox(height: 2.v),
+                Padding(
+                  padding: EdgeInsets.only(left: 9.h),
+                  child: Text(
+                    locationDetailResponse['locationName'],
+                    style: theme.textTheme.headlineLarge,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 9.h),
+                  child: Text(
+                    "Active",
+                    style: CustomTextStyles.titleSmallPop,
+                  ),
+                ),
+                SizedBox(height: 15.v),
+                _dataInLocation(context),
+                SizedBox(height: 16.v),
+                _userInLocation(context),
+                //_cameraList(context),
+                SizedBox(height: 16.v),
+                _cameraInLocation(context),
+                SizedBox(height: 20.v),
+              ],
             ),
-            SizedBox(height: 2.v),
-            Padding(
-              padding: EdgeInsets.only(left: 9.h),
-              child: Text(
-                locationDetailResponse['locationName'],
-                style: theme.textTheme.headlineLarge,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 9.h),
-              child: Text(
-                "Active",
-                style: CustomTextStyles.titleSmallPop,
-              ),
-            ),
-            SizedBox(height: 15.v),
-            _dataInLocation(context),
-            SizedBox(height: 16.v),
-            _userInLocation(context),
-            //_cameraList(context),
-            SizedBox(height: 16.v),
-            _cameraInLocation(context),
-            SizedBox(height: 5.v),
-          ],
+          ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _userInLocation(BuildContext context) {

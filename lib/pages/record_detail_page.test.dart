@@ -61,7 +61,16 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
       child: Scaffold(
         backgroundColor: appTheme.whiteA700,
         resizeToAvoidBottomInset: false,
-        appBar: _buildAppbar(context),
+        appBar: AppBar(
+          title: Text('Record detail'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        // appBar: _buildAppbar(context),
         body: SizedBox(
           width: SizeUtils.width,
           child: SingleChildScrollView(
@@ -69,31 +78,44 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  _showVideo ? _showVideoWidget(context) : _showImage(context),
-                  //  _buildRowovaltwoone(context),
-                  SizedBox(height: 1.v),
-                  _buildRowcameraone(context),
-                  SizedBox(height: 5.v),
-                  _buildUiboxmini(context),
-                  SizedBox(height: 10.v),
-                  _buildColumntypesomet(context),
-                  SizedBox(height: 21.v),
-                  _buildColumntypesomet1(context),
-                  SizedBox(height: 5.v),
-                  _buildActionFunction(context),
-                  //  _actionPhase(context),
-                  // SizedBox(height: 5.v),
-                  // _confirmButton(context,
-                  //     recordIdAdding: recordDetailResponse['recordId']),
-                  SizedBox(height: 5.v),
-                  _confirmActionButton(context,
-                      recordIdAdding: recordDetailResponse['recordId']),
-                ],
-              ),
-            ),
+                key: _formKey,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 0),
+                  child: Column(
+                    children: [
+                      _showVideo
+                          ? _showVideoWidget(context)
+                          : _showImage(context),
+                      //  _buildRowovaltwoone(context),
+                      SizedBox(height: 1.v),
+                      _buildRowcameraone(context),
+                      SizedBox(height: 5.v),
+                      _buildUiboxmini(context),
+                      SizedBox(height: 10.v),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15.h),
+                        child: Column(
+                          children: [
+                            _buildColumntypesomet(context),
+                            SizedBox(height: 21.v),
+                            _buildColumntypesomet1(context),
+                            SizedBox(height: 5.v),
+                            _buildActionFunction(context),
+                            //  _actionPhase(context),
+                            // SizedBox(height: 5.v),
+                            // _confirmButton(context,
+                            //     recordIdAdding: recordDetailResponse['recordId']),
+                            SizedBox(height: 5.v),
+                            _confirmActionButton(context,
+                                recordIdAdding:
+                                    recordDetailResponse['recordId']),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 20.v),
+                    ],
+                  ),
+                )),
           ),
         ),
         //     bottomNavigationBar: _buildBottombar(context),
@@ -231,17 +253,17 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
       decoration: AppDecoration.fillGray,
       child: Row(
         children: [
-          CustomImageView(
-            color: Colors.amber,
-            imagePath: ImageConstant.barInRecordDetail,
-            height: 24.adaptSize,
-            width: 24.adaptSize,
-            margin: EdgeInsets.only(bottom: 3.v),
-          ),
-          SizedBox(width: 20.h),
+          // CustomImageView(
+          //   color: Colors.amber,
+          //   imagePath: ImageConstant.barInRecordDetail,
+          //   height: 24.adaptSize,
+          //   width: 24.adaptSize,
+          //   margin: EdgeInsets.only(bottom: 3.v),
+          // ),
+          // SizedBox(width: 20.h),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(bottom: 4.v),
+              padding: EdgeInsets.only(bottom: 0.v),
               child: Text(
                 "Media Record",
                 style: theme.textTheme.titleLarge,
@@ -369,7 +391,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             alignment: Alignment.centerLeft,
             child: SizedBox(
               height: 24.v,
-              width: 70.h,
+              width: 90.h,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -434,6 +456,8 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
 
   /// Section Widget
   Widget _buildColumntypesomet1(BuildContext context) {
+    String alarmLevel = recordDetailResponse['recommendAlarmLevel'].toString();
+    String cleanedAlarmLevel = alarmLevel.replaceAll('Alarm ', '');
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.h),
       child: Column(
@@ -466,8 +490,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             child: _buildColorwhite(
               context,
               typesomething: "Recommend Alarm Level",
-              typesomething1:
-                  recordDetailResponse['recommendAlarmLevel'].toString(),
+              typesomething1: cleanedAlarmLevel,
             ),
           ),
           SizedBox(height: 3.v),

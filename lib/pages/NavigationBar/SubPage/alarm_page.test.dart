@@ -1,3 +1,5 @@
+import 'package:facs_mobile/services/camera_services.dart';
+import 'package:facs_mobile/services/location_services.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
@@ -12,8 +14,70 @@ import 'package:facs_mobile/themes/theme_helper.dart';
 import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as fs;
 
-class AlarmByHandPage extends StatelessWidget {
+class AlarmByHandPage extends StatefulWidget {
   AlarmByHandPage({Key? key}) : super(key: key);
+
+  @override
+  _AlarmByHandPageState createState() => _AlarmByHandPageState();
+}
+
+class _AlarmByHandPageState extends State<AlarmByHandPage> {
+  String? _selectedLocation;
+  List<Map<String, String>> _locations = [];
+  String? _selectedCamera;
+  List<Map<String, String>> _cameras = [];
+  Future<void> _fetchLocations() async {
+    try {
+      final response = await LocationServices.getLocation();
+      if (response != null) {
+        if (response.containsKey('data')) {
+          List<dynamic> data = response['data'];
+          List<Map<String, String>> locations = [];
+          for (var locationData in data) {
+            String locationId = locationData['locationId'];
+            String locationName = locationData['locationName'];
+            locations
+                .add({'locationId': locationId, 'locationName': locationName});
+          }
+          setState(() {
+            _locations = locations;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error fetching locations: $e');
+    }
+  }
+
+  Future<void> _fetchCameras(String locationId) async {
+    try {
+      final response = await LocationServices.getLocationDetail(locationId);
+      if (response != null && response.containsKey('data')) {
+        List<dynamic> cameraData = response['data']['cameraInLocations'];
+        List<Map<String, String>> cameras = [];
+        for (var camera in cameraData) {
+          String cameraId = camera['cameraId'];
+          String cameraName =
+              '${camera['cameraName']} - ${camera['cameraDestination']}';
+          cameras.add({'cameraId': cameraId, 'cameraName': cameraName});
+        }
+        setState(() {
+          _cameras = cameras;
+          if (_cameras.isNotEmpty) {
+            _selectedCamera = _cameras.first['cameraId'];
+          }
+        });
+      }
+    } catch (e) {
+      print('Error fetching cameras: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLocations();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,26 +190,79 @@ class AlarmByHandPage extends StatelessWidget {
               labelText: 'Select Location',
               border: OutlineInputBorder(),
             ),
-            items: [
-              DropdownMenuItem<String>(
-                value: 'Location 1',
-                child: Text('Location 1'),
-              ),
-              DropdownMenuItem<String>(
-                value: 'Location 2',
-                child: Text('Location 2'),
-              ),
-              // Add more items as needed
-            ],
+            value: _selectedLocation,
+            items: _locations.map((location) {
+              return DropdownMenuItem<String>(
+                value: location['locationId'],
+                child: Text(location['locationName']!),
+              );
+            }).toList(),
             onChanged: (value) {
-              // Handle location selection
+              setState(() {
+                _selectedLocation = value;
+                _fetchCameras(value!);
+              });
             },
           ),
           SizedBox(height: 20.0),
+          if (_cameras.isNotEmpty) ...[
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: 'Select Camera',
+                border: OutlineInputBorder(),
+              ),
+              value: _selectedCamera,
+              items: _cameras.map((camera) {
+                return DropdownMenuItem<String>(
+                  value: camera['cameraId'],
+                  child: Text(camera['cameraName']!),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedCamera = value;
+                });
+              },
+            ),
+          ],
+          SizedBox(height: 20.0),
           ElevatedButton(
-            onPressed: () {
-              // Handle submit button
-              Navigator.pop(context); // Close the modal
+            onPressed: () async {
+              if (_selectedCamera != null) {
+                try {
+                  bool success = await CameraServices.alert(_selectedCamera!);
+                  if (success) {
+                    Navigator.pop(context); // Close the modal
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Alert sent successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to send alert.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('No camera selected.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
             child: Text('Submit'),
           ),

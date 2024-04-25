@@ -32,7 +32,7 @@ class _SecurityCodePageState extends State<SecurityCodePage> {
             SizedBox(height: 20),
             TextField(
               controller: securityCodeController,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 labelText: 'Security Code',
                 hintText: 'Enter your security code',
