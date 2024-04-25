@@ -91,7 +91,7 @@ class _TimelinePageState extends State<TimelinePage> {
             padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: SizedBox(height: 50),
           ),
-          _buildDateFilters(),
+          //_buildDateFilters(),
           Expanded(
             child: _buildTimeline(),
           ),

@@ -1,3 +1,4 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:facs_mobile/pages/notification_page.dart';
 import 'package:facs_mobile/pages/notification_page_test.dart';
 import 'package:facs_mobile/pages/profile_page.dart';

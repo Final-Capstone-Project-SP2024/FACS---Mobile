@@ -1,8 +1,16 @@
-import 'package:facs_mobile/services/record_service.dart';
-import 'package:facs_mobile/utils/dashboard_data.dart';
+import 'dart:async';
+
+import 'package:event_bus/event_bus.dart';
+import 'package:facs_mobile/pages/NavigationBar/SubPage/fix_camera_page.dart';
 import 'package:facs_mobile/routeObserver.dart';
+import 'package:facs_mobile/services/camera_services.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:facs_mobile/services/notification_services.dart';
+
+EventBus eventBus = EventBus();
+
+class RefreshDataEvent {}
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -12,42 +20,77 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> with RouteAware {
-  bool _showText = true;
+  late StreamSubscription streamSubscription;
   String detectionStatus = 'safe';
-  RecordService _recordServices = RecordService();
-  double _bottomRadius = 40.0;
+  List<dynamic> notifications = [];
+  List<dynamic> cameras = [];
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _fetchDataAndUpdateStatus();
-  // }
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    routeObserver.subscribe(
-        this, ModalRoute.of(context)! as PageRoute<dynamic>);
+  void initState() {
+    super.initState();
     _fetchDataAndUpdateStatus();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      routeObserver.subscribe(
+          this, ModalRoute.of(context)! as PageRoute<dynamic>);
+    });
+    streamSubscription = eventBus.on<RefreshDataEvent>().listen((event) {
+      _fetchDataAndUpdateStatus();
+    });
   }
 
   @override
   void didPopNext() {
     _fetchDataAndUpdateStatus();
+    streamSubscription = eventBus.on<RefreshDataEvent>().listen((event) {
+      _fetchDataAndUpdateStatus();
+    });
   }
 
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
+    streamSubscription.cancel();
     super.dispose();
   }
 
-  void _fetchDataAndUpdateStatus() async {
+  Future<void> _fetchDataAndUpdateStatus() async {
     try {
-      List<Map<String, dynamic>> recentRecords =
-          await DashboardData().fetchRecentRecords();
-      if (recentRecords.isNotEmpty) {
+      dynamic notificationData = await NotificationService.getNotification();
+      dynamic cameraData = await CameraServices.getCamera();
+      //Processing notification data (sorting date and time)
+      if (notificationData != null &&
+          notificationData is Map<String, dynamic>) {
+        List<dynamic> fetchedNotifications = notificationData['data'];
+        fetchedNotifications.sort((a, b) {
+          try {
+            DateTime dateA =
+                DateFormat('HH:mm:ss dd-MM-yyyy').parse(a['occurrenceTime']);
+            DateTime dateB =
+                DateFormat('HH:mm:ss dd-MM-yyyy').parse(b['occurrenceTime']);
+            return dateB.compareTo(dateA);
+          } catch (e) {
+            print('Error parsing date: ${a['occurrenceTime']}');
+            return 0;
+          }
+        });
         setState(() {
-          detectionStatus = 'at_risk';
+          notifications = fetchedNotifications ?? [];
+          if (notifications.isNotEmpty) {
+            detectionStatus = 'at_risk';
+          }
+        });
+      }
+      //Processing camera data (take only status == disconnected)
+      if (cameraData != null && cameraData is Map<String, dynamic>) {
+        List<dynamic> allCameras = cameraData['data'];
+        List<dynamic> disconnectedCameras = allCameras
+            .where((camera) => camera['status'] == 'Disconnected')
+            .toList();
+        setState(() {
+          cameras = disconnectedCameras ?? [];
+          if (cameras.isNotEmpty && detectionStatus != 'at_risk') {
+            detectionStatus = 'protential';
+          }
         });
       }
     } catch (e) {
@@ -61,202 +104,126 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
 
     return Scaffold(
       backgroundColor: statusColor,
-      body: Column(
-        children: [
-          // Top section: Icon and Fire Detection Status
-          Container(
-            height: 150,
-            color: statusColor,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    _getIconData(detectionStatus),
-                    size: 50.0,
-                    color: Colors.white,
-                  ),
-                  SizedBox(height: 10.0),
-                  Text(
-                    '${getStatusText(detectionStatus)}',
-                    // 'Fire Detection Status:\n${detectionStatus.toUpperCase()}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16.0,
+      body: RefreshIndicator(
+        onRefresh: _fetchDataAndUpdateStatus,
+        child: Column(
+          children: [
+            // Top section: Icon and Fire Detection Status
+            Container(
+              height: 150,
+              color: statusColor,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _getIconData(detectionStatus),
+                      size: 50.0,
                       color: Colors.white,
                     ),
-                  ),
-                ],
+                    SizedBox(height: 10.0),
+                    Text(
+                      '${getStatusText(detectionStatus)}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          // Bottom section: Active Incidents and Disconnected Camera
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40.0),
-                topRight: Radius.circular(40.0),
-              ),
-              child: Container(
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      FutureBuilder<List<Map<String, dynamic>>>(
-                        future: DashboardData().fetchRecentRecords(),
-                        builder: (context, recordsSnapshot) {
-                          if (recordsSnapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (recordsSnapshot.hasError) {
-                            return Center(
-                                child: Text(
-                                    'Error fetching records: ${recordsSnapshot.error}'));
-                          } else {
-                            List<Map<String, dynamic>> recentRecords =
-                                recordsSnapshot.data ?? [];
-                            if (recentRecords.isNotEmpty &&
-                                detectionStatus != 'at_risk') {
-                              setState(() {
-                                detectionStatus = 'at_risk';
-                              });
-                            }
-                            return FutureBuilder<List<dynamic>>(
-                              future:
-                                  DashboardData().fetchDisconnectedCameras(),
-                              builder: (context, camerasSnapshot) {
-                                if (camerasSnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                } else if (camerasSnapshot.hasError) {
-                                  return Center(
-                                      child: Text(
-                                          'Error fetching cameras: ${camerasSnapshot.error}'));
-                                } else {
-                                  List<dynamic> disconnectedCameras =
-                                      camerasSnapshot.data ?? [];
-                                  return Column(
-                                    children: [
-                                      SizedBox(height: 30),
-                                      _buildActiveIncidents(recentRecords),
-                                      SizedBox(height: 30),
-                                      _buildDisconnectedCamera(
-                                          "Disconnected Camera",
-                                          disconnectedCameras),
-                                      SizedBox(height: 30),
-                                    ],
-                                  );
-                                }
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ],
+            // Bottom section: Notifications and Disconnected Camera
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(40.0),
+                  topRight: Radius.circular(40.0),
+                ),
+                child: Container(
+                  color: Colors.white,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        _buildNotifications(),
+                        SizedBox(height: 30),
+                        _buildDisconnectedCameras(),
+                        SizedBox(height: 30),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActiveIncidents(List<Map<String, dynamic>> recentRecords) {
-    if (recentRecords.isEmpty) {
-      return Column(
-        children: [
-          Text(
-            "Current Active Incidents",
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 10.0),
-          Text(
-            "No active incidents",
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      );
-    }
-
-    List<Widget> incidentWidgets = [
-      Text(
-        "Current Active Incidents",
-        style: TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
+          ],
         ),
       ),
-      SizedBox(height: 10.0),
-    ];
-
-    incidentWidgets.addAll(recentRecords.map((record) {
-      return Column(
-        children: [
-          _buildSingleActiveIncident(record),
-          SizedBox(height: 10.0),
-        ],
-      );
-    }));
-    if (recentRecords.length == 1) {
-      incidentWidgets.insert(0, SizedBox(height: 20.0));
-    }
-
-    return Column(
-      children: incidentWidgets,
     );
   }
 
-  Widget _buildSingleActiveIncident(Map<String, dynamic> record) {
-    DateTime recordTime = DateTime.parse(record['recordTime']);
-    String formattedDate = DateFormat.yMMMd().add_jm().format(recordTime);
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          // Icon part
-          Container(
-            width: 50.0, // Adjust width as needed
-            height: 50.0, // Adjust height as needed
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.red, // Change color as needed
-            ),
-            child: Icon(
-              Icons.report,
-              color: Colors.white, // Change icon color as needed
-            ),
+  Widget _buildNotifications() {
+    return Column(
+      children: [
+        Text(
+          "Current active incident",
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
           ),
-          SizedBox(width: 10.0), // Add spacing between icon and text
-          // Text part
+        ),
+        SizedBox(height: 10.0),
+        if (notifications.isEmpty)
+          Container(
+            child: Column(
+              children: [
+                SizedBox(height: 10, width: MediaQuery.of(context).size.width),
+                Text(
+                  "No active incident",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black54,
+                  ),
+                ),
+                SizedBox(height: 10, width: MediaQuery.of(context).size.width),
+              ],
+            ),
+          )
+        else
+          Column(
+            children: notifications.map((notification) {
+              return _buildSingleNotification(notification);
+            }).toList(),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildSingleNotification(Map<String, dynamic> notification) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.report, color: Colors.red, size: 40),
+          SizedBox(width: 10.0),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Date & Time: $formattedDate',
+                  'Location: ${notification['locationName']}',
                   style: TextStyle(
-                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 5.0),
                 Text(
-                  'Status: ${record['status']}',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
+                    'Camera Destination: ${notification['cameraDestination']}'),
+                Text('Occurrence Time: ${notification['occurrenceTime']}'),
               ],
             ),
           ),
@@ -265,106 +232,85 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
     );
   }
 
-  Widget _buildDisconnectedCamera(
-      String title, List<dynamic> disconnectedCameras) {
-    if (disconnectedCameras.isEmpty) {
-      return Column(
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 10.0),
-          Text(
-            "No disconnected cameras",
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.black54,
-            ),
-          ),
-        ],
-      );
-    }
-
+  Widget _buildDisconnectedCameras() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Center(
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
+        Text(
+          "Disconnected Cameras",
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 10.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: disconnectedCameras.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child:
-                    _buildSingleDisconnectedCamera(disconnectedCameras[index]),
-              );
-            },
+        if (cameras.isEmpty)
+          Container(
+            child: Column(
+              children: [
+                SizedBox(height: 10, width: MediaQuery.of(context).size.width),
+                Text(
+                  "No disconnected cameras",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black54,
+                  ),
+                ),
+                SizedBox(height: 10, width: MediaQuery.of(context).size.width),
+              ],
+            ),
+          )
+        else
+          Column(
+            children: cameras.map((camera) {
+              return _buildSingleDisconnectedCamera(camera);
+            }).toList(),
           ),
-        ),
       ],
     );
   }
 
   Widget _buildSingleDisconnectedCamera(Map<String, dynamic> camera) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icon representing disconnected camera
-          Container(
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey[300],
-            ),
-            child: Icon(
-              Icons.videocam_off,
-              color: Colors.red,
-              size: 30.0,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FixCameraPage(
+              cameraId: camera['cameraId'],
+              cameraStatus: camera['status'],
+              cameraDestination: camera['cameraDestination'],
+              cameraName: camera['cameraName'],
             ),
           ),
-          SizedBox(width: 10.0),
-          // Text displaying camera name, location, and status
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Camera Name: ${camera['cameraName']}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.videocam_off, color: Colors.red, size: 40),
+            SizedBox(width: 10.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Camera Name: ${camera['cameraName']}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: 5.0),
-                Text(
-                  'Monitoring: ${camera['cameraDestination']}',
-                ),
-                SizedBox(height: 5.0),
-                Text(
-                  'Status: ${camera['status']}',
-                ),
-              ],
+                  Text('Monitoring: ${camera['cameraDestination']}'),
+                  Text('Status: ${camera['status']}'),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -400,7 +346,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
       case 'safe':
         return 'No issue found';
       case 'potential':
-        return 'Protential issue';
+        return 'Potential issue';
       case 'at_risk':
         return 'Immediate action required!';
       default:

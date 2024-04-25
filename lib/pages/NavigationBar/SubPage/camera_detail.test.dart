@@ -14,12 +14,14 @@ class CameraDetail extends StatefulWidget {
   final String cameraStatus;
   final String cameraDestination;
   final String cameraName;
+  final String cameraImage;
   CameraDetail(
       {Key? key,
       required this.cameraId,
       required this.cameraStatus,
       required this.cameraDestination,
-      required this.cameraName})
+      required this.cameraName,
+      required this.cameraImage})
       : super(key: key);
 
   TextEditingController colortext = TextEditingController();

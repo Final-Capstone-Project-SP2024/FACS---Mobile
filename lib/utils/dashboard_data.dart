@@ -53,4 +53,13 @@ class DashboardData {
       throw e;
     }
   }
+
+  static Future<dynamic> fetchNotification() async {
+    try {
+      return await NotificationService.getNotification();
+    } catch (e) {
+      print('Error fetching notification: $e');
+      return null;
+    }
+  }
 }
