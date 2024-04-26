@@ -104,11 +104,22 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                             //  _actionPhase(context),
                             // SizedBox(height: 5.v),
                             // _confirmButton(context,
-                            //     recordIdAdding: recordDetailResponse['recordId']),
+                            //     recordIdAdding:
+                            //         recordDetailResponse['recordId']),
+                            // SizedBox(height: 5.v),
+                            // _confirmActionButton(context,
+                            //     recordIdAdding:
+                            //         recordDetailResponse['recordId']),
                             SizedBox(height: 5.v),
-                            _confirmActionButton(context,
-                                recordIdAdding:
-                                    recordDetailResponse['recordId']),
+                            if (recordDetailResponse['status'] == "InAlarm")
+                              _confirmButton(context,
+                                  recordIdAdding:
+                                      recordDetailResponse['recordId']),
+                            if (recordDetailResponse['status'] == "InAction")
+                              _confirmActionButton(context,
+                                  recordIdAdding:
+                                      recordDetailResponse['recordId']),
+                            //  SizedBox(height: 5.v),
                           ],
                         ),
                       ),
@@ -619,6 +630,10 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           ),
           Expanded(
             child: CustomEvulatedBottom(
+              onPressed: () {
+                RecordService.actionAlarm(
+                    recordId: recordIdAdding, alarmLevel: 6);
+              },
               text: "Fake Alarm",
               buttonStyle: CustomBottomStyle.fillRed,
               margin: EdgeInsets.only(right: 22.h),
@@ -640,14 +655,15 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           Expanded(
             child: CustomEvulatedBottom(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AlarmPage(
-                      recordId: recordIdAdding,
-                    ), // Replace YourDestinationPage with the page you want to navigate to
-                  ),
-                );
+                RecordService.finishActionPhase(recordId: recordIdAdding);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => AlarmPage(
+                //       recordId: recordIdAdding,
+                //     ), // Replace YourDestinationPage with the page you want to navigate to
+                //   ),
+                // );
               },
               text: "Finish",
               buttonStyle: CustomBottomStyle.fillGreen,
@@ -657,6 +673,16 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           ),
           Expanded(
             child: CustomEvulatedBottom(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AlarmPage(
+                      recordId: recordIdAdding,
+                    ), // Replace YourDestinationPage with the page you want to navigate to
+                  ),
+                );
+              },
               text: "More Action",
               buttonStyle: CustomBottomStyle.fillYellow,
               margin: EdgeInsets.only(right: 22.h),

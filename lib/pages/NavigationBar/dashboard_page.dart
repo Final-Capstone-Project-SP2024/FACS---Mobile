@@ -216,14 +216,12 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Location: ${notification['locationName']}',
+                  '${notification['cameraDestination']} of ${notification['locationName']}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                    'Camera Destination: ${notification['cameraDestination']}'),
-                Text('Occurrence Time: ${notification['occurrenceTime']}'),
+                Text('${notification['occurrenceTime']}'),
               ],
             ),
           ),
@@ -299,13 +297,13 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Camera Name: ${camera['cameraName']}',
+                    '${camera['cameraName']}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text('Monitoring: ${camera['cameraDestination']}'),
-                  Text('Status: ${camera['status']}'),
+                  Text('${camera['cameraDestination']}'),
+                  Text('${camera['status']}'),
                 ],
               ),
             ),
