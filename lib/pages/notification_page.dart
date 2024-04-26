@@ -1,5 +1,6 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
+import 'package:facs_mobile/pages/record_detail_page.test.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
 import 'package:facs_mobile/themes/theme_helper.dart';
@@ -12,6 +13,7 @@ import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/notification_services.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
+import 'package:intl/intl.dart';
 
 class NotificationPage extends StatefulWidget {
   @override
@@ -30,11 +32,35 @@ class _NotificationPageState extends State<NotificationPage> {
 
   Future<void> fetchNotificationData() async {
     dynamic dataFetch = await NotificationService.getNotification();
+    List<dynamic> fetchedNotifications = dataFetch['data'];
+    fetchedNotifications.sort((a, b) {
+      try {
+        DateTime dateA =
+            DateFormat('HH:mm:ss dd-MM-yyyy').parse(a['occurrenceTime']);
+        DateTime dateB =
+            DateFormat('HH:mm:ss dd-MM-yyyy').parse(b['occurrenceTime']);
+        return dateB.compareTo(dateA);
+      } catch (e) {
+        print('Error parsing date: ${a['occurrenceTime']}');
+        return 0;
+      }
+    });
+    print(dataFetch);
     setState(() {
       notificationData = dataFetch != null ? dataFetch['data'] : [];
       isLoading = false;
     });
     print(notificationData);
+  }
+
+  String getImagePath(int status) {
+    if (status == 1) {
+      return ImageConstant.imageAlert;
+    } else if (status == 2) {
+      return ImageConstant.imageDisconnected;
+    } else {
+      return ImageConstant.imageAlarmByUser;
+    }
   }
 
   // Define a function to determine the color based on status
@@ -51,105 +77,40 @@ class _NotificationPageState extends State<NotificationPage> {
     return Colors.grey[100]!; // Default color
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: Text('Fire Alarm Notifications'),
-  //       backgroundColor: Colors.red, // Set app bar color to red
-  //     ),
-  //     body: isLoading
-  //         ? Center(
-  //             child: CircularProgressIndicator(),
-  //           )
-  //         : notificationData.isNotEmpty
-  //             ? ListView.builder(
-  //                 itemCount: notificationData.length,
-  //                 itemBuilder: (context, index) {
-  //                   return GestureDetector(
-  //                     onTap: () {
-  //                       Navigator.push(
-  //                         context,
-  //                         MaterialPageRoute(
-  //                           builder: (context) => RecordDetail(
-  //                             recordId: notificationData[index]['recordId'],
-  //                             state: notificationData[index]['status'],
-  //                           ),
-  //                         ),
-  //                       );
-  //                     },
-  //                     child: Card(
-  //                       elevation: 4,
-  //                       margin:
-  //                           EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-  //                       color:
-  //                           getStatusColor(notificationData[index]['status']),
-  //                       child: ListTile(
-  //                         contentPadding:
-  //                             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  //                         title: Text(
-  //                           notificationData[index]['locationName'],
-  //                           style: TextStyle(
-  //                             fontWeight: FontWeight.bold,
-  //                             color: Colors.red, // Set text color to red
-  //                           ),
-  //                         ),
-  //                         subtitle: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             SizedBox(height: 4),
-  //                             Text(
-  //                               'Camera: ${notificationData[index]['cameraName']}',
-  //                               style: TextStyle(fontWeight: FontWeight.bold),
-  //                             ),
-  //                             SizedBox(height: 4),
-  //                             Text(
-  //                               'Location: ${notificationData[index]['cameraDestination']}',
-  //                             ),
-  //                             SizedBox(height: 4),
-  //                             Text(
-  //                               'Status: ${notificationData[index]['status']}',
-  //                             )
-  //                           ],
-  //                         ),
-  //                         trailing: Icon(
-  //                           Icons.fire_extinguisher, // Fire icon
-  //                           color: Colors.red, // Set icon color to red
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   );
-  //                 },
-  //               )
-  //             : Center(
-  //                 child: Text('No notifications available'),
-  //               ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.whiteA700,
-        appBar: _buildAppbar(context),
-        body: Container(
-          width: double.maxFinite,
-          padding: EdgeInsets.symmetric(
-            horizontal: 27.h,
-            vertical: 29.v,
+        appBar: AppBar(
+          title: Text('Warning'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Today",
-                style: theme.textTheme.titleSmall,
-              ),
-              SizedBox(height: 10.v),
-              _buildRowline(context),
-              SizedBox(height: 5.v)
-            ],
+        ),
+        // appBar: _buildAppbar(context),
+        body: SingleChildScrollView(
+          child: Container(
+            width: double.maxFinite,
+            padding: EdgeInsets.symmetric(
+              horizontal: 27.h,
+              vertical: 29.v,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Today",
+                  style: theme.textTheme.titleSmall,
+                ),
+                SizedBox(height: 10.v),
+                _buildRowline(context),
+                SizedBox(height: 5.v)
+              ],
+            ),
           ),
         ),
       ),
@@ -185,15 +146,17 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 
-  /// Section Widget
   Widget _buildRowline(BuildContext context) {
+    double verticalDividerHeight = notificationData.length *
+        85.0; // Calculate the height of the vertical divider
+
     return Container(
       decoration: AppDecoration.outlineErrorContainer,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 248.v,
+            height: verticalDividerHeight,
             width: 36.h,
             margin: EdgeInsets.only(
               top: 4.v,
@@ -202,57 +165,46 @@ class _NotificationPageState extends State<NotificationPage> {
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: SizedBox(
-                    height: 118.v,
-                    child: VerticalDivider(
-                      width: 4.h,
-                      thickness: 4.v,
-                      color: appTheme.gray300,
-                      indent: 18.h,
-                    ),
-                  ),
+                ...List.generate(
+                  notificationData.length,
+                  (index) {
+                    return Positioned(
+                      top: (index / notificationData.length) *
+                          verticalDividerHeight,
+                      child: Column(
+                        children: [
+                          CustomIconButton(
+                            height: 36.adaptSize,
+                            width: 36.adaptSize,
+                            padding: EdgeInsets.all(5.h),
+                            alignment: Alignment.topCenter,
+                            child: ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                Colors.grey.withOpacity(
+                                    0.1), // Adjust the opacity or color here
+                                BlendMode.srcATop,
+                              ),
+                              child: CustomImageView(
+                                imagePath: getImagePath(
+                                    notificationData[index]['recordType']),
+                              ),
+                            ),
+                          ),
+                          if (index < notificationData.length - 1)
+                            SizedBox(
+                              height: verticalDividerHeight /
+                                  notificationData.length,
+                              width: 4.h,
+                              child: VerticalDivider(
+                                thickness: 4.v,
+                                color: appTheme.gray300,
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    height: 130.v,
-                    child: VerticalDivider(
-                      width: 4.h,
-                      thickness: 4.v,
-                      color: appTheme.gray300,
-                      endIndent: 30.h,
-                    ),
-                  ),
-                ),
-                CustomIconButton(
-                  height: 36.adaptSize,
-                  width: 36.adaptSize,
-                  padding: EdgeInsets.all(5.h),
-                  alignment: Alignment.topCenter,
-                  child: CustomImageView(
-                    imagePath: ImageConstant.imgGroup94,
-                  ),
-                ),
-                CustomIconButton(
-                  height: 36.adaptSize,
-                  width: 36.adaptSize,
-                  padding: EdgeInsets.all(5.h),
-                  alignment: Alignment.center,
-                  child: CustomImageView(
-                    imagePath: ImageConstant.imgGroup94,
-                  ),
-                ),
-                CustomIconButton(
-                  height: 36.adaptSize,
-                  width: 36.adaptSize,
-                  padding: EdgeInsets.all(5.h),
-                  alignment: Alignment.bottomCenter,
-                  child: CustomImageView(
-                    imagePath: ImageConstant.imgGroup94,
-                  ),
-                )
               ],
             ),
           ),
@@ -264,57 +216,17 @@ class _NotificationPageState extends State<NotificationPage> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "12:00",
-                    style: CustomTextStyles.titleMediumOnPrimary,
-                  ),
-                  SizedBox(height: 4.v),
-                  Text(
-                    "Warning Fire",
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  SizedBox(height: 1.v),
-                  SizedBox(
-                    height: 19.v,
-                    width: 142.h,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Camera Destination",
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Camera Destination",
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 42.v),
-                  _buildRowtypesomethin(
+                children: notificationData.map<Widget>((data) {
+                  return _buildRowtypesomethin(
                     context,
-                    time: "11:00",
-                    typesomething: "Warning Small Fire",
-                    typesomething1: "Camera Destination",
+                    recordId: data['recordId'],
+                    time: data['occurrenceTime'],
+                    status: data['status'],
+                    location:
+                        "${data['cameraDestination']}-${data['locationName']}",
                     imageOne: ImageConstant.imgRectangleCopy,
-                  ),
-                  SizedBox(height: 33.v),
-                  _buildRowtypesomethin(
-                    context,
-                    time: "10:00",
-                    typesomething: "Warning Fire",
-                    typesomething1: "Camera Destination",
-                    imageOne: ImageConstant.imgRectangleCopy2,
-                  )
-                ],
+                  );
+                }).toList(),
               ),
             ),
           )
@@ -326,53 +238,62 @@ class _NotificationPageState extends State<NotificationPage> {
   /// Common widget
   Widget _buildRowtypesomethin(
     BuildContext context, {
+    required String recordId,
     required String time,
-    required String typesomething,
-    required String typesomething1,
+    required String status,
+    required String location,
     required String imageOne,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(bottom: 11.v),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                time,
-                style: CustomTextStyles.titleMediumOnPrimary.copyWith(
-                  color: theme.colorScheme.onPrimary,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => RecordDetailUserRoleEightScreen(
+                    recordId: recordId,
+                    state: status,
+                  )), // Replace NextPage with the name of the page you want to navigate to
+        );
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 10.v),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  time,
+                  style: CustomTextStyles.titleMediumOnPrimary.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
                 ),
-              ),
-              SizedBox(height: 4.v),
-              Text(
-                typesomething,
-                style: theme.textTheme.titleMedium!.copyWith(
-                  color: appTheme.blueGray300,
+                SizedBox(height: 4.v),
+                Text(
+                  status,
+                  style: theme.textTheme.titleMedium!.copyWith(
+                    color: getStatusColor(status),
+                  ),
                 ),
-              ),
-              SizedBox(height: 1.v),
-              Text(
-                typesomething1,
-                style: theme.textTheme.titleMedium!.copyWith(
-                  color: appTheme.blueGray300,
+                SizedBox(height: 1.v),
+                Text(
+                  location,
+                  style: CustomTextStyles.titleMediumBlueGray30001,
                 ),
-              )
-            ],
+              ],
+            ),
           ),
-        ),
-        CustomImageView(
-          imagePath: imageOne,
-          height: 70.v,
-          width: 100.h,
-          radius: BorderRadius.circular(
-            4.h,
-          ),
-          margin: EdgeInsets.only(top: 4.v),
-        )
-      ],
+          CustomImageView(
+            imagePath: imageOne,
+            height: 16.adaptSize,
+            width: 16.adaptSize,
+            alignment: Alignment.bottomLeft,
+            margin: EdgeInsets.only(left: 7.h, bottom: 7.v),
+          )
+        ],
+      ),
     );
   }
 }

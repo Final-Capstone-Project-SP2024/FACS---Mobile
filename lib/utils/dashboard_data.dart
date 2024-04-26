@@ -11,18 +11,20 @@ class DashboardData {
         DateTime aTime = DateTime.parse(a['recordTime']);
         DateTime bTime = DateTime.parse(b['recordTime']);
         DateTime now = DateTime.now();
-        
+
         Duration differenceA = now.difference(aTime);
         Duration differenceB = now.difference(bTime);
-        
+
         return differenceA.compareTo(differenceB);
       });
       List<Map<String, dynamic>> recentRecordIds = records
-                              // .where((record) => record['status'] == 'InAction'
-                              //                 || record['status'] == 'InAlarm'
-                              //                 || record['status'] == 'InVote')
-                              .take(1).toList();
-      
+          .where((record) =>
+              record['status'] == 'InAction' ||
+              record['status'] == 'InAlarm' ||
+              record['status'] == 'InVote')
+          .take(5)
+          .toList();
+
       return recentRecordIds;
     } catch (e) {
       print('Error fetching records: $e');
@@ -35,10 +37,13 @@ class DashboardData {
       dynamic data = await CameraServices.getCamera();
       if (data != null && data['data'] != null) {
         List<dynamic> allCameras = data['data'];
-        List<dynamic> disconnectedCameras = allCameras.where((camera) => camera['status'] == 'Disconnected'
-                                                                      || camera['status'] == 'Disconnect'
-                                                                      || camera['status'] == 'InActive'
-                                                                      || camera['status'] == 'Inactive').toList();
+        List<dynamic> disconnectedCameras = allCameras
+            .where((camera) =>
+                camera['status'] == 'Disconnected' ||
+                camera['status'] == 'Disconnect' ||
+                camera['status'] == 'InActive' ||
+                camera['status'] == 'Inactive')
+            .toList();
         return disconnectedCameras;
       } else {
         return [];
@@ -46,6 +51,15 @@ class DashboardData {
     } catch (e) {
       print('Error fetching camera data: $e');
       throw e;
+    }
+  }
+
+  static Future<dynamic> fetchNotification() async {
+    try {
+      return await NotificationService.getNotification();
+    } catch (e) {
+      print('Error fetching notification: $e');
+      return null;
     }
   }
 }

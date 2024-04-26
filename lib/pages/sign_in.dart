@@ -3,11 +3,11 @@ import 'package:facs_mobile/services/user_services.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/forget_password_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class SignIn extends StatefulWidget {
   @override
   _SignInState createState() => _SignInState();
 }
+
 class _SignInState extends State<SignIn> {
   TextEditingController securityCodeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -24,11 +24,11 @@ class _SignInState extends State<SignIn> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-            if (!(ModalRoute.of(context)?.canPop ?? false))
-              IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
+              if (!(ModalRoute.of(context)?.canPop ?? false))
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               SizedBox(height: 20),
               Text(
                 "Sign In",
@@ -159,34 +159,39 @@ class _SignInState extends State<SignIn> {
     await prefs.setString('password', password);
     await prefs.setBool('onboardingCompleted', true);
   }
+
   Future<void> checkSavedCredentials() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? savedSecurityCode = prefs.getString('securityCode');
-  String? savedPassword = prefs.getString('password');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedSecurityCode = prefs.getString('securityCode');
+    String? savedPassword = prefs.getString('password');
 
-  if (savedSecurityCode != null && savedPassword != null) {
-    await _signInWithSavedCredentials(savedSecurityCode, savedPassword);
+    if (savedSecurityCode != null && savedPassword != null) {
+      await _signInWithSavedCredentials(savedSecurityCode, savedPassword);
+    }
   }
-}
 
-Future<void> _signInWithSavedCredentials(String securityCode, String password) async {
-  Map<String, dynamic>? userData = await UserServices.signIn(securityCode, password);
+  Future<void> _signInWithSavedCredentials(
+      String securityCode, String password) async {
+    Map<String, dynamic>? userData =
+        await UserServices.signIn(securityCode, password);
 
-  if (userData != null) {
-    Navigator.pushNamed(context, "/home");
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
+    if (userData != null) {
+      Navigator.pushNamed(context, "/home");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to sign in. Please try again.'),
         ),
       );
+    }
   }
-}
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     checkSavedCredentials();
   }
+
   @override
   void dispose() {
     securityCodeController.dispose();

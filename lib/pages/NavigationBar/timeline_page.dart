@@ -1,3 +1,4 @@
+import 'package:facs_mobile/pages/record_detail_page.test.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
@@ -46,7 +47,8 @@ class _TimelinePageState extends State<TimelinePage> {
         fromDate: _fromDate != null ? _fromDate!.toIso8601String() : null,
         toDate: _toDate != null ? _toDate!.toIso8601String() : null,
       );
-      records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
+      records.sort((a, b) => DateTime.parse(a['recordTime'])
+          .compareTo(DateTime.parse(b['recordTime'])));
 
       setState(() {
         _records.addAll(records);
@@ -75,7 +77,8 @@ class _TimelinePageState extends State<TimelinePage> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       _fetchRecords();
     }
   }
@@ -85,11 +88,7 @@ class _TimelinePageState extends State<TimelinePage> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: SizedBox(height: 50),
-          ),
-          _buildDateFilters(),
+          //_buildDateFilters(),
           Expanded(
             child: _buildTimeline(),
           ),
@@ -106,11 +105,15 @@ class _TimelinePageState extends State<TimelinePage> {
         children: [
           ElevatedButton(
             onPressed: () => _selectFromDate(context),
-            child: Text(_fromDate != null ? 'From: ${_fromDate!.toString().substring(0, 10)}' : 'Select From Date'),
+            child: Text(_fromDate != null
+                ? 'From: ${_fromDate!.toString().substring(0, 10)}'
+                : 'Select From Date'),
           ),
           ElevatedButton(
             onPressed: () => _selectToDate(context),
-            child: Text(_toDate != null ? 'To: ${_toDate!.toString().substring(0, 10)}' : 'Select To Date'),
+            child: Text(_toDate != null
+                ? 'To: ${_toDate!.toString().substring(0, 10)}'
+                : 'Select To Date'),
           ),
         ],
       ),
@@ -194,14 +197,22 @@ class _TimelinePageState extends State<TimelinePage> {
 
           return GestureDetector(
             onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => RecordDetail(
+              //       recordId: record['id'],
+              //       state: record['status'],
+              //     ),
+              //   ),
+              // );
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => RecordDetail(
-                    recordId: record['id'],
-                    state: record['status'],
-                  ),
-                ),
+                    builder: (context) => RecordDetailUserRoleEightScreen(
+                          recordId: record['id'],
+                          state: record['status'],
+                        )),
               );
             },
             child: Card(

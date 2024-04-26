@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:facs_mobile/core/utils/size_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 String _appTheme = "primary";
@@ -65,7 +66,7 @@ class TextThemes {
           fontWeight: FontWeight.w700,
         ),
         titleMedium: TextStyle(
-          color: appTheme.blueGray300,
+          color: colorScheme.onPrimary,
           fontSize: 16.fSize,
           fontFamily: 'Roboto',
           fontWeight: FontWeight.w700,
@@ -106,6 +107,7 @@ class PrimaryColors {
   Color get gray100 => Color(0XFFF4F5F8);
 
   Color get green300 => Color(0XFF73FD68);
+
   Color get blueGray30001 => Color(0XFF8D93AB);
 // White
 }

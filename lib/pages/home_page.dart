@@ -1,8 +1,10 @@
+import 'package:event_bus/event_bus.dart';
+import 'package:facs_mobile/pages/notification_page.dart';
+import 'package:facs_mobile/pages/notification_page_test.dart';
+import 'package:facs_mobile/pages/profile_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/alarm_page.test.dart';
 import 'package:facs_mobile/pages/camera_page.test.dart';
 import 'package:facs_mobile/pages/location_list.test.dart';
-import 'package:facs_mobile/pages/notification_page.dart';
-import 'package:facs_mobile/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:facs_mobile/pages/NavigationBar/add_alarm_page.dart';
@@ -11,29 +13,17 @@ import 'package:facs_mobile/pages/NavigationBar/dashboard_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/location_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/timeline_page.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<HomePage> {
-  int _selectedIndex = 0;
-  final List<Widget> _pages = [
-    DashboardPage(),
-    CamerasPage(),
-    AlarmByHandPage(),
-    LocationListShow(),
-    TimelinePage(),
-  ];
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> _buildScreens() {
       return [
         const DashboardPage(),
-        const CameraPage(),
-        const AddAlarmPage(),
-        const LocationPage(),
+        CamerasPage(),
+        AlarmByHandPage(),
+        LocationListShow(),
         const TimelinePage()
       ];
     }

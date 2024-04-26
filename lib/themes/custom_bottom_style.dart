@@ -16,7 +16,12 @@ class CustomBottomStyle {
           borderRadius: BorderRadius.circular(31.h),
         ),
       );
-
+  static ButtonStyle get fillYellow => ElevatedButton.styleFrom(
+        backgroundColor: const Color(0XFFffd700),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(31.h),
+        ),
+      );
   static ButtonStyle get none => ButtonStyle(
         backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
         elevation: MaterialStateProperty.all<double>(0),
