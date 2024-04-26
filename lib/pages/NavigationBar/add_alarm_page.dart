@@ -5,6 +5,7 @@ import 'package:facs_mobile/services/location_services.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/use_camera_page.dart';
 
 class AddAlarmPage extends StatefulWidget {
+  const AddAlarmPage({Key? key}) : super(key: key);
   @override
   _AddAlarmPageState createState() => _AddAlarmPageState();
 }

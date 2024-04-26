@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:facs_mobile/services/camera_services.dart';
 
 class CameraPage extends StatefulWidget {
+  const CameraPage({Key? key}) : super(key: key);
   @override
   _CameraPageState createState() => _CameraPageState();
 }
