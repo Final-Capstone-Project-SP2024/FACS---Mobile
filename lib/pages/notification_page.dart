@@ -1,5 +1,8 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
+import 'package:facs_mobile/pages/NavigationBar/SubPage/fix_camera_page.dart';
+import 'package:facs_mobile/pages/NavigationBar/camera_page.dart';
+import 'package:facs_mobile/pages/camera_page.test.dart';
 import 'package:facs_mobile/pages/record_detail_page.test.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
@@ -217,15 +220,14 @@ class _NotificationPageState extends State<NotificationPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: notificationData.map<Widget>((data) {
-                  return _buildRowtypesomethin(
-                    context,
-                    recordId: data['recordId'],
-                    time: data['occurrenceTime'],
-                    status: data['status'],
-                    location:
-                        "${data['cameraDestination']}-${data['locationName']}",
-                    imageOne: ImageConstant.imgRectangleCopy,
-                  );
+                  return _buildRowtypesomethin(context,
+                      recordId: data['recordId'],
+                      time: data['occurrenceTime'],
+                      status: data['status'],
+                      location:
+                          "${data['cameraDestination']}-${data['locationName']}",
+                      imageOne: ImageConstant.imgRectangleCopy,
+                      recordType: data['recordType'].toString());
                 }).toList(),
               ),
             ),
@@ -243,17 +245,39 @@ class _NotificationPageState extends State<NotificationPage> {
     required String status,
     required String location,
     required String imageOne,
+    required String recordType,
   }) {
     return GestureDetector(
+      // onTap: () {
+      //   Navigator.push(
+      //     context,
+      //     if(recordType == "someCondition") {}
+      //     MaterialPageRoute(
+      //         builder: (context) => RecordDetailUserRoleEightScreen(
+      //               recordId: recordId,
+      //               state: status,
+      //             )), // Replace NextPage with the name of the page you want to navigate to
+      //   );
+      // },
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
+        if (recordType == 2.toString()) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CamerasPage(),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
               builder: (context) => RecordDetailUserRoleEightScreen(
-                    recordId: recordId,
-                    state: status,
-                  )), // Replace NextPage with the name of the page you want to navigate to
-        );
+                recordId: recordId,
+                state: status,
+              ),
+            ),
+          );
+        }
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

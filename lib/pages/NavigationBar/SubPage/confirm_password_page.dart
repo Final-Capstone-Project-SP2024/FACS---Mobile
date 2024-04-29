@@ -1,6 +1,11 @@
+import 'package:facs_mobile/pages/sign_in.dart';
+import 'package:facs_mobile/services/user_services.dart';
 import 'package:flutter/material.dart';
 
 class ResetPasswordPage extends StatefulWidget {
+  final String SecurityCode;
+  const ResetPasswordPage({super.key, required this.SecurityCode});
+
   @override
   _ResetPasswordPageState createState() => _ResetPasswordPageState();
 }
@@ -34,8 +39,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             TextField(
               controller: keyController,
               decoration: InputDecoration(
-                labelText: 'Key',
-                hintText: 'Enter the key',
+                labelText: 'OTP',
+                hintText: 'Enter the OTP',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -61,7 +66,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 String key = keyController.text;
                 String newPassword = newPasswordController.text;
                 String confirmNewPassword = confirmNewPasswordController.text;
@@ -69,6 +74,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 print('Key: $key');
                 print('New Password: $newPassword');
                 print('Confirm New Password: $confirmNewPassword');
+                Future<bool> check = UserServices.changePasswordRequest(
+                    key, newPassword, confirmNewPassword, widget.SecurityCode);
+
+                if (await check) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignIn()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Wrong OTP or Password not matching'),
+                    ),
+                  );
+                }
               },
               child: Text('Submit'),
               style: ElevatedButton.styleFrom(

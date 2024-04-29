@@ -41,6 +41,7 @@ class UserServices {
       return null;
     }
   }
+
   static Future SendFCMToken() async {
     try {
       final response = await http.post(
@@ -91,7 +92,7 @@ class UserServices {
 
     try {
       final response = await http.get(Uri.parse('$url'),
-        headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
       if (response.statusCode == 200) {
         final Map<String, dynamic> userData = json.decode(response.body);
         return userData;
@@ -101,5 +102,47 @@ class UserServices {
     } catch (e) {
       throw Exception('Failed to connect to the server: $e');
     }
+  }
+
+  static Future<bool> forgetPasswordRequest(String securityCode) async {
+    try {
+      final response = await http
+          .post(Uri.parse('$apiUrl/forgetpassword?securityCode=$securityCode'));
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+
+  static Future<bool> changePasswordRequest(String OTP, String newPassword,
+      String newPasswordConfirm, String securityCode) async {
+    if (newPassword != newPasswordConfirm) {
+      return false;
+    }
+    try {
+      final response = await http.post(
+        Uri.parse('$apiUrl/otpconfirm'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          'securityCode': securityCode,
+          'otpSending': OTP,
+          'newPassword': newPassword
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        print(response.body);
+        return false;
+      }
+    } catch (e) {}
+    return false;
   }
 }

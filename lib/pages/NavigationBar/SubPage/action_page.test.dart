@@ -1,6 +1,7 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/listdynamic_item_widget.test.dart';
+import 'package:facs_mobile/pages/home_page.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_bottom_style.dart';
@@ -127,8 +128,8 @@ class _AlarmPageState extends State<AlarmPage> {
                 "Alarm Level ${index + 1}",
                 style: TextStyle(
                   color: _selectedLevel == index
-                      ? theme.colorScheme.onPrimary
-                      : Colors.black,
+                      ? Colors.orange
+                      : theme.colorScheme.onPrimary,
                   fontSize: 16.adaptSize,
                   fontWeight: _selectedLevel == index
                       ? FontWeight.bold
@@ -169,6 +170,13 @@ class _AlarmPageState extends State<AlarmPage> {
                 print("Selected alarm level: $_selectedLevel");
                 RecordService.actionAlarm(
                     recordId: widget.recordId, alarmLevel: _selectedLevel);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Action Alarm Successfully')),
+                );
               },
               text: "Confirm ",
               buttonStyle: CustomBottomStyle.fillGreen,

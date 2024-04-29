@@ -1,3 +1,4 @@
+import 'package:facs_mobile/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/confirm_password_page.dart';
 
@@ -43,9 +44,12 @@ class _SecurityCodePageState extends State<SecurityCodePage> {
             ElevatedButton(
               onPressed: () {
                 String securityCode = securityCodeController.text;
+                UserServices.forgetPasswordRequest(securityCode);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ResetPasswordPage(SecurityCode: securityCode)),
                 );
                 print('Entered security code: $securityCode');
               },

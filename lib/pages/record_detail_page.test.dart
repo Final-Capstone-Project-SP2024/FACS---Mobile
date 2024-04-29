@@ -2,6 +2,7 @@ import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/action_page.test.dart';
 import 'package:facs_mobile/services/record_service.dart';
+import 'package:facs_mobile/services/user_services.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_bottom_style.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
@@ -52,7 +53,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
   void initState() {
     super.initState();
     getRecordDetailId(widget.recordId);
-    _initializeVideoController();
   }
 
   @override
@@ -100,7 +100,9 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                             SizedBox(height: 21.v),
                             _buildColumntypesomet1(context),
                             SizedBox(height: 5.v),
-                            _buildActionFunction(context),
+                            // _buildActionFunction(context),
+                            if (recordDetailResponse['userVoting'].isNotEmpty)
+                              _buildActionFunction(context),
                             //  _actionPhase(context),
                             // SizedBox(height: 5.v),
                             // _confirmButton(context,
@@ -111,11 +113,13 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                             //     recordIdAdding:
                             //         recordDetailResponse['recordId']),
                             SizedBox(height: 5.v),
-                            if (recordDetailResponse['status'] == "InAlarm")
+                            if (recordDetailResponse['status'] == "InAlarm" &&
+                                UserServices.userRole == 'Manager')
                               _confirmButton(context,
                                   recordIdAdding:
                                       recordDetailResponse['recordId']),
-                            if (recordDetailResponse['status'] == "InAction")
+                            if (recordDetailResponse['status'] == "InAction" &&
+                                UserServices.userRole == 'Manager')
                               _confirmActionButton(context,
                                   recordIdAdding:
                                       recordDetailResponse['recordId']),
@@ -138,7 +142,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
     _videoController = VideoPlayerController.network(
         //"https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['videoRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
         //"https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2Fincident_12-4-2024-18-47-29.mp4?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c"
-        "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2Fcamera_0_2024-04-13_15-20-52.mp4?alt=media&token=18e13091-0a41-4b0e-9b9c-283fb2f3a803")
+        "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['videoRecord']['videoUrl']}?alt=media&token=18e13091-0a41-4b0e-9b9c-283fb2f3a803")
       ..initialize().then((_) {
         setState(() {});
       });
@@ -152,7 +156,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
         recordDetailResponse = data['data'];
 
         print(recordDetailResponse);
-        //_initializeVideoController();
+        _initializeVideoController();
       }
     });
   }
@@ -241,7 +245,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
               child: Container(
                 color: Colors.black,
                 child: Image.network(
-                  'https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/ImageRecord%2Ffire_0_2024-04-13_14-52-34.jpg?alt=media&token=7b30179f-3ec9-4e33-956d-7ad737aeb82f',
+                  'https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/ImageRecord%2F${recordDetailResponse['imageRecord']['imageUrl']}?alt=media&token=7b30179f-3ec9-4e33-956d-7ad737aeb82f',
                   fit: BoxFit.cover,
                   width: double.maxFinite,
                   height: 200, // Maximum input size
@@ -291,7 +295,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             ),
             onTap: () {
               setState(() {
-                _showVideo = true;
+                _showVideo = false;
               });
             },
           ),
@@ -305,7 +309,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             ),
             onTap: () {
               setState(() {
-                _showVideo = false;
+                _showVideo = true;
               });
             },
           ),
@@ -469,6 +473,13 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
   Widget _buildColumntypesomet1(BuildContext context) {
     String alarmLevel = recordDetailResponse['recommendAlarmLevel'].toString();
     String cleanedAlarmLevel = alarmLevel.replaceAll('Alarm ', '');
+    String finishTime =
+        recordDetailResponse['finishTime'] == "00:00:00 01-01-0001"
+            ? "Not Finish"
+            : recordDetailResponse['finishTime'];
+    String AlarmAccountable = recordDetailResponse['alarmUser'] == null
+        ? "AI Detect"
+        : recordDetailResponse['alarmUser']['name'];
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.h),
       child: Column(
@@ -504,6 +515,29 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
               typesomething1: cleanedAlarmLevel,
             ),
           ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 15.h,
+              right: 31.h,
+            ),
+            child: _buildColorwhite(
+              context,
+              typesomething: "Fire Founder",
+              typesomething1: AlarmAccountable,
+            ),
+          ),
+          SizedBox(height: 3.v),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 15.h,
+              right: 31.h,
+            ),
+            child: _buildColorwhite(
+              context,
+              typesomething: "Finish time",
+              typesomething1: finishTime,
+            ),
+          ),
           SizedBox(height: 3.v),
         ],
       ),
@@ -522,30 +556,26 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
               style: CustomTextStyles.titleLargeBluegray300,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: 15.h,
-              right: 31.h,
-            ),
-            child: _buildColorwhite(
-              context,
-              typesomething: "XXX_001",
-              typesomething1: 1.toString(),
-            ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: recordDetailResponse['userVoting'].length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: 15.h,
+                  right: 31.h,
+                ),
+                child: _buildColorwhite(
+                  context,
+                  typesomething: recordDetailResponse['userVoting'][index]
+                      ['securityCode'],
+                  typesomething1: recordDetailResponse['userVoting'][index]
+                      ['voteType'],
+                ),
+              );
+            },
           ),
-          SizedBox(height: 3.v),
-          Padding(
-            padding: EdgeInsets.only(
-              left: 15.h,
-              right: 31.h,
-            ),
-            child: _buildColorwhite(
-              context,
-              typesomething: "XXX_001",
-              typesomething1: 1.toString(),
-            ),
-          ),
-          SizedBox(height: 3.v),
         ],
       ),
     );
