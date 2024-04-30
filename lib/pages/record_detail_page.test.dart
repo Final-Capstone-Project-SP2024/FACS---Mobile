@@ -522,7 +522,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             ),
             child: _buildColorwhite(
               context,
-              typesomething: "Fire Founder",
+              typesomething: "Detected by",
               typesomething1: AlarmAccountable,
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/camera_detail.test.dart';
 import 'package:facs_mobile/services/camera_services.dart';
@@ -89,6 +90,7 @@ class _CameraPageState extends State<CamerasPage> {
             context,
             cameraName: cameraData[index]['cameraName'],
             cameraImage: cameraData[index]['cameraImage'],
+            status: cameraData[index]['status'],
           ),
         );
       },
@@ -96,7 +98,9 @@ class _CameraPageState extends State<CamerasPage> {
   }
 
   Widget _buildCameraWidget(BuildContext context,
-      {required String cameraName, required String cameraImage}) {
+      {required String cameraName,
+      required String cameraImage,
+      required String status}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -106,15 +110,7 @@ class _CameraPageState extends State<CamerasPage> {
           decoration: BoxDecoration(
             color: Colors.grey[300],
           ),
-          child: Center(
-            child: CustomImageView(
-              imagePath:
-                  "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/CameraImage%2F${cameraImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
-              // height: 16.v,
-              // width: 17.h,
-              // margin: EdgeInsets.only(top: 42.v),
-            ),
-          ),
+          child: Center(child: switchImage(status, cameraImage)),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 9, vertical: 7),
@@ -132,5 +128,19 @@ class _CameraPageState extends State<CamerasPage> {
         ),
       ],
     );
+  }
+
+  Widget switchImage(String status, String cameraImage) {
+    if (status == 'Disconnected')
+      return Center(
+        child: CustomImageView(
+          imagePath: ImageConstant.imgNoPhotography,
+        ),
+      );
+    else
+      return CustomImageView(
+        imagePath:
+            "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/CameraImage%2F${cameraImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
+      );
   }
 }

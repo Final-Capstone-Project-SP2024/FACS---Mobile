@@ -6,6 +6,8 @@ class ImageConstant {
 // Notification images
   static String imgArrowDown = '$imagePath/img_arrow_down.svg';
 
+  static String imgNoPhotography = '$imagePath/img_no_photography.svg';
+
   static String imgFilter = '$imagePath/img_filter.svg';
 
   static String imgGroup94 = '$imagePath/img_group_94.png';
