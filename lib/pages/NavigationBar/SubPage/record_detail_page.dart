@@ -87,6 +87,8 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
                             SizedBox(height: 21.v),
                             _buildColumntypesomet1(context),
                             SizedBox(height: 20.v),
+                            if (recordDetailResponse['userVoting'].isNotEmpty)
+                              _buildActionFunction(context),
                           ],
                         ),
                       ),
@@ -145,6 +147,43 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
           margin: EdgeInsets.fromLTRB(14.h, 34.v, 14.h, 12.v),
         )
       ],
+    );
+  }
+
+  Widget _buildActionFunction(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4.h),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Action",
+              style: CustomTextStyles.titleLargeBluegray300,
+            ),
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: recordDetailResponse['userVoting'].length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: 15.h,
+                  right: 31.h,
+                ),
+                child: _buildColorwhite(
+                  context,
+                  typesomething: recordDetailResponse['userVoting'][index]
+                      ['securityCode'],
+                  typesomething1: recordDetailResponse['userVoting'][index]
+                      ['voteType'],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

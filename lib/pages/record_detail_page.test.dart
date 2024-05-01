@@ -787,6 +787,13 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                 //     ), // Replace YourDestinationPage with the page you want to navigate to
                 //   ),
                 // );
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Successfully'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
               text: "Finish",
               buttonStyle: CustomBottomStyle.fillGreen,
