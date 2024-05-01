@@ -1,226 +1,161 @@
-import 'package:flutter/material.dart';
-import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For date formatting
+import 'package:facs_mobile/services/record_service.dart';
+import 'package:facs_mobile/pages/record_detail_page.test.dart';
 
 class TimelinePage extends StatefulWidget {
+  const TimelinePage({Key? key}) : super(key: key);
   @override
   _TimelinePageState createState() => _TimelinePageState();
 }
 
 class _TimelinePageState extends State<TimelinePage> {
-  final RecordService _recordServices = RecordService();
-  List<Map<String, dynamic>> _records = [];
-  bool _isLoading = false;
-  int _page = 1;
-  int _pageSize = 10;
-  ScrollController _scrollController = ScrollController();
-
-  DateTime? _fromDate;
-  DateTime? _toDate;
+  List<Map<String, dynamic>> records = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchRecords();
-    _scrollController.addListener(_scrollListener);
+    fetchRecords();
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _fetchRecords() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
+  Future<void> fetchRecords() async {
     try {
-      List<Map<String, dynamic>> records = await _recordServices.getRecords(
-        page: _page,
-        pageSize: _pageSize,
-        fromDate: _fromDate != null ? _fromDate!.toIso8601String() : null,
-        toDate: _toDate != null ? _toDate!.toIso8601String() : null,
+      final List<Map<String, dynamic>> fetchedRecords =
+          await RecordService().getRecords(
+        sortType: 1,
+        colName: 'createdDate',
       );
-      records.sort((a, b) => DateTime.parse(a['recordTime']).compareTo(DateTime.parse(b['recordTime'])));
-
       setState(() {
-        _records.addAll(records);
-        _isLoading = false;
-        _page++;
+        records = fetchedRecords;
       });
     } catch (e) {
       print('Error fetching records: $e');
-      setState(() {
-        _isLoading = false;
-      });
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to fetch records. Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
     }
   }
 
-  void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-      _fetchRecords();
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'InAlarm':
+        return Color.fromARGB(255, 255, 155, 155);
+      case 'InAction':
+        return Color.fromARGB(255, 255, 214, 165);
+      case 'InFinish':
+        return Color.fromARGB(255, 162, 204, 135);
+      default:
+        return Colors.grey;
     }
+  }
+
+  IconData _getIconData(String status) {
+    switch (status) {
+      case 'InAlarm':
+        return Icons.priority_high;
+      case 'InAction':
+        return Icons.hourglass_top;
+      case 'InFinish':
+        return Icons.done;
+      default:
+        return Icons.error;
+    }
+  }
+
+  Future<void> _refreshRecords() async {
+    await fetchRecords();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: SizedBox(height: 50),
-          ),
-          _buildDateFilters(),
-          Expanded(
-            child: _buildTimeline(),
-          ),
-        ],
-      ),
-    );
-  }
+      body: RefreshIndicator(
+        onRefresh: _refreshRecords,
+        child: records.isEmpty
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                itemCount: records.length,
+                itemBuilder: (context, index) {
+                  final record = records[index];
+                  final DateTime recordTime =
+                      DateTime.parse(record['recordTime']);
+                  final String formattedRecordTime =
+                      DateFormat.yMMMd().add_jm().format(recordTime);
 
-  Widget _buildDateFilters() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ElevatedButton(
-            onPressed: () => _selectFromDate(context),
-            child: Text(_fromDate != null ? 'From: ${_fromDate!.toString().substring(0, 10)}' : 'Select From Date'),
-          ),
-          ElevatedButton(
-            onPressed: () => _selectToDate(context),
-            child: Text(_toDate != null ? 'To: ${_toDate!.toString().substring(0, 10)}' : 'Select To Date'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _selectFromDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _fromDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: _toDate ?? DateTime.now(),
-    );
-    if (picked != null && picked != _fromDate) {
-      setState(() {
-        _fromDate = picked;
-      });
-      _fetchRecords();
-    }
-  }
-
-  Future<void> _selectToDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _toDate ?? DateTime.now(),
-      firstDate: _fromDate ?? DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null && picked != _toDate) {
-      setState(() {
-        _toDate = picked;
-      });
-      _fetchRecords();
-    }
-  }
-
-  Widget _buildTimeline() {
-    if (_records.isEmpty) {
-      return Center(
-        child: Text(
-          'No records available',
-          style: TextStyle(fontSize: 16),
-        ),
-      );
-    } else {
-      final reversedRecords = List.from(_records.reversed);
-
-      return ListView.builder(
-        controller: _scrollController,
-        itemCount: reversedRecords.length + (_isLoading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == reversedRecords.length) {
-            return _buildLoadingIndicator();
-          }
-
-          final record = reversedRecords[index];
-          final DateTime recordDateTime = DateTime.parse(record['recordTime']);
-          final String formattedDateTime =
-              '${recordDateTime.day}/${recordDateTime.month}/${recordDateTime.year} ${recordDateTime.hour}:${recordDateTime.minute}';
-          Color cardColor;
-          switch (record['status']) {
-            case 'InFinish':
-              cardColor = Colors.green;
-              break;
-            case 'Pending':
-              cardColor = Colors.yellow;
-              break;
-            case 'InAlarm':
-              cardColor = Colors.orange;
-              break;
-            case 'InVote':
-              cardColor = Colors.red;
-              break;
-            case 'InAction':
-              cardColor = Colors.red;
-              break;
-            default:
-              cardColor = Colors.grey;
-              break;
-          }
-
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RecordDetail(
-                    recordId: record['id'],
-                    state: record['status'],
-                  ),
-                ),
-              );
-            },
-            child: Card(
-              color: cardColor,
-              child: ListTile(
-                title: Text('Date & Time: $formattedDateTime'),
-                subtitle: Text('Status: ${record['status']}'),
+                  return GestureDetector(
+                    onTap: () {
+                      if (record['recordType']['recordTypeName'] !=
+                          'ElectricalIncident')
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecordDetailPage(
+                                recordId: record['id'],
+                                state: record['status']),
+                          ),
+                        );
+                      else
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  'This is ElectricalIncident, unable to view'),
+                              duration: Duration(seconds: 2)),
+                        );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // First part: Circle with icon
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  _getStatusColor(record['status']),
+                              child: Icon(
+                                _getIconData(record['status']),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          // Second part: Date, Time, and Status
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  formattedRecordTime,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                                SizedBox(height: 4.0),
+                                Text(
+                                  'Status: ${record['status']}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                SizedBox(height: 4.0),
+                                Text(
+                                  'Type: ${record['recordType']['recordTypeName']}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            ),
-          );
-        },
-      );
-    }
-  }
-
-  Widget _buildLoadingIndicator() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      alignment: Alignment.center,
-      child: CircularProgressIndicator(),
+      ),
     );
   }
 }

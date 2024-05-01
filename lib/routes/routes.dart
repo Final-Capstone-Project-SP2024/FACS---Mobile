@@ -1,11 +1,11 @@
-
+import 'package:facs_mobile/pages/notification_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:facs_mobile/pages/onBoarding.dart';
 import 'package:facs_mobile/pages/sign_in.dart';
 import 'package:facs_mobile/pages/home_page.dart';
 import 'package:facs_mobile/pages/profile_page.dart';
-import 'package:facs_mobile/pages/notification_page.dart';
+import 'package:facs_mobile/pages/notification_page_test.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {

@@ -1,3 +1,4 @@
+import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -28,6 +29,7 @@ Future<void> _saveNotificationToStorage(RemoteMessage message) async {
     print("Error saving notification to storage: $e");
   }
 }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -72,33 +74,38 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FACS Mobile',
-      themeMode: ThemeMode.system,
-      theme: customLightTheme,
-      navigatorObservers: [routeObserver],
-      home: FutureBuilder<bool>(
-        future: checkOnboardingCompleted(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); // Or any loading indicator
-          } else {
-            if (snapshot.data == true) {
-              return SignIn(); // Skip onboarding if completed
-            } else {
-              return OnBoarding(); // Show onboarding if not completed
-            }
-          }
-        },
-      ),
-      darkTheme: customDarkTheme,
-      //initialRoute: "/onboarding",
-      onGenerateRoute: generateRoute,
-      debugShowCheckedModeBanner: false,
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return MaterialApp(
+          title: 'FACS Mobile',
+          themeMode: ThemeMode.system,
+          theme: customLightTheme,
+          navigatorObservers: [routeObserver],
+          home: FutureBuilder<bool>(
+            future: checkOnboardingCompleted(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator(); // Or any loading indicator
+              } else {
+                if (snapshot.data == true) {
+                  return SignIn(); // Skip onboarding if completed
+                } else {
+                  return OnBoarding(); // Show onboarding if not completed
+                }
+              }
+            },
+          ),
+          darkTheme: customDarkTheme,
+          //initialRoute: "/onboarding",
+          onGenerateRoute: generateRoute,
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
+
   Future<bool> checkOnboardingCompleted() async {
-     false;
+    false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? onboardingCompleted = prefs.getBool('onboardingCompleted');
     return onboardingCompleted ?? false;

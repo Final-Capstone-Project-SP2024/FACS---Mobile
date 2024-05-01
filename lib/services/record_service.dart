@@ -11,19 +11,34 @@ import 'package:flutter/material.dart';
 class RecordService {
   static const String apiUrl =
       'https://firealarmcamerasolution.azurewebsites.net/api/v1';
-  Future<List<Map<String, dynamic>>> getRecords({int? page, int? pageSize, String? fromDate, String? toDate}) async {
+  Future<List<Map<String, dynamic>>> getRecords(
+      {int? page,
+      int? pageSize,
+      int? sortType,
+      String? colName,
+      String? fromDate,
+      String? toDate,
+      String? status}) async {
     try {
-      String url = '$apiUrl/Record';
+      String url = '$apiUrl/Record?';
       if (page != null && pageSize != null) {
-        url += '?Page=$page&PageSize=$pageSize';
+        url += 'Page=$page&PageSize=$pageSize';
+      }
+      if (sortType != null) {
+        url += '&SortType=$sortType';
+      }
+      if (colName != null) {
+        url += '&ColName=$colName';
       }
       if (fromDate != null) {
         url += '&FromDate=$fromDate';
       }
-      if(toDate != null){
+      if (toDate != null) {
         url += '&ToDate=$toDate';
       }
-
+      if (status != null) {
+        url += '&status=$status';
+      }
       final response = await http.get(
         Uri.parse(url),
         headers: {'Authorization': 'Bearer ${UserServices.accessToken}'},
