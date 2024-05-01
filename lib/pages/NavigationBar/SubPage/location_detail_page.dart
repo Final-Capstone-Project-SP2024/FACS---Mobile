@@ -56,7 +56,7 @@ class _LocationDetailPageState extends State<LocationDetail> {
               children: [
                 CustomImageView(
                   imagePath:
-                      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2F${widget.locationImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
+                      "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/locationImage%2F${widget.locationImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
                   height: 250.v,
                   width: 374.h,
                   margin: EdgeInsets.only(left: 1.h),
