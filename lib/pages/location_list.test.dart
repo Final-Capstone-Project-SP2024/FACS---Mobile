@@ -57,7 +57,7 @@ class _LocationAll extends State<LocationListShow> {
                         // Adding condition to show CustomImageView
                         CustomImageView(
                           imagePath:
-                              "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/LocationImage%2F${locationData[index]['locationImage']}?alt=media&token=eb9237b2-5a76-48ba-ad3d-c4783ef415e9",
+                              "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/locationImage%2F${locationData[index]['locationImage']}?alt=media&token=eb9237b2-5a76-48ba-ad3d-c4783ef415e9",
                           height: 260.v,
                           width: 375.h,
                         ),

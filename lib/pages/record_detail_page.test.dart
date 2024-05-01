@@ -648,7 +648,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                   MaterialPageRoute(
                     builder: (context) => AlarmPage(
                       recordId: recordIdAdding,
-                    ), // Replace YourDestinationPage with the page you want to navigate to
+                    ),
                   ),
                 );
               },
@@ -660,9 +660,102 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           ),
           Expanded(
             child: CustomEvulatedBottom(
-              onPressed: () {
-                RecordService.actionAlarm(
-                    recordId: recordIdAdding, alarmLevel: 6);
+              onPressed: () async {
+                bool confirmed = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Confirm"),
+                      content: Text(
+                          "Are you sure you want to set status to false alarm?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                            side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.black),
+                            ),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.white),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 5.0),
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                            side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.black87),
+                            ),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.blue),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 5.0),
+                            child: Text(
+                              "Confirm",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                if (confirmed != null && confirmed) {
+                  bool setStatus = await RecordService.actionAlarm(
+                      recordId: recordIdAdding, alarmLevel: 7);
+                  if (setStatus) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Successfully set status to false alarm'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to set status to false alarm'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                }
               },
               text: "Fake Alarm",
               buttonStyle: CustomBottomStyle.fillRed,

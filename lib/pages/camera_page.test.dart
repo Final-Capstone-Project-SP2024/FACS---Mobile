@@ -140,7 +140,7 @@ class _CameraPageState extends State<CamerasPage> {
     else
       return CustomImageView(
         imagePath:
-            "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/CameraImage%2F${cameraImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
+            "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/cameraImage%2F${cameraImage}?alt=media&token=1c9b7155-76c4-494f-be18-7129eb06e729",
       );
   }
 }

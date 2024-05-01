@@ -1,6 +1,8 @@
+import 'package:facs_mobile/pages/NavigationBar/SubPage/record_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import 'package:facs_mobile/services/record_service.dart';
+import 'package:facs_mobile/pages/record_detail_page.test.dart';
 
 class TimelinePage extends StatefulWidget {
   const TimelinePage({Key? key}) : super(key: key);
@@ -80,46 +82,75 @@ class _TimelinePageState extends State<TimelinePage> {
                   final String formattedRecordTime =
                       DateFormat.yMMMd().add_jm().format(recordTime);
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // First part: Circle with icon
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: CircleAvatar(
-                            backgroundColor: _getStatusColor(record['status']),
-                            child: Icon(
-                              _getIconData(record['status']),
-                              color: Colors.white,
+                  return GestureDetector(
+                    onTap: () {
+                      if (record['recordType']['recordTypeName'] !=
+                          'ElectricalIncident')
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecordDetailPage(
+                                recordId: record['id'],
+                                state: record['status']),
+                          ),
+                        );
+                      else
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  'This is ElectricalIncident, unable to view'),
+                              duration: Duration(seconds: 2)),
+                        );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // First part: Circle with icon
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: CircleAvatar(
+                              backgroundColor:
+                                  _getStatusColor(record['status']),
+                              child: Icon(
+                                _getIconData(record['status']),
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-                        // Second part: Date, Time, and Status
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                formattedRecordTime,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
+                          // Second part: Date, Time, and Status
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  formattedRecordTime,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 4.0),
-                              Text(
-                                'Status: ${record['status']}',
-                                style: TextStyle(
-                                  fontSize: 14.0,
+                                SizedBox(height: 4.0),
+                                Text(
+                                  'Status: ${record['status']}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 4.0),
+                                Text(
+                                  'Type: ${record['recordType']['recordTypeName']}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 },

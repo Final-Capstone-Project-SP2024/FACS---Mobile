@@ -38,8 +38,7 @@ class RespondGuidePage extends StatelessWidget {
                     'Proceed to the designated evacuation assembly area outside the building unless directed to an alternate location.',
               ),
               ActionItem(
-                title:
-                    'If your clothing catches on fire, stop-drop-roll!',
+                title: 'If your clothing catches on fire, stop-drop-roll!',
               ),
               ActionItem(
                 title:

@@ -7,6 +7,7 @@ import 'package:facs_mobile/services/camera_services.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:facs_mobile/services/notification_services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 EventBus eventBus = EventBus();
 
@@ -146,7 +147,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(height: 40),
                         _buildNotifications(),
                         SizedBox(height: 30),
                         _buildDisconnectedCameras(),
@@ -269,19 +270,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
 
   Widget _buildSingleDisconnectedCamera(Map<String, dynamic> camera) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FixCameraPage(
-              cameraId: camera['cameraId'],
-              cameraStatus: camera['status'],
-              cameraDestination: camera['cameraDestination'],
-              cameraName: camera['cameraName'],
-            ),
-          ),
-        );
-      },
+      onTap: () {},
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
         decoration: BoxDecoration(

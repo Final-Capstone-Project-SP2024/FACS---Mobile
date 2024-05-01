@@ -2,24 +2,20 @@ import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/camera_list.test.dart';
 import 'package:facs_mobile/services/camera_services.dart';
+import 'package:facs_mobile/services/user_services.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
 import 'package:facs_mobile/themes/theme_helper.dart';
 import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FixCameraPage extends StatefulWidget {
-  final String cameraId;
-  String cameraStatus;
   final String cameraDestination;
   final String cameraName;
   FixCameraPage(
-      {Key? key,
-      required this.cameraId,
-      required this.cameraStatus,
-      required this.cameraDestination,
-      required this.cameraName})
+      {Key? key, required this.cameraDestination, required this.cameraName})
       : super(key: key);
 
   TextEditingController colortext = TextEditingController();
@@ -35,17 +31,6 @@ class _FixCameraPageState extends State<FixCameraPage> {
   @override
   void initState() {
     super.initState();
-    GetCameraDetail(widget.cameraId);
-  }
-
-  Future<dynamic> GetCameraDetail(String cameraId) async {
-    var data = await CameraServices.getCameraById(cameraId);
-    setState(() {
-      if (data != null) {
-        cameraDetail = data['data'];
-        print(cameraDetail);
-      }
-    });
   }
 
   @override
@@ -77,7 +62,7 @@ class _FixCameraPageState extends State<FixCameraPage> {
               Padding(
                 padding: EdgeInsets.only(left: 9.h),
                 child: Text(
-                  widget.cameraStatus,
+                  'Disconnected',
                   style:
                       TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
@@ -93,78 +78,15 @@ class _FixCameraPageState extends State<FixCameraPage> {
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
                 child: ElevatedButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Confirm Camera Fix'),
-                          content:
-                              Text('Are you sure the camera has been fixed?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                // Close the dialog
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                try {
-                                  // Call the fixCamera function with the cameraId
-                                  bool fixed = await CameraServices.fixCamera(
-                                      widget.cameraId);
-
-                                  // Check if the camera was fixed successfully
-                                  if (fixed) {
-                                    // Use setState to update the status in the widget's state
-                                    setState(() {
-                                      widget.cameraStatus = "Fixed";
-                                    });
-                                    Navigator.of(context)
-                                        .pop(); // Close the dialog
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Camera has been fixed successfully')));
-                                  } else {
-                                    Navigator.of(context)
-                                        .pop(); // Close the dialog
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content:
-                                                Text('Failed to fix camera')));
-                                  }
-                                } catch (e) {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                  print('Error fixing camera: $e');
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              'Failed to fix camera: $e')));
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF006BD4),
-                                textStyle: TextStyle(color: Colors.white),
-                              ),
-                              child: Text(
-                                'OK',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    //add call admin number
+                    _callEmergencyNumber();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFFF3131),
                     textStyle: TextStyle(color: Colors.white),
                   ),
                   child: Text(
-                    'Fix camera',
+                    'Call admin',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -306,5 +228,15 @@ class _FixCameraPageState extends State<FixCameraPage> {
         ),
       ),
     );
+  }
+
+  void _callEmergencyNumber() async {
+    String phoneNumber = await UserServices().getAdminPhoneNumber();
+    dynamic url = 'tel:$phoneNumber';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

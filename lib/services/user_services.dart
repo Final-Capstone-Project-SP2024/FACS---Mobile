@@ -145,4 +145,30 @@ class UserServices {
     } catch (e) {}
     return false;
   }
+
+  Future<String> getAdminPhoneNumber() async {
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final List<dynamic> results = jsonData['data']['results'];
+        final manager = results.firstWhere(
+            (user) => user['role']['roleName'] == 'Manager',
+            orElse: () => null);
+
+        if (manager != null) {
+          return manager['phone'];
+        } else {
+          return '114';
+        }
+      } else {
+        print('Failed to load users. Status code: ${response.statusCode}');
+        return '114';
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      return '114';
+    }
+  }
 }

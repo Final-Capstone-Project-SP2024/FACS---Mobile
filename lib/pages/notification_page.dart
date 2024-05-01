@@ -94,25 +94,32 @@ class _NotificationPageState extends State<NotificationPage> {
             },
           ),
         ),
-        // appBar: _buildAppbar(context),
-        body: SingleChildScrollView(
-          child: Container(
-            width: double.maxFinite,
-            padding: EdgeInsets.symmetric(
-              horizontal: 27.h,
-              vertical: 29.v,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Today",
-                  style: theme.textTheme.titleSmall,
-                ),
-                SizedBox(height: 10.v),
-                _buildRowline(context),
-                SizedBox(height: 5.v)
-              ],
+        body: RefreshIndicator(
+          onRefresh: () async {
+            // Call the fetchNotificationData function when refreshing
+            await fetchNotificationData();
+          },
+          child: SingleChildScrollView(
+            physics:
+                AlwaysScrollableScrollPhysics(), // Ensures the refresh indicator works
+            child: Container(
+              width: double.maxFinite,
+              padding: EdgeInsets.symmetric(
+                horizontal: 27.h,
+                vertical: 29.v,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Today",
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  SizedBox(height: 10.v),
+                  _buildRowline(context),
+                  SizedBox(height: 5.v),
+                ],
+              ),
             ),
           ),
         ),
@@ -221,6 +228,8 @@ class _NotificationPageState extends State<NotificationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: notificationData.map<Widget>((data) {
                   return _buildRowtypesomethin(context,
+                      cameraName: data['cameraName'],
+                      cameraDestination: data['cameraName'],
                       recordId: data['recordId'],
                       time: data['occurrenceTime'],
                       status: data['status'],
@@ -240,6 +249,8 @@ class _NotificationPageState extends State<NotificationPage> {
   /// Common widget
   Widget _buildRowtypesomethin(
     BuildContext context, {
+    required String cameraName,
+    required String cameraDestination,
     required String recordId,
     required String time,
     required String status,
@@ -248,23 +259,14 @@ class _NotificationPageState extends State<NotificationPage> {
     required String recordType,
   }) {
     return GestureDetector(
-      // onTap: () {
-      //   Navigator.push(
-      //     context,
-      //     if(recordType == "someCondition") {}
-      //     MaterialPageRoute(
-      //         builder: (context) => RecordDetailUserRoleEightScreen(
-      //               recordId: recordId,
-      //               state: status,
-      //             )), // Replace NextPage with the name of the page you want to navigate to
-      //   );
-      // },
       onTap: () {
         if (recordType == 2.toString()) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CamerasPage(),
+              builder: (context) => FixCameraPage(
+                  cameraName: cameraName, cameraDestination: cameraDestination),
+              // builder: (context) => CamerasPage(),
             ),
           );
         } else {
