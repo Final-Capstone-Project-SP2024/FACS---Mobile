@@ -12,10 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FixCameraPage extends StatefulWidget {
+  final String cameraId;
   final String cameraDestination;
   final String cameraName;
   FixCameraPage(
-      {Key? key, required this.cameraDestination, required this.cameraName})
+      {Key? key,
+      required this.cameraId,
+      required this.cameraDestination,
+      required this.cameraName})
       : super(key: key);
 
   TextEditingController colortext = TextEditingController();
@@ -72,25 +76,10 @@ class _FixCameraPageState extends State<FixCameraPage> {
               SizedBox(height: 16.v),
               // _cameraList(context),
               SizedBox(height: 5.v),
-              // Add the "Fix camera" button
               Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    //add call admin number
-                    _callEmergencyNumber();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFF3131),
-                    textStyle: TextStyle(color: Colors.white),
-                  ),
-                  child: Text(
-                    'Call admin',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                  child: _buildButton(context)),
             ],
           ),
         ),
@@ -230,9 +219,55 @@ class _FixCameraPageState extends State<FixCameraPage> {
     );
   }
 
+  Widget _buildButton(BuildContext context) {
+    if (UserServices.userRole == 'Manager') {
+      return ElevatedButton(
+        onPressed: () async {
+          try {
+            bool fixed = await CameraServices.fixCamera(widget.cameraId);
+            if (fixed) {
+              Navigator.of(context).pop();
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Camera has been fixed successfully')));
+            } else {
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to fix camera')));
+            }
+          } catch (e) {
+            Navigator.of(context).pop();
+            print('Error fixing camera: $e');
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to fix camera: $e')));
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF006BD4),
+          textStyle: TextStyle(color: Colors.white),
+        ),
+        child: Text(
+          'Fix camera',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    } else {
+      return ElevatedButton(
+        onPressed: _callEmergencyNumber,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFFFF3131),
+          textStyle: TextStyle(color: Colors.white),
+        ),
+        child: Text(
+          'Call admin',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
+  }
+
   void _callEmergencyNumber() async {
-    String phoneNumber = await UserServices().getAdminPhoneNumber();
-    dynamic url = 'tel:$phoneNumber';
+    dynamic url = 'tel:0392658221';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

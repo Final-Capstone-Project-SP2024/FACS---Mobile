@@ -228,6 +228,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: notificationData.map<Widget>((data) {
                   return _buildRowtypesomethin(context,
+                      cameraId: data['cameraId'],
                       cameraName: data['cameraName'],
                       cameraDestination: data['cameraName'],
                       recordId: data['recordId'],
@@ -249,6 +250,7 @@ class _NotificationPageState extends State<NotificationPage> {
   /// Common widget
   Widget _buildRowtypesomethin(
     BuildContext context, {
+    required String cameraId,
     required String cameraName,
     required String cameraDestination,
     required String recordId,
@@ -265,7 +267,9 @@ class _NotificationPageState extends State<NotificationPage> {
             context,
             MaterialPageRoute(
               builder: (context) => FixCameraPage(
-                  cameraName: cameraName, cameraDestination: cameraDestination),
+                  cameraId: cameraId,
+                  cameraName: cameraName,
+                  cameraDestination: cameraDestination),
               // builder: (context) => CamerasPage(),
             ),
           );

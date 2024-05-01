@@ -50,15 +50,6 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
       child: Scaffold(
         backgroundColor: appTheme.whiteA700,
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text('Record Detail'),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
         body: SizedBox(
           width: SizeUtils.width,
           child: SingleChildScrollView(
