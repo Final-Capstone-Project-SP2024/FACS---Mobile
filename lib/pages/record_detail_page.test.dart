@@ -671,7 +671,8 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop(false);
+                            Navigator.of(context)
+                                .pop(); // Navigate back to previous page
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all(

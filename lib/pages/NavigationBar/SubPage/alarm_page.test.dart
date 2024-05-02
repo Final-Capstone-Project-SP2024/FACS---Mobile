@@ -104,7 +104,7 @@ class _AlarmByHandPageState extends State<AlarmByHandPage> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 30.h),
                       padding: EdgeInsets.symmetric(
-                          horizontal: 64.h, vertical: 48.v),
+                          horizontal: 70.h, vertical: 51.v),
                       decoration: AppDecoration.outlineErrorContainer.copyWith(
                         image: DecorationImage(
                           image: fs.Svg(ImageConstant.circle),

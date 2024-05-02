@@ -170,7 +170,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
   Widget _hiddenRefreshButton() {
     return ElevatedButton(
       onPressed: () {
-        initState();
+        _fetchDataAndUpdateStatus();
       },
       style: ButtonStyle(
         surfaceTintColor:
