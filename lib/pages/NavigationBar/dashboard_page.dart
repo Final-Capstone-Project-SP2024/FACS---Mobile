@@ -5,6 +5,7 @@ import 'package:facs_mobile/pages/NavigationBar/SubPage/fix_camera_page.dart';
 import 'package:facs_mobile/routeObserver.dart';
 import 'package:facs_mobile/services/camera_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:facs_mobile/services/notification_services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -90,7 +91,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
         setState(() {
           cameras = disconnectedCameras ?? [];
           if (cameras.isNotEmpty && detectionStatus != 'at_risk') {
-            detectionStatus = 'protential';
+            detectionStatus = 'potential';
           }
         });
       }
@@ -147,7 +148,9 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 40),
+                        SizedBox(height: 20),
+                        _hiddenRefreshButton(),
+                        SizedBox(height: 20),
                         _buildNotifications(),
                         SizedBox(height: 30),
                         _buildDisconnectedCameras(),
@@ -160,6 +163,33 @@ class _DashboardPageState extends State<DashboardPage> with RouteAware {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _hiddenRefreshButton() {
+    return ElevatedButton(
+      onPressed: () {
+        _fetchDataAndUpdateStatus();
+      },
+      style: ButtonStyle(
+        surfaceTintColor:
+            MaterialStateProperty.all(const Color.fromARGB(255, 255, 255, 255)),
+        foregroundColor:
+            MaterialStateProperty.all(const Color.fromARGB(255, 255, 255, 255)),
+        overlayColor:
+            MaterialStateProperty.all(const Color.fromARGB(255, 255, 255, 255)),
+        backgroundColor:
+            MaterialStateProperty.all(const Color.fromARGB(255, 255, 255, 255)),
+        shadowColor:
+            MaterialStateProperty.all(const Color.fromARGB(0, 255, 255, 255)),
+      ),
+      child: Visibility(
+        child: Text("Invisible"),
+        maintainSize: false,
+        maintainAnimation: false,
+        maintainState: true,
+        visible: false,
       ),
     );
   }
