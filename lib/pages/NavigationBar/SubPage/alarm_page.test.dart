@@ -1,3 +1,4 @@
+import 'package:permission_handler/permission_handler.dart';
 import 'package:facs_mobile/services/camera_services.dart';
 import 'package:facs_mobile/services/location_services.dart';
 import 'package:flutter/material.dart';

@@ -9,6 +9,7 @@ import 'package:facs_mobile/themes/theme_helper.dart';
 import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FixCameraPage extends StatefulWidget {
@@ -253,7 +254,19 @@ class _FixCameraPageState extends State<FixCameraPage> {
       );
     } else {
       return ElevatedButton(
-        onPressed: _callEmergencyNumber,
+        onPressed: () async {
+          if (await Permission.phone.request().isGranted) {
+            _callEmergencyNumber();
+          } else {
+            // Permission is not granted, request it from the user
+            await openAppSettings();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Please grant phone permission to make a call.'),
+              ),
+            );
+          }
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xFFFF3131),
           textStyle: TextStyle(color: Colors.white),
@@ -267,10 +280,8 @@ class _FixCameraPageState extends State<FixCameraPage> {
   }
 
   void _callEmergencyNumber() async {
-    dynamic url = 'tel:0392658221';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
+    dynamic url = Uri.parse('tel:0392658221');
+    if (!await launchUrl(url)) {
       throw 'Could not launch $url';
     }
   }
