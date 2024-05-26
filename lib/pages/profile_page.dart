@@ -41,13 +41,13 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
-        automaticallyImplyLeading: true, // Back button will be automatically added
+        automaticallyImplyLeading:
+            true, // Back button will be automatically added
       ),
       body: Column(
         children: [
           Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: SizedBox(height: 20),
           ),
           Center(
@@ -88,7 +88,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ListTile(
                     leading: Icon(Icons.edit),
-                    title: Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text('Edit Profile',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -100,7 +101,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   ListTile(
                     leading: Icon(Icons.help),
-                    title: Text('Emergency Response Guide', style: TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text('Emergency Response Guide',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -119,7 +121,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   // ),
                   ListTile(
                     leading: Icon(Icons.exit_to_app),
-                    title: Text('Sign Out', style: TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text('Sign Out',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     onTap: () {
                       showConfirmationDialog(context);
                     },
@@ -137,7 +140,11 @@ class _ProfilePageState extends State<ProfilePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('securityCode');
     await prefs.remove('password');
+    await prefs.setString('fcmToken', '0');
+    UserServices.sendFCMToken();
+    await prefs.remove('fcmToken');
   }
+
   void showConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,

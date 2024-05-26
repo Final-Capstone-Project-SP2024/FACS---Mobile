@@ -8,8 +8,9 @@ class NotificationService {
 
   static Future<dynamic> getNotification() async {
     try {
-      final response = await http.get(Uri.parse(
-          '$apiUrl/Notification/firealarms'));
+      final response = await http.get(
+          Uri.parse('$apiUrl/Notification/firealarms'),
+          headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
       if (response.statusCode == 200) {
         print(response.body);
         return jsonDecode(response.body);
@@ -21,10 +22,11 @@ class NotificationService {
   }
 
   static Future<bool> isAlarm() async {
-      final response = await http.get(Uri.parse('$apiUrl/Notification/firealarms'),
-            headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
-      return true;
-    }
+    final response = await http.get(
+        Uri.parse('$apiUrl/Notification/firealarms'),
+        headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
+    return true;
+  }
 
   static Future<dynamic> getDisconnectedAlarms() async {
     try {

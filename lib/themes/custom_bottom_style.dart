@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class CustomBottomStyle {
   static ButtonStyle get fillGreen => ElevatedButton.styleFrom(
-        backgroundColor: const Color(0XFF73FD68),
+        backgroundColor: Color.fromARGB(255, 88, 255, 76),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(31.h),
         ),

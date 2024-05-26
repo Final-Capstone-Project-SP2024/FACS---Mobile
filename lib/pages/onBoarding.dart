@@ -10,6 +10,7 @@ class OnBoarding extends StatelessWidget {
     return CupertinoApp(
       home: OnBoardingSlider(
         headerBackgroundColor: Color(0xFFFF5722),
+        pageBackgroundColor: Colors.white,
         finishButtonText: 'Start now',
         finishButtonStyle: FinishButtonStyle(
           backgroundColor: Color(0xFFFF5722),
@@ -90,6 +91,7 @@ class OnBoarding extends StatelessWidget {
       ),
     );
   }
+
   Future<void> checkCredentials(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? savedSecurityCode = prefs.getString('securityCode');

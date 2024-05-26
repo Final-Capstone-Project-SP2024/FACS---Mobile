@@ -1,104 +1,125 @@
-import 'dart:io';
+import 'package:facs_mobile/pages/NavigationBar/SubPage/picture_preview_page.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:facs_mobile/services/record_service.dart';
+import 'package:camera/camera.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class AddEvidencePage extends StatelessWidget {
-  final String recordIdAdding;
-  AddEvidencePage({required this.recordIdAdding});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fire Detection Evidence',
-      theme: ThemeData(
-        primaryColor: Colors.redAccent,
-        hintColor: Colors.yellowAccent,
-        fontFamily: 'Roboto',
-      ),
-      home: TakePictureScreen(
-        recordId: recordIdAdding,
-      ),
-    );
-  }
-}
-
-class TakePictureScreen extends StatefulWidget {
+class AddEvidencePage extends StatefulWidget {
   final String recordId;
-  TakePictureScreen({required this.recordId});
-
+  AddEvidencePage({Key? key, required this.recordId}) : super(key: key);
   @override
-  _TakePictureScreenState createState() => _TakePictureScreenState();
+  _AddEvidencePageState createState() => _AddEvidencePageState();
 }
 
-class _TakePictureScreenState extends State<TakePictureScreen> {
-  File? _imageFile;
+class _AddEvidencePageState extends State<AddEvidencePage> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
 
-  Future<void> _takePicture() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    _requestCameraPermission();
   }
 
-  void _sendPicture() async {
-    if (_imageFile != null) {
-      try {
-        // Read image file as bytes
-        List<int> imageBytes = await _imageFile!.readAsBytes();
-
-        // Call RecordService.addEvidence to send the image data
-        await RecordService.addEvidence(imageBytes, widget.recordId);
-      } catch (e) {
-        print('Failed to send picture: $e');
-      }
+  Future<void> _requestCameraPermission() async {
+    final status = await Permission.camera.request();
+    if (status.isGranted) {
+      _initializeCamera();
     } else {
-      print('No image to send.');
+      print('Camera permission not granted');
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Picture sent successfully')),
+  }
+
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    final firstCamera = cameras.first;
+    _controller = CameraController(
+      firstCamera,
+      ResolutionPreset.medium,
     );
-    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+
+    _initializeControllerFuture = _controller.initialize();
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Fire Detection Evidence'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-            child: _imageFile == null
-                ? Text(
-                    'No image selected.',
-                    style: TextStyle(fontSize: 20),
-                  )
-                : Image.file(
-                    _imageFile!,
-                    height: 300,
-                    width: 300,
-                  ),
+      appBar: AppBar(),
+      body: Stack(
+        children: [
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return SizedBox.expand(
+                  child: CameraPreview(_controller),
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
           ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _sendPicture,
-            child: Text('Send Picture'),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: EdgeInsets.only(top: 16),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'Take a picture as an evidence',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: EdgeInsets.only(bottom: 20),
+              child: ElevatedButton(
+                onPressed: () {
+                  _takePicture(widget.recordId); // Pass the recordId here
+                },
+                child: Icon(
+                  Icons.photo_camera,
+                  color: Colors.lightBlue,
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(20),
+                  shape: CircleBorder(),
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _takePicture,
-        tooltip: 'Take Picture',
-        child: Icon(Icons.camera_alt),
-      ),
     );
+  }
+
+  void _takePicture(String recordId) async {
+    try {
+      await _initializeControllerFuture;
+      final image = await _controller.takePicture();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PicturePreviewPage(
+            imagePath: image.path,
+            recordId: recordId,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error taking picture: $e');
+    }
   }
 }

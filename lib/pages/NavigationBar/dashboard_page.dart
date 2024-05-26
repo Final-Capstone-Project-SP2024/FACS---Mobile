@@ -1,14 +1,11 @@
 import 'dart:async';
 
 import 'package:event_bus/event_bus.dart';
-import 'package:facs_mobile/pages/NavigationBar/SubPage/fix_camera_page.dart';
 import 'package:facs_mobile/routeObserver.dart';
 import 'package:facs_mobile/services/camera_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:facs_mobile/services/notification_services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 EventBus eventBus = EventBus();
 

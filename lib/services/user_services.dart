@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserServices {
   static const String apiUrl =
@@ -24,27 +25,34 @@ class UserServices {
         }),
       );
       if (response.statusCode == 200) {
-        print("Login Success");
         final responseData = jsonDecode(response.body);
         accessToken = responseData['data']['accessToken'];
         refreshToken = responseData['data']['refreshToken'];
-        SendFCMToken();
+        sendFCMToken();
         userId = responseData['data']['id'];
         userRole = responseData['data']['role']['roleName'];
+        saveCredentials(accessToken, refreshToken, userId, userRole);
         return responseData['data'];
       } else {
-        print('Error: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
 
-  static Future SendFCMToken() async {
+  static Future<void> saveCredentials(String accessToken, String refreshToken,
+      String userId, String userRole) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('accessToken', accessToken);
+    await prefs.setString('refreshToken', refreshToken);
+    await prefs.setString('userId', userId);
+    await prefs.setString('userRole', userRole);
+  }
+
+  static Future sendFCMToken() async {
     try {
-      final response = await http.post(
+      return await http.post(
           Uri.parse(
               'https://firealarmcamerasolution.azurewebsites.net/api/v1/Token?token=$fcmToken'),
           headers: <String, String>{
@@ -88,10 +96,8 @@ class UserServices {
   }
 
   Future<Map<String, dynamic>> getUserDetails(String userId) async {
-    final String url = '$apiUrl/$userId';
-
     try {
-      final response = await http.get(Uri.parse('$url'),
+      final response = await http.post(Uri.parse('$apiUrl/$userId'),
           headers: {'Authorization': 'Bearer ${UserServices.accessToken}'});
       if (response.statusCode == 200) {
         final Map<String, dynamic> userData = json.decode(response.body);
@@ -118,7 +124,7 @@ class UserServices {
     }
   }
 
-  static Future<bool> changePasswordRequest(String OTP, String newPassword,
+  static Future<bool> changePasswordRequest(String otp, String newPassword,
       String newPasswordConfirm, String securityCode) async {
     if (newPassword != newPasswordConfirm) {
       return false;
@@ -131,7 +137,7 @@ class UserServices {
         },
         body: jsonEncode(<String, String>{
           'securityCode': securityCode,
-          'otpSending': OTP,
+          'otpSending': otp,
           'newPassword': newPassword
         }),
       );
@@ -142,7 +148,8 @@ class UserServices {
         print(response.body);
         return false;
       }
-    } catch (e) {}
-    return false;
+    } catch (e) {
+      return false;
+    }
   }
 }

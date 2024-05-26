@@ -1,16 +1,11 @@
-import 'package:event_bus/event_bus.dart';
-import 'package:facs_mobile/pages/notification_page.dart';
-import 'package:facs_mobile/pages/notification_page_test.dart';
-import 'package:facs_mobile/pages/profile_page.dart';
-import 'package:facs_mobile/pages/NavigationBar/SubPage/alarm_page.test.dart';
-import 'package:facs_mobile/pages/camera_page.test.dart';
-import 'package:facs_mobile/pages/location_list.test.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:facs_mobile/pages/NavigationBar/add_alarm_page.dart';
-import 'package:facs_mobile/pages/NavigationBar/camera_page.dart';
+import 'package:facs_mobile/pages/notification_page.dart';
+import 'package:facs_mobile/pages/profile_page.dart';
 import 'package:facs_mobile/pages/NavigationBar/dashboard_page.dart';
-import 'package:facs_mobile/pages/NavigationBar/location_page.dart';
+import 'package:facs_mobile/pages/camera_page.test.dart';
+import 'package:facs_mobile/pages/NavigationBar/SubPage/alarm_page.test.dart';
+import 'package:facs_mobile/pages/location_list.test.dart';
 import 'package:facs_mobile/pages/NavigationBar/timeline_page.dart';
 
 class HomePage extends StatelessWidget {
