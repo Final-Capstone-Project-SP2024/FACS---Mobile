@@ -20,6 +20,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> loadUserDetails() async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? n = prefs.getString('userFullname') ?? "";
+      setState(() {
+        userFullname = n;
+      });
       final userDetails =
           await UserServices().getUserDetails(UserServices.userId);
       if (userDetails.containsKey('data')) {

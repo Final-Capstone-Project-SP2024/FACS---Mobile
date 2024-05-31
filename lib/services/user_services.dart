@@ -9,6 +9,7 @@ class UserServices {
   static String refreshToken = '';
   static String fcmToken = '';
   static String userId = '';
+  static String userFullname = '';
   static String userRole = '';
 
   static Future<Map<String, dynamic>?> signIn(
@@ -30,8 +31,10 @@ class UserServices {
         refreshToken = responseData['data']['refreshToken'];
         sendFCMToken();
         userId = responseData['data']['id'];
+        userFullname = responseData['data']['name'];
         userRole = responseData['data']['role']['roleName'];
-        saveCredentials(accessToken, refreshToken, userId, userRole);
+        saveCredentials(
+            accessToken, refreshToken, userId, userFullname, userRole);
         return responseData['data'];
       } else {
         return null;
@@ -42,11 +45,12 @@ class UserServices {
   }
 
   static Future<void> saveCredentials(String accessToken, String refreshToken,
-      String userId, String userRole) async {
+      String userId, String userFullname, String userRole) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('accessToken', accessToken);
     await prefs.setString('refreshToken', refreshToken);
     await prefs.setString('userId', userId);
+    await prefs.setString('userFullname', userFullname);
     await prefs.setString('userRole', userRole);
   }
 

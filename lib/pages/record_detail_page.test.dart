@@ -13,10 +13,6 @@ import 'package:facs_mobile/widgets/custom_icon_button.dart';
 import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import '../../widgets/app_bar/appbar_leading_image.dart';
-import '../../widgets/app_bar/appbar_title.dart';
-import '../../widgets/app_bar/appbar_trailing_image.dart';
-import '../../widgets/app_bar/custom_app_bar.dart';
 
 // ignore_for_file: must_be_immutable
 class RecordDetailUserRoleEightScreen extends StatefulWidget {
@@ -732,6 +728,8 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
 
   Widget _confirmActionButton(BuildContext context,
       {required String recordIdAdding}) {
+    bool shouldHideAlertAll = recordDetailResponse['userVoting'].any((vote) =>
+        vote['userId'] == UserServices.userId && vote['voteLevel'] == 5);
     return Padding(
       padding: EdgeInsets.only(left: 25.h, right: 15.h),
       child: Row(
@@ -741,14 +739,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             child: CustomEvulatedBottom(
               onPressed: () {
                 RecordService.finishActionPhase(recordId: recordIdAdding);
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => AlarmPage(
-                //       recordId: recordIdAdding,
-                //     ), // Replace YourDestinationPage with the page you want to navigate to
-                //   ),
-                // );
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -763,32 +753,23 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
               buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
             ),
           ),
-          Expanded(
-            child: CustomEvulatedBottom(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => AlarmPage(
-                //       recordId: recordIdAdding,
-                //     ),
-                //   ),
-                // );
-                //},
-                RecordService.actionAlarm(
-                    recordId: recordIdAdding, alarmLevel: 5);
-                //TODO: replace to refresh rec detail page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-              },
-              text: "Alert All",
-              buttonStyle: CustomBottomStyle.fillRed,
-              margin: EdgeInsets.only(right: 22.h),
-              buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
-            ),
-          )
+          if (!shouldHideAlertAll)
+            Expanded(
+              child: CustomEvulatedBottom(
+                onPressed: () {
+                  RecordService.actionAlarm(
+                      recordId: recordIdAdding, alarmLevel: 5);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                },
+                text: "Alert All",
+                buttonStyle: CustomBottomStyle.fillRed,
+                margin: EdgeInsets.only(right: 22.h),
+                buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
+              ),
+            )
         ],
       ),
     );
