@@ -1,15 +1,9 @@
-import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
 import 'package:facs_mobile/themes/custom_text_style.dart';
 import 'package:facs_mobile/themes/theme_helper.dart';
-import 'package:facs_mobile/widgets/app_bar/appbar_leading_image.dart';
-import 'package:facs_mobile/widgets/app_bar/appbar_title.dart';
-import 'package:facs_mobile/widgets/app_bar/appbar_trailing_image.dart';
-import 'package:facs_mobile/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:video_player/video_player.dart';
 
 class RecordDetailPage extends StatefulWidget {
@@ -27,11 +21,7 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
   dynamic recordDetailResponse;
   bool _showVideo = false;
   late VideoPlayerController _videoController;
-  bool _isPlaying = false;
-  int _vote = 0;
   TextEditingController locationController = TextEditingController();
-  PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
   TextEditingController colortexboxoneController = TextEditingController();
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -80,9 +70,13 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
                             SizedBox(height: 20.v),
                             if (recordDetailResponse['userVoting'].isNotEmpty)
                               _buildActionFunction(context),
+                            SizedBox(height: 20.v),
+                            _buildUserResponsibility(context),
+                            SizedBox(height: 10.v),
                           ],
                         ),
                       ),
+                      SizedBox(height: 20.v),
                     ],
                   ),
                 )),
@@ -111,34 +105,6 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
         _initializeVideoController();
       }
     });
-  }
-
-  PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return CustomAppBar(
-      leadingWidth: 40.h,
-      leading: AppbarLeadingImage(
-        imagePath: ImageConstant.imgArrowDown,
-        margin: EdgeInsets.only(
-          left: 16.h,
-          top: 34.v,
-          bottom: 12.v,
-        ),
-      ),
-      title: AppbarTitle(
-        text: "Record Detail",
-        margin: EdgeInsets.only(
-          left: 32.h,
-          top: 33.v,
-          bottom: 12.v,
-        ),
-      ),
-      actions: [
-        AppbarTrailingImage(
-          imagePath: ImageConstant.imgIconMore,
-          margin: EdgeInsets.fromLTRB(14.h, 34.v, 14.h, 12.v),
-        )
-      ],
-    );
   }
 
   Widget _buildActionFunction(BuildContext context) {
@@ -449,48 +415,6 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
   }
 
   /// Common widget
-  Widget _buildColortexbox(
-    BuildContext context, {
-    required String levelCounter,
-    required String typesomething,
-  }) {
-    return Container(
-      decoration: AppDecoration.fillWhiteA,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 12.v),
-          Padding(
-            padding: EdgeInsets.only(right: 32.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 1.v),
-                  child: Text(
-                    levelCounter,
-                    style: CustomTextStyles.titleMediumOnPrimary.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 3.v),
-                  child: Text(
-                    typesomething,
-                    style: theme.textTheme.titleSmall!.copyWith(
-                      color: appTheme.blueGray300,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Divider()
-        ],
-      ),
-    );
-  }
 
   Widget _buildColorwhite(
     BuildContext context, {
@@ -527,6 +451,43 @@ class _RecordDetailPageState extends State<RecordDetailPage> {
             ),
           ),
           Divider()
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserResponsibility(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 2.h),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8.v),
+              child: Text(
+                "Responsible users",
+                style: CustomTextStyles.titleLargeBluegray300,
+              ),
+            ),
+          ),
+          ...recordDetailResponse['userResponsibilities']
+              .map<Widget>(
+                (user) => Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.v),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${user['userName']}",
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        Divider()
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.start,
+                    )),
+              )
+              .toList(),
         ],
       ),
     );

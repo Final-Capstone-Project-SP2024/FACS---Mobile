@@ -1,6 +1,8 @@
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/services/user_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -18,18 +20,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
-Future<void> _saveNotificationToStorage(RemoteMessage message) async {
-  try {
-    final notificationData = {
-      'title': message.notification?.title ?? '',
-      'body': message.notification?.body ?? '',
-    };
-    await NotificationDatabase.instance.insertNotification(notificationData);
-  } catch (e) {
-    print("Error saving notification to storage: $e");
-  }
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -38,14 +28,17 @@ void main() async {
       FlutterLocalNotificationsPlugin();
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+
+  // Initialize FlutterTts instance
+  FlutterTts flutterTts = FlutterTts();
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
 
     if (message.notification != null) {
       print(
           'Message also contained a notification: ${message.notification.toString()}');
-      _saveNotificationToStorage(message);
       flutterLocalNotificationsPlugin.show(
         0,
         message.notification!.title,
@@ -59,8 +52,15 @@ void main() async {
               icon: 'ic_launcher'),
         ),
       );
+
+      // Speak the notification message
+      Future.delayed(Duration(seconds: 5));
+      await flutterTts.setLanguage("en-US");
+      await flutterTts.speak(message.notification!.body ?? '');
+      Future.delayed(Duration(seconds: 5));
     }
   });
+
   String? token = await messaging.getToken();
   print('Token: $token');
   if (token != null) {

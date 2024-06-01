@@ -1,6 +1,7 @@
 import 'package:facs_mobile/core/utils/image_constant.dart';
 import 'package:facs_mobile/core/utils/size_utils.dart';
 import 'package:facs_mobile/pages/NavigationBar/SubPage/action_page.test.dart';
+import 'package:facs_mobile/pages/home_page.dart';
 import 'package:facs_mobile/services/record_service.dart';
 import 'package:facs_mobile/services/user_services.dart';
 import 'package:facs_mobile/themes/app_decoration.dart';
@@ -11,16 +12,7 @@ import 'package:facs_mobile/widgets/custom_evulated_bottom.test.dart';
 import 'package:facs_mobile/widgets/custom_icon_button.dart';
 import 'package:facs_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:video_player/video_player.dart';
-import '../../core/app_export.dart';
-import '../../widgets/app_bar/appbar_leading_image.dart';
-import '../../widgets/app_bar/appbar_title.dart';
-import '../../widgets/app_bar/appbar_trailing_image.dart';
-import '../../widgets/app_bar/custom_app_bar.dart';
-import '../../widgets/custom_bottom_bar.dart';
-import '../../widgets/custom_text_form_field.dart'; // ignore_for_file: must_be_immutable
 
 // ignore_for_file: must_be_immutable
 class RecordDetailUserRoleEightScreen extends StatefulWidget {
@@ -38,11 +30,7 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
   dynamic recordDetailResponse;
   bool _showVideo = false;
   late VideoPlayerController _videoController;
-  bool _isPlaying = false;
-  int _vote = 0;
   TextEditingController locationController = TextEditingController();
-  PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
   TextEditingController colortexboxoneController = TextEditingController();
 
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -57,6 +45,9 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool shouldHideWhenAlertAll = recordDetailResponse['userVoting'].any(
+        (vote) =>
+            vote['userId'] == UserServices.userId && vote['voteLevel'] == 5);
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.whiteA700,
@@ -70,7 +61,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
             },
           ),
         ),
-        // appBar: _buildAppbar(context),
         body: SizedBox(
           width: SizeUtils.width,
           child: SingleChildScrollView(
@@ -86,7 +76,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                       _showVideo
                           ? _showVideoWidget(context)
                           : _showImage(context),
-                      //  _buildRowovaltwoone(context),
                       SizedBox(height: 1.v),
                       _buildRowcameraone(context),
                       SizedBox(height: 5.v),
@@ -100,30 +89,63 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                             SizedBox(height: 21.v),
                             _buildColumntypesomet1(context),
                             SizedBox(height: 5.v),
-                            // _buildActionFunction(context),
                             if (recordDetailResponse['userVoting'].isNotEmpty)
-                              _buildActionFunction(context),
-                            //  _actionPhase(context),
-                            // SizedBox(height: 5.v),
-                            // _confirmButton(context,
-                            //     recordIdAdding:
-                            //         recordDetailResponse['recordId']),
-                            // SizedBox(height: 5.v),
-                            // _confirmActionButton(context,
-                            //     recordIdAdding:
-                            //         recordDetailResponse['recordId']),
+                              _buildActionFunction(context,
+                                  recordIdAdding:
+                                      recordDetailResponse['recordId']),
                             SizedBox(height: 5.v),
-                            if (recordDetailResponse['status'] == "InAlarm" &&
-                                UserServices.userRole == 'Manager')
-                              _confirmButton(context,
-                                  recordIdAdding:
-                                      recordDetailResponse['recordId']),
-                            if (recordDetailResponse['status'] == "InAction" &&
-                                UserServices.userRole == 'Manager')
-                              _confirmActionButton(context,
-                                  recordIdAdding:
-                                      recordDetailResponse['recordId']),
-                            //  SizedBox(height: 5.v),
+                            //Buttons section
+                            if (recordDetailResponse['status'] ==
+                                "InAlarm") ...[
+                              Column(
+                                children: [
+                                  _buildActionButton(context,
+                                      recordIdAdding:
+                                          recordDetailResponse['recordId']),
+                                  SizedBox(height: 20.h),
+                                  _buildFakeAlarmButton(context,
+                                      recordIdAdding:
+                                          recordDetailResponse['recordId']),
+                                ],
+                              )
+                            ],
+                            if (recordDetailResponse['status'] ==
+                                "InAction") ...[
+                              Column(
+                                children: [
+                                  if (!shouldHideWhenAlertAll)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Expanded(
+                                          child: _buildFakeAlarmButton(
+                                            context,
+                                            recordIdAdding:
+                                                recordDetailResponse[
+                                                    'recordId'],
+                                          ),
+                                        ),
+                                        SizedBox(width: 8.0),
+                                        Expanded(
+                                          child: _buildAlertAllButton(
+                                            context,
+                                            recordIdAdding:
+                                                recordDetailResponse[
+                                                    'recordId'],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  SizedBox(height: 16.0),
+                                  _buildFinishButton(
+                                    context,
+                                    recordIdAdding:
+                                        recordDetailResponse['recordId'],
+                                  ),
+                                ],
+                              )
+                            ]
                           ],
                         ),
                       ),
@@ -133,15 +155,12 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
                 )),
           ),
         ),
-        //     bottomNavigationBar: _buildBottombar(context),
       ),
     );
   }
 
   void _initializeVideoController() {
     _videoController = VideoPlayerController.network(
-        //"https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['videoRecord']['videoUrl']}?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c",
-        //"https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2Fincident_12-4-2024-18-47-29.mp4?alt=media&token=93976c11-1da7-4aa7-a470-20e26a92a38c"
         "https://firebasestorage.googleapis.com/v0/b/final-capstone-project-f8bdd.appspot.com/o/VideoRecord%2F${recordDetailResponse['videoRecord']['videoUrl']}?alt=media&token=18e13091-0a41-4b0e-9b9c-283fb2f3a803")
       ..initialize().then((_) {
         setState(() {});
@@ -159,35 +178,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
         _initializeVideoController();
       }
     });
-  }
-
-  /// Section Widget
-  PreferredSizeWidget _buildAppbar(BuildContext context) {
-    return CustomAppBar(
-      leadingWidth: 40.h,
-      leading: AppbarLeadingImage(
-        imagePath: ImageConstant.imgArrowDown,
-        margin: EdgeInsets.only(
-          left: 16.h,
-          top: 34.v,
-          bottom: 12.v,
-        ),
-      ),
-      title: AppbarTitle(
-        text: "Record Detail",
-        margin: EdgeInsets.only(
-          left: 32.h,
-          top: 33.v,
-          bottom: 12.v,
-        ),
-      ),
-      actions: [
-        AppbarTrailingImage(
-          imagePath: ImageConstant.imgIconMore,
-          margin: EdgeInsets.fromLTRB(14.h, 34.v, 14.h, 12.v),
-        )
-      ],
-    );
   }
 
   Widget _showVideoWidget(BuildContext context) {
@@ -268,14 +258,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
       decoration: AppDecoration.fillGray,
       child: Row(
         children: [
-          // CustomImageView(
-          //   color: Colors.amber,
-          //   imagePath: ImageConstant.barInRecordDetail,
-          //   height: 24.adaptSize,
-          //   width: 24.adaptSize,
-          //   margin: EdgeInsets.only(bottom: 3.v),
-          // ),
-          // SizedBox(width: 20.h),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(bottom: 0.v),
@@ -313,50 +295,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
               });
             },
           ),
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _actionPhase(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Action Level",
-            style: CustomTextStyles.titleLargeBluegray300,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 15.h),
-            child: _buildColortexbox(
-              context,
-              levelCounter: "XXX_001",
-              typesomething: "1",
-            ),
-          ),
-          SizedBox(height: 3.v),
-          Container(
-            margin: EdgeInsets.only(left: 15.h),
-            decoration: AppDecoration.fillWhiteA,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12.v),
-                Padding(
-                  padding: EdgeInsets.only(right: 30.h),
-                  child: _buildRowtypesomethin(
-                    context,
-                    levelCounter: "XXX_002",
-                    typesomething: "2",
-                  ),
-                ),
-                Divider()
-              ],
-            ),
-          )
         ],
       ),
     );
@@ -544,7 +482,8 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
     );
   }
 
-  Widget _buildActionFunction(BuildContext context) {
+  Widget _buildActionFunction(BuildContext context,
+      {required String recordIdAdding}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.h),
       child: Column(
@@ -578,324 +517,6 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  /// Section Widget
-  Widget _votePart(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Vote",
-            style: CustomTextStyles.titleLargeBluegray300,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 15.h),
-            child: _buildColortexbox(
-              context,
-              levelCounter: "XXX_001",
-              typesomething: "1",
-            ),
-          ),
-          SizedBox(height: 3.v),
-          Container(
-            margin: EdgeInsets.only(left: 15.h),
-            decoration: AppDecoration.fillWhiteA,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12.v),
-                Padding(
-                  padding: EdgeInsets.only(right: 30.h),
-                  child: _buildRowtypesomethin(
-                    context,
-                    levelCounter: "XXX_002",
-                    typesomething: "2",
-                  ),
-                ),
-                Divider()
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildBottombar(BuildContext context,
-      {required String recordIdAdding}) {
-    return CustomBottomBar(
-      onChanged: (BottomBarEnum type) {},
-    );
-  }
-
-  Widget _confirmButton(BuildContext context,
-      {required String recordIdAdding}) {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.h, right: 15.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: CustomEvulatedBottom(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AlarmPage(
-                      recordId: recordIdAdding,
-                    ),
-                  ),
-                );
-              },
-              text: "Action",
-              buttonStyle: CustomBottomStyle.fillGreen,
-              margin: EdgeInsets.only(right: 22.h),
-              buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
-            ),
-          ),
-          Expanded(
-            child: CustomEvulatedBottom(
-              onPressed: () async {
-                bool confirmed = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text("Confirm"),
-                      content: Text(
-                          "Are you sure you want to set status to false alarm?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pop(); // Navigate back to previous page
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                            side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.black),
-                            ),
-                            textStyle: MaterialStateProperty.all(
-                              TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.white),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 5.0),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            ),
-                            side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.black87),
-                            ),
-                            textStyle: MaterialStateProperty.all(
-                              TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.blue),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 5.0),
-                            child: Text(
-                              "Confirm",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-
-                if (confirmed != null && confirmed) {
-                  bool setStatus = await RecordService.actionAlarm(
-                      recordId: recordIdAdding, alarmLevel: 7);
-                  if (setStatus) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Successfully set status to false alarm'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Failed to set status to false alarm'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  }
-                }
-              },
-              text: "Fake Alarm",
-              buttonStyle: CustomBottomStyle.fillRed,
-              margin: EdgeInsets.only(right: 22.h),
-              buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _confirmActionButton(BuildContext context,
-      {required String recordIdAdding}) {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.h, right: 15.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: CustomEvulatedBottom(
-              onPressed: () {
-                RecordService.finishActionPhase(recordId: recordIdAdding);
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => AlarmPage(
-                //       recordId: recordIdAdding,
-                //     ), // Replace YourDestinationPage with the page you want to navigate to
-                //   ),
-                // );
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Successfully'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              text: "Finish",
-              buttonStyle: CustomBottomStyle.fillGreen,
-              margin: EdgeInsets.only(right: 22.h),
-              buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
-            ),
-          ),
-          Expanded(
-            child: CustomEvulatedBottom(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AlarmPage(
-                      recordId: recordIdAdding,
-                    ), // Replace YourDestinationPage with the page you want to navigate to
-                  ),
-                );
-              },
-              text: "More Action",
-              buttonStyle: CustomBottomStyle.fillYellow,
-              margin: EdgeInsets.only(right: 22.h),
-              buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  /// Common widget
-  Widget _buildColortexbox(
-    BuildContext context, {
-    required String levelCounter,
-    required String typesomething,
-  }) {
-    return Container(
-      decoration: AppDecoration.fillWhiteA,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 12.v),
-          Padding(
-            padding: EdgeInsets.only(right: 32.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 1.v),
-                  child: Text(
-                    levelCounter,
-                    style: CustomTextStyles.titleMediumOnPrimary.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 3.v),
-                  child: Text(
-                    typesomething,
-                    style: theme.textTheme.titleSmall!.copyWith(
-                      color: appTheme.blueGray300,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Divider()
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRowtypesomethin(
-    BuildContext context, {
-    required String levelCounter,
-    required String typesomething,
-  }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 1.v),
-          child: Text(
-            levelCounter,
-            style: CustomTextStyles.titleMediumOnPrimary.copyWith(
-              color: theme.colorScheme.onPrimary,
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(bottom: 3.v),
-          child: Text(
-            typesomething,
-            style: theme.textTheme.titleSmall!.copyWith(
-              color: appTheme.blueGray300,
-            ),
-          ),
-        )
-      ],
     );
   }
 
@@ -937,6 +558,172 @@ class _RecordDetailPageState extends State<RecordDetailUserRoleEightScreen> {
           Divider()
         ],
       ),
+    );
+  }
+
+  /// Move all buttons to reduce redundancy
+
+  Widget _buildFakeAlarmButton(BuildContext context,
+      {required String recordIdAdding}) {
+    return CustomEvulatedBottom(
+      onPressed: () async {
+        bool confirmed = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Confirm"),
+              content:
+                  Text("Are you sure you want to set status to false alarm?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    side: MaterialStateProperty.all(
+                      BorderSide(color: Colors.black),
+                    ),
+                    textStyle: MaterialStateProperty.all(
+                      TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                  ),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    side: MaterialStateProperty.all(
+                      BorderSide(color: Colors.black87),
+                    ),
+                    textStyle: MaterialStateProperty.all(
+                      TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  ),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 5.0),
+                    child: Text(
+                      "Confirm",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (confirmed != null && confirmed) {
+          bool setStatus = await RecordService.actionAlarm(
+              recordId: recordIdAdding, alarmLevel: 7);
+          if (setStatus) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Successfully set status to false alarm'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to set status to false alarm'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        }
+      },
+      text: "Fake Alarm",
+      buttonStyle: CustomBottomStyle.fillYellow,
+      margin: EdgeInsets.only(right: 22.h),
+      buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context,
+      {required String recordIdAdding}) {
+    return CustomEvulatedBottom(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AlarmPage(
+              recordId: recordIdAdding,
+            ),
+          ),
+        );
+      },
+      text: "Action",
+      buttonStyle: CustomBottomStyle.fillBlue,
+      margin: EdgeInsets.only(right: 22.h),
+      buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
+    );
+  }
+
+  Widget _buildAlertAllButton(BuildContext context,
+      {required String recordIdAdding}) {
+    return Expanded(
+      child: CustomEvulatedBottom(
+        onPressed: () {
+          RecordService.actionAlarm(recordId: recordIdAdding, alarmLevel: 5);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        },
+        text: "Alert All",
+        buttonStyle: CustomBottomStyle.fillRed,
+        margin: EdgeInsets.only(right: 22.h),
+        buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
+      ),
+    );
+  }
+
+  Widget _buildFinishButton(BuildContext context,
+      {required String recordIdAdding}) {
+    return CustomEvulatedBottom(
+      onPressed: () {
+        RecordService.finishActionPhase(recordId: recordIdAdding);
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      },
+      text: "Finish",
+      buttonStyle: CustomBottomStyle.fillGreen,
+      margin: EdgeInsets.only(right: 22.h),
+      buttonTextStyle: CustomTextStyles.titleMediumWhiteA700,
     );
   }
 }
